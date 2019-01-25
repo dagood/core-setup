@@ -251,6 +251,32 @@ jobs:
           - script: df -h
             displayName: Check space (df -h)
             continueOnError: true
+
+    - task: CopyFiles@2
+      displayName: Copy Files to $(Build.StagingDirectory)\Packages
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: |
+          $(Build.SourcesDirectory)/bin/obj/*/packages/**/?(*.rpm|*.deb)
+        TargetFolder: '$(Build.StagingDirectory)\Packages'
+      continueOnError: true
+      condition: succeededOrFailed()
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(Build.StagingDirectory)\Packages'
+        includeRootFolder: false
+        archiveType: 'tar' # Options: zip, 7z, tar, wim
+        tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
+        archiveFile: '$(Build.StagingDirectory)\Packages.zip' 
+        replaceExistingArchive: true 
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifact Packages
+      inputs:
+        PathtoPublish: '$(Build.StagingDirectory)\Packages.zip'
+        ArtifactName: ${{ parameters.displayName }}-$(_BuildConfig)-Packages
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - task: CopyFiles@2
       displayName: Copy Files to $(Build.StagingDirectory)\BuildLogs
       inputs:

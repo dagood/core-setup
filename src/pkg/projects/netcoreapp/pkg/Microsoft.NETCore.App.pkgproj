@@ -7,6 +7,8 @@
     <BuildTargetPath>build/$(NETCoreAppFramework)</BuildTargetPath>
     <PlatformManifestTargetPath>$(BuildTargetPath)</PlatformManifestTargetPath>
     <FileVersionPropsTargetPath>$(BuildTargetPath)</FileVersionPropsTargetPath>
+
+    <CreateSharedFramework>true</CreateSharedFramework>
   </PropertyGroup>
 
   <!-- Identity / Reference package content -->

@@ -11,7 +11,8 @@
             GenerateDeb;
             GenerateRpm;
             GenerateMsi;
-            GeneratePkg" />
+            GeneratePkg;
+            CreateSharedFramework" />
 
   <Target Name="GenerateDeb" DependsOnTargets="TestDebuild;CreateDeb" Condition="'$(BuildDebPackage)' == 'true'"/>
   <Target Name="GenerateRpm" DependsOnTargets="TestFPMTool;CreateRpm" Condition="'$(BuildRpmPackage)' == 'true'"/>
@@ -381,6 +382,15 @@
       DestinationDirectory="$(PackLayoutDir)packs/$(Id)/$(Version)/"
       OverwriteDestination="true"
       Include="@(TargetingPackDataEntries)" />
+  </Target>
+
+  <Target Name="CreateSharedFramework" Condition="'$(CreateSharedFramework)' == 'true'">
+    <MSBuild
+      Projects="$(MSBuildThisFileDirectory)sharedFramework/sharedFramework.csproj"
+      Properties="
+        SharedFrameworkName=$(MSBuildProjectName);
+        SharedFrameworkPkgprojFile=$(MSBuildProjectFullPath);
+        IntermediateOutputRootPath=$(IntermediateOutputRootPath)" />
   </Target>
 
   <!--

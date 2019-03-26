@@ -16,6 +16,8 @@
     <RuntimeIdentifier>$(PackageRID)</RuntimeIdentifier>
     <PackageId>unused</PackageId>
 
+    <ProjectDepsFileName>$(SharedFrameworkName).deps.json</ProjectDepsFileName>
+
     <!-- Don't reference NETCore.App -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <!-- Only Restore from our built packages -->

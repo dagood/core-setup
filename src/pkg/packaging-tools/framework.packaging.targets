@@ -398,7 +398,7 @@
         SharedFrameworkName=$(MSBuildProjectName);
         SharedFrameworkPkgprojFile=$(MSBuildProjectFullPath);
         SharedFrameworkLayoutDir=$(SharedFrameworkLayoutDir);
-        IntermediateOutputPath=$(IntermediateOutputPath);
+        IntermediateOutputPath=$(IntermediateOutputPath)sharedFx/;
         MSBuildProjectExtensionsPath=$(IntermediateOutputPath)sharedFx/" />
   </Target>
 

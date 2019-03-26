@@ -5,6 +5,10 @@
 
   <PropertyGroup>
     <PackageTargets>
+      GenerateVersionBadge;
+      GenerateCompressedFiles;
+      GenerateNugetPackages;
+      GenerateInstallers;
       GenerateProjectInstallers;
     </PackageTargets>
   </PropertyGroup>

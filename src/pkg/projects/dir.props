@@ -138,11 +138,11 @@
       Create targeting pack packages/installers. Similar to the runtime package, we only make one
       Debian or RPM package for all distros of that type.
     -->
-    <!-- <InstallerPackageProject
+    <InstallerPackageProject
       Include="$(MSBuildProjectFullPath)"
       Condition="
         '$(FrameworkPackType)' == 'targeting' AND
-        '$(BuildDistroIndependentInstallers)' == 'true'" /> -->
+        '$(BuildDistroIndependentInstallers)' == 'true'" />
 
     <!-- Create shared framework. -->
     <InstallerPackageProject

@@ -5,6 +5,9 @@
     Inputs:
       SharedFrameworkName: Name of the shared framework, such as Microsoft.NETCore.App.
       SharedFrameworkPkgprojFile: Full path of the pkgproj that produces the framework package.
+      SharedFrameworkLayoutDir: Directory to lay out <rid>/<id>/<version>/<files> of the shared fx.
+      IntermediateOutputPath: Typical. Passed in to make sure intermediate files don't overlap.
+      MSBuildProjectExtensionsPath: Tells the SDK to put restore intermediates in a specific place.
   -->
 
   <PropertyGroup>
@@ -12,8 +15,6 @@
     <NETCoreAppMaximumVersion>3.0</NETCoreAppMaximumVersion>
     <RuntimeIdentifier>$(PackageRID)</RuntimeIdentifier>
     <PackageId>unused</PackageId>
-
-    <IntermediateOutputPath>$(IntermediateOutputRootPath)sharedFramework/obj/$(SharedFrameworkName)/</IntermediateOutputPath>
 
     <!-- Don't reference NETCore.App -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
@@ -47,7 +48,7 @@
     </MSBuild>
 
     <PropertyGroup>
-      <PublishDir>$(IntermediateOutputPath)$(PackageRID)/%(PackageReference.Version)</PublishDir>
+      <PublishDir>$(SharedFrameworkLayoutDir)%(PackageReference.Identity)/%(PackageReference.Version)/</PublishDir>
     </PropertyGroup>
   </Target>
   
@@ -71,8 +72,23 @@
     </PropertyGroup>
     
     <WriteLinesToFile
-      File="$(PublishDir)\$(SharedFrameworkName).runtimeconfig.json"
+      File="$(PublishDir)$(SharedFrameworkName).runtimeconfig.json"
       Lines="$(_runtimeConfigContent)"
+      Overwrite="true" />
+  </Target>
+
+  <Target Name="GenerateVersionFile"
+          DependsOnTargets="GetPackageReference"
+          BeforeTargets="Publish">
+    <!-- Generate .version file -->
+    <ItemGroup>
+      <VersionLines Include="$(LatestCommit)" />
+      <VersionLines Include="%(PackageReference.Version)" />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      File="$(PublishDir).version"
+      Lines="@(VersionLines)"
       Overwrite="true" />
   </Target>
   

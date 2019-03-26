@@ -1,0 +1,10 @@
+<Project>
+
+  <!--
+    This Directory.Build.targets prevents the SDK from skipping down to a parent dir's
+    Directory.Build.targets.
+
+    Don't use dir.targets: restore fails when SDK targets are overridden by BuildTools.
+  -->
+
+</Project>

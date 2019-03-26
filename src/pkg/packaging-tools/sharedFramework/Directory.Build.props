@@ -1,8 +1,8 @@
 <Project>
 
   <!--
-    This Directory.Build.props prevents the SDK from skipping down to the root Directory.Build.props
-    and follow the dir.props chain instead.
+    This Directory.Build.props prevents the SDK from skipping down to the root
+    Directory.Build.props, following the dir.props chain instead.
   -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
 

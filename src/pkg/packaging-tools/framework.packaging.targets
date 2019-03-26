@@ -385,12 +385,21 @@
   </Target>
 
   <Target Name="CreateSharedFramework" Condition="'$(CreateSharedFramework)' == 'true'">
+    <PropertyGroup>
+      <SharedFrameworkLayoutDir>$(IntermediateOutputRootPath)sharedFxLayout/</SharedFrameworkLayoutDir>
+    </PropertyGroup>
+    <!--
+      Build a csproj that lays out the shared framework using the SDK publish targets. Pass
+      properties to make the csproj restore and publish specific to the current pkgproj.
+    -->
     <MSBuild
       Projects="$(MSBuildThisFileDirectory)sharedFramework/sharedFramework.csproj"
       Properties="
         SharedFrameworkName=$(MSBuildProjectName);
         SharedFrameworkPkgprojFile=$(MSBuildProjectFullPath);
-        IntermediateOutputRootPath=$(IntermediateOutputRootPath)" />
+        SharedFrameworkLayoutDir=$(SharedFrameworkLayoutDir);
+        IntermediateOutputPath=$(IntermediateOutputPath);
+        MSBuildProjectExtensionsPath=$(IntermediateOutputPath)sharedFx/" />
   </Target>
 
   <!--

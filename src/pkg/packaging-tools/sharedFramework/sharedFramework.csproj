@@ -3,11 +3,14 @@
     This project lays out a shared framework, using the SDK targets.
 
     Inputs:
-      SharedFrameworkName: Name of the shared framework, such as Microsoft.NETCore.App.
-      SharedFrameworkPkgprojFile: Full path of the pkgproj that produces the framework package.
-      SharedFrameworkLayoutDir: Directory to lay out <rid>/<id>/<version>/<files> of the shared fx.
-      IntermediateOutputPath: Typical. Passed in to make sure intermediate files don't overlap.
-      MSBuildProjectExtensionsPath: Tells the SDK to put restore intermediates in a specific place.
+      SharedFrameworkName:
+        Name of the shared framework, such as Microsoft.NETCore.App.
+      SharedFrameworkPkgprojFile:
+        Full path of the pkgproj that produces the framework package.
+      IntermediateOutputPath:
+        Directory to lay out "shared/<id>/<version>/<files>". (And other intermediates.)
+      MSBuildProjectExtensionsPath:
+        Tells the SDK to put restore intermediates in a specific place.
   -->
 
   <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
@@ -53,7 +56,7 @@
     </MSBuild>
 
     <PropertyGroup>
-      <PublishDir>$(SharedFrameworkLayoutDir)$(PackageRID)/%(PackageReference.Identity)/%(PackageReference.Version)/</PublishDir>
+      <PublishDir>$(IntermediateOutputPath)shared/$(PackageRID)/%(PackageReference.Identity)/%(PackageReference.Version)/</PublishDir>
     </PropertyGroup>
   </Target>
 

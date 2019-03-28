@@ -20,6 +20,8 @@
 
     <ProjectDepsFileName>$(SharedFrameworkName).deps.json</ProjectDepsFileName>
 
+    <MicrosoftNETPlatformLibrary>do-not-consider-existing-platform</MicrosoftNETPlatformLibrary>
+
     <!-- Don't reference NETCore.App -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <!-- Only Restore from our built packages -->
@@ -46,7 +48,6 @@
     <MSBuild
       Projects="$(SharedFrameworkPkgprojFile)"
       Targets="GetPackageIdentity"
-      Properties="PackageTargetRuntime=$(PackageRID)"
       RemoveProperties="Configuration">
       <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
     </MSBuild>
@@ -83,6 +84,20 @@
       Overwrite="true" />
   </Target>
 
+  <!--
+    Normally, Microsoft.NETCore.App's props file adds a platform manifest, which removes files from
+    publish output because we're doing a framework-dependent (not self-contained) publish. This
+    target runs right before the platform manifests would be used to filter, removing them.
+  -->
+  <Target Name="RemovePlatformManifests"
+          BeforeTargets="
+            _HandlePublishFileConflicts;
+            _HandlePackageFileConflicts">
+    <ItemGroup>
+      <PackageConflictPlatformManifests Remove="@(PackageConflictPlatformManifests)" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="GenerateVersionFile"
           DependsOnTargets="GetPackageReference"
           BeforeTargets="Publish">
@@ -96,6 +111,19 @@
       File="$(PublishDir).version"
       Lines="@(VersionLines)"
       Overwrite="true" />
+  </Target>
+
+  <!-- Clean up artifacts that dotnet-publish generates which we don't need -->
+  <Target Name="DeleteUnnecessaryPublishOutputs" AfterTargets="Publish">
+    <ItemGroup>
+      <ToDelete Include="$(PublishDir)apphost$(ExeSuffix)" />
+      <ToDelete Include="$(PublishDir)$(LibPrefix)comhost$(LibSuffix)" />
+      <ToDelete Include="$(PublishDir)$(LibPrefix)hostfxr$(LibSuffix)" />
+      <ToDelete Include="$(PublishDir)$(LibPrefix)ijwhost$(LibSuffix)" />
+    </ItemGroup>
+
+    <Message Text="To delete: @(ToDelete)" />
+    <Delete Files="@(ToDelete)" />
   </Target>
 
   <Target Name="GenerateRuntimeGraph" AfterTargets="Publish">

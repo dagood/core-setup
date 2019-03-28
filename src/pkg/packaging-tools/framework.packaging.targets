@@ -11,8 +11,7 @@
             GenerateDeb;
             GenerateRpm;
             GenerateMsi;
-            GeneratePkg;
-            CreateSharedFramework" />
+            GeneratePkg" />
 
   <Target Name="GenerateDeb" DependsOnTargets="TestDebuild;CreateDeb" Condition="'$(BuildDebPackage)' == 'true'"/>
   <Target Name="GenerateRpm" DependsOnTargets="TestFPMTool;CreateRpm" Condition="'$(BuildRpmPackage)' == 'true'"/>
@@ -384,7 +383,7 @@
       Include="@(TargetingPackDataEntries)" />
   </Target>
 
-  <Target Name="CreateSharedFramework" Condition="'$(CreateSharedFramework)' == 'true'">
+  <Target Name="GenerateSharedFramework" Condition="'$(GenerateSharedFramework)' == 'true'">
     <!--
       Build a csproj that lays out the shared framework using the SDK publish targets. Pass
       properties to make the csproj restore and publish specific to the current pkgproj.

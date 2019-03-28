@@ -248,7 +248,7 @@
         Include="$(MSBuildProjectFullPath)"
         Phase="sharedfx"
         AdditionalProperties="PackageRID=$(PackageRID)"
-        Condition="'$(CreateSharedFramework)' == 'true'" />
+        Condition="'$(GenerateSharedFramework)' == 'true'" />
     </ItemGroup>
   </Target>
 

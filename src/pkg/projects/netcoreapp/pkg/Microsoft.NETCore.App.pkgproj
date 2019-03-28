@@ -8,7 +8,7 @@
     <PlatformManifestTargetPath>$(BuildTargetPath)</PlatformManifestTargetPath>
     <FileVersionPropsTargetPath>$(BuildTargetPath)</FileVersionPropsTargetPath>
 
-    <CreateSharedFramework>true</CreateSharedFramework>
+    <GenerateSharedFramework>true</GenerateSharedFramework>
     <GenerateRuntimeGraph>true</GenerateRuntimeGraph>
   </PropertyGroup>
 

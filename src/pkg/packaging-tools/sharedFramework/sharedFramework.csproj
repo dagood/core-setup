@@ -56,7 +56,9 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="GenerateRuntimeConfig" BeforeTargets="Publish">
+  <Target Name="GenerateRuntimeConfig"
+          Condition="'$(GenerateRuntimeConfig)' == 'true'"
+          BeforeTargets="Publish">
     <MakeDir Directories="$(PublishDir)" />
     
     <PropertyGroup>
@@ -67,7 +69,7 @@
     "tfm": "$(TargetFramework)",
     "framework": {
       "name": "Microsoft.NETCore.App",
-      "version": "$(MicrosoftNETCoreAppPackageVersion)"
+      "version": "$(SharedFrameworkNugetVersion)"
     }
   }
 }

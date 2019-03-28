@@ -9,6 +9,7 @@
     <FileVersionPropsTargetPath>$(BuildTargetPath)</FileVersionPropsTargetPath>
 
     <CreateSharedFramework>true</CreateSharedFramework>
+    <GenerateNetCoreAppRuntimeConfig>true</GenerateNetCoreAppRuntimeConfig>
   </PropertyGroup>
 
   <!-- Identity / Reference package content -->

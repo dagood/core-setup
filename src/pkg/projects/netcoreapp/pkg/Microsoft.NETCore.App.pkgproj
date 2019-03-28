@@ -9,6 +9,7 @@
     <FileVersionPropsTargetPath>$(BuildTargetPath)</FileVersionPropsTargetPath>
 
     <CreateSharedFramework>true</CreateSharedFramework>
+    <GenerateRuntimeGraph>true</GenerateRuntimeGraph>
   </PropertyGroup>
 
   <!-- Identity / Reference package content -->

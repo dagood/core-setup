@@ -57,8 +57,23 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="GenerateRuntimeConfig"
-          Condition="'$(GenerateRuntimeConfig)' == 'true'"
+  <!--
+    During framework-dependent publish, Microsoft.NETCore.App's props file statically adds a
+    PackageConflictPlatformManifests item. This causes NuGet to remove files from publish output
+    because they're "already" defined in the shared framework. But we're creating a shared framework
+    here, so we need to remove the PackageConflictPlatformManifests items before they're used.
+  -->
+  <Target Name="RemovePlatformManifests"
+          BeforeTargets="
+            _HandlePublishFileConflicts;
+            _HandlePackageFileConflicts">
+    <ItemGroup>
+      <PackageConflictPlatformManifests Remove="@(PackageConflictPlatformManifests)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateNetCoreAppRuntimeConfig"
+          Condition="'$(GenerateNetCoreAppRuntimeConfig)' == 'true'"
           BeforeTargets="Publish">
     <MakeDir Directories="$(PublishDir)" />
     
@@ -82,20 +97,6 @@
       File="$(PublishDir)$(SharedFrameworkName).runtimeconfig.json"
       Lines="$(_runtimeConfigContent)"
       Overwrite="true" />
-  </Target>
-
-  <!--
-    Normally, Microsoft.NETCore.App's props file adds a platform manifest, which removes files from
-    publish output because we're doing a framework-dependent (not self-contained) publish. This
-    target runs right before the platform manifests would be used to filter, removing them.
-  -->
-  <Target Name="RemovePlatformManifests"
-          BeforeTargets="
-            _HandlePublishFileConflicts;
-            _HandlePackageFileConflicts">
-    <ItemGroup>
-      <PackageConflictPlatformManifests Remove="@(PackageConflictPlatformManifests)" />
-    </ItemGroup>
   </Target>
 
   <Target Name="GenerateVersionFile"
@@ -122,11 +123,12 @@
       <ToDelete Include="$(PublishDir)$(LibPrefix)ijwhost$(LibSuffix)" />
     </ItemGroup>
 
-    <Message Text="To delete: @(ToDelete)" />
     <Delete Files="@(ToDelete)" />
   </Target>
 
-  <Target Name="GenerateRuntimeGraph" AfterTargets="Publish">
+  <Target Name="GenerateRuntimeGraph"
+          Condition="'$(GenerateRuntimeGraph)' == 'true'"
+          AfterTargets="Publish">
     <PropertyGroup>
       <SharedFrameworkAssetsFile>$(IntermediateOutputPath)/project.assets.json</SharedFrameworkAssetsFile>
       <SharedFrameworkDepsFile>$(PublishDir)$(ProjectDepsFileName)</SharedFrameworkDepsFile>

@@ -400,7 +400,9 @@
         SharedFrameworkLayoutDir=$(SharedFrameworkLayoutDir);
         IntermediateOutputPath=$(IntermediateOutputPath)sharedFx/;
         MSBuildProjectExtensionsPath=$(IntermediateOutputPath)sharedFx/;
-        PackageRID=$(PackageRID)" />
+        PackageRID=$(PackageRID);
+        GenerateNetCoreAppRuntimeConfig=$(GenerateNetCoreAppRuntimeConfig);
+        GenerateRuntimeGraph=$(GenerateRuntimeGraph)" />
   </Target>
 
   <!--

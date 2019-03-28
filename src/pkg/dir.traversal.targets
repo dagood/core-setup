@@ -8,6 +8,11 @@
     <MSBuild Targets="Build" Projects="@(Project)" Condition="'$(SerializeProjects)'!='true'" BuildInParallel="true" />
   </Target>
 
+  <Target Name="GenerateSharedFrameworks">
+    <MSBuild Targets="GenerateSharedFrameworks" Projects="@(Project)" Condition="'$(SerializeProjects)'=='true'" Properties="Dummy=%(Identity)"/>
+    <MSBuild Targets="GenerateSharedFrameworks" Projects="@(Project)" Condition="'$(SerializeProjects)'!='true'" BuildInParallel="true" />
+  </Target>
+
   <Target Name="GenerateInstallers">
     <MSBuild Targets="GenerateInstallers" Projects="@(Project)" Condition="'$(SerializeProjects)'=='true'" Properties="Dummy=%(Identity)"/>
     <MSBuild Targets="GenerateInstallers" Projects="@(Project)" Condition="'$(SerializeProjects)'!='true'" BuildInParallel="true" />

@@ -132,23 +132,5 @@
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
     <ProjectReference Include="@(RuntimeProject)" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!--
-      Create targeting pack packages/installers. Similar to the runtime package, we only make one
-      Debian or RPM package for all distros of that type.
-    -->
-    <InstallerPackageProject
-      Include="$(MSBuildProjectFullPath)"
-      Condition="
-        '$(FrameworkPackType)' == 'targeting' AND
-        '$(BuildDistroIndependentInstallers)' == 'true'" />
-
-    <!-- Create shared framework. -->
-    <InstallerPackageProject
-      Include="$(MSBuildProjectFullPath)"
-      AdditionalProperties="PackageRID=$(PackageRID)"
-      Condition="'$(CreateSharedFramework)' == 'true'" />
-  </ItemGroup>
   
 </Project>

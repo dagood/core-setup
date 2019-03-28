@@ -215,9 +215,9 @@
           }
         },
         "sharedfx": {
-          "description": "Build Shared Framework project.",
+          "description": "Build Shared Framework projects.",
           "settings": {
-            "Project": "src\\sharedframework\\sharedframework.proj"
+            "Project": "src\\pkg\\projects\\sharedfx.builds"
           }
         },
         "signing-validation": {

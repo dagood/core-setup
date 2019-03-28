@@ -231,7 +231,24 @@
 
       <Project Include="@(PkgSrcProject)" Phase="pkg" />
       <Project Include="@(PkgSrcProject)" Phase="src" />
-      <Project Include="@(InstallerPackageProject)" Phase="installer" />
+
+      <!--
+        Create targeting pack packages/installers. Similar to the runtime package, we only make one
+        Debian or RPM package for all distros of that type.
+      -->
+      <Project
+        Include="$(MSBuildProjectFullPath)"
+        Phase="installer"
+        Condition="
+          '$(FrameworkPackType)' == 'targeting' AND
+          '$(BuildDistroIndependentInstallers)' == 'true'" />
+
+      <!-- Create shared framework. -->
+      <Project
+        Include="$(MSBuildProjectFullPath)"
+        Phase="sharedfx"
+        AdditionalProperties="PackageRID=$(PackageRID)"
+        Condition="'$(CreateSharedFramework)' == 'true'" />
     </ItemGroup>
   </Target>
 

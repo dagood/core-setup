@@ -242,13 +242,17 @@
         Condition="
           '$(FrameworkPackType)' == 'targeting' AND
           '$(BuildDistroIndependentInstallers)' == 'true'" />
+    </ItemGroup>
 
-      <!-- Create shared framework. -->
-      <Project
-        Include="$(MSBuildProjectFullPath)"
-        Phase="sharedfx"
-        AdditionalProperties="PackageRID=$(PackageRID)"
-        Condition="'$(GenerateSharedFramework)' == 'true'" />
+    <!-- Create shared framework and its installers. -->
+    <ItemGroup Condition="'$(GenerateSharedFramework)' == 'true' AND '$(BuildDistroIndependentInstallers)' == 'true'">
+      <Project Include="$(MSBuildProjectFullPath)" Phase="sharedfx" />
+      <!--
+        Currently any pkgproj is assumed to only build one type of installer, so there is no
+        distinction between this Project and a targeting pack installer Project. Some
+        AdditionalProperties may need to be added if this assumption doesn't hold up.
+      -->
+      <Project Include="$(MSBuildProjectFullPath)" Phase="installer" />
     </ItemGroup>
   </Target>
 

@@ -6,6 +6,8 @@
   <UsingTask TaskName="BuildFPMToolPreReqs" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
   <UsingTask TaskName="GenerateJsonObjectString" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
 
+  <Import Project="$(MSBuildThisFileDirectory)windows/wix.targets" />
+
   <Target Name="GenerateInstallers"
           DependsOnTargets="
             GenerateDeb;
@@ -138,92 +140,6 @@
   <Target Name="CreateMsi"
           DependsOnTargets="RunLightLinker">
     <Message Text="Created '$(InstallerFile)'" Importance="High" />
-  </Target>
-
-  <!--
-    If UpgradeCode isn't manually set, generate based on installer full path. Not suitable for
-    bundles.
-  -->
-  <Target Name="GetUpgradeCode"
-          Condition="'$(UpgradeCode)' == ''">
-    <GenerateGuidFromName Name="$(InstallerFile)">
-      <Output TaskParameter="GeneratedGuid" PropertyName="UpgradeCode" />
-    </GenerateGuidFromName>
-  </Target>
-
-  <Target Name="RunHeatHarvester">
-    <PropertyGroup>
-      <InstallFilesWixSourceFile>$(WixObjDir)install-files.wxs</InstallFilesWixSourceFile>
-      <InstallFilesWixObjFile>$(WixObjDir)install-files.wixobj</InstallFilesWixObjFile>
-
-      <_wixArgs></_wixArgs>
-      <_wixArgs>$(_wixArgs) dir "$(PackLayoutDir)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -nologo</_wixArgs>
-      <_wixArgs>$(_wixArgs) -template fragment</_wixArgs>
-      <_wixArgs>$(_wixArgs) -sreg</_wixArgs>
-      <_wixArgs>$(_wixArgs) -gg</_wixArgs>
-      <_wixArgs>$(_wixArgs) -var var.TargetingPackSrc</_wixArgs>
-      <_wixArgs>$(_wixArgs) -cg InstallFiles</_wixArgs>
-      <_wixArgs>$(_wixArgs) -srd</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dr DOTNETHOME</_wixArgs>
-      <_wixArgs>$(_wixArgs) -out $(InstallFilesWixSourceFile)</_wixArgs>
-    </PropertyGroup>
-
-    <Message Importance="High" Text="Heat '$(MSBuildProjectName)'" />
-    <Exec Command="heat.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
-  </Target>
-
-  <Target Name="RunCandleCompiler"
-          DependsOnTargets="
-            GetUpgradeCode;
-            GenerateMsiVersionString">
-    <PropertyGroup>
-      <_wixArgs></_wixArgs>
-      <_wixArgs>$(_wixArgs) -nologo</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixDependencyExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -arch $(MsiArch)</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) -dTargetingPackSrc="$(PackLayoutDir)" </_wixArgs>
-      <_wixArgs>$(_wixArgs) -dMicrosoftEula="$(MicrosoftEulaFile)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dProductMoniker="$(TargetingPackBrandName)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dBuildVersion="$(MsiVersionString)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dNugetVersion="$(ProductVersion)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dTargetArchitecture="$(TargetArchitecture)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dUpgradeCode="$(UpgradeCode)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dDependencyKeyName="$(InstallerName.Replace('-', '_'))"</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) "$(MSBuildThisFileDirectory)windows/targetingpack.wxs"</_wixArgs>
-      <_wixArgs>$(_wixArgs) "$(MSBuildThisFileDirectory)windows/provider.wxs"</_wixArgs>
-      <_wixArgs>$(_wixArgs) "$(InstallFilesWixSourceFile)"</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) -out "$(WixObjDir)"</_wixArgs>
-    </PropertyGroup>
-
-    <Message Importance="High" Text="Candle '$(MSBuildProjectName)'" />
-    <Exec Command="candle.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
-  </Target>
-
-  <Target Name="RunLightLinker"
-          DependsOnTargets="
-            RunHeatHarvester;
-            RunCandleCompiler">
-    <PropertyGroup>
-      <_wixArgs></_wixArgs>
-      <_wixArgs>$(_wixArgs) -nologo</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixUIExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixDependencyExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixUtilExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -cultures:en-us</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) "$(WixObjDir)targetingpack.wixobj"</_wixArgs>
-      <_wixArgs>$(_wixArgs) "$(WixObjDir)provider.wixobj"</_wixArgs>
-      <_wixArgs>$(_wixArgs) "$(InstallFilesWixObjFile)"</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) -out $(InstallerFile)</_wixArgs>
-    </PropertyGroup>
-
-    <Message Importance="High" Text="Light '$(MSBuildProjectName)'" />
-    <Exec Command="light.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
   </Target>
 
   <!--

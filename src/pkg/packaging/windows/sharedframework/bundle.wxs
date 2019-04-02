@@ -56,9 +56,9 @@
     <swid:Tag Regid="microsoft.com" InstallPath="[DOTNETHOME]" />
 
     <Variable Name="DOTNETHOME" Type="string" Value="[$(var.Program_Files)]dotnet" bal:Overridable="no" />
-    <Variable Name="BUNDLEMONIKER" Type="string" Value="$(var.ProductMoniker) ($(var.TargetArchitecture))" bal:Overridable="no" />
 
-    <!-- Varibles used solely for localization. -->
+    <!-- Variables used solely for localization. -->
+    <Variable Name="BUNDLEMONIKER" Type="string" Value="$(var.ProductMoniker) ($(var.TargetArchitecture))" bal:Overridable="no" />
     <Variable Name="PRODUCT_NAME" Type="string" Value="$(var.ProductName)" bal:Overridable="no" />
     <Variable Name="LINK_PREREQ_PAGE" Type="string" Value="$(var.Link_PreReqPage)" bal:Overridable="no" />
 

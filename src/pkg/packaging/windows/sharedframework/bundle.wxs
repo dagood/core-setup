@@ -75,7 +75,11 @@
     <PayloadGroup Id="DotnetCoreBAPayloads">
       <Payload Name="thm.xml" Compressed="yes" SourceFile="bundle.thm" />
       <Payload Name="thm.wxl" Compressed="yes" SourceFile="bundle.wxl" />
+
       <Payload Name="bg.png" Compressed="yes" SourceFile="..\..\osx\sharedframework\resources\dotnetbackground.png" />
+
+      <Payload Id="thm-es-ES" Compressed="yes" Name="3082\thm.wxl" SourceFile="theme\es-ES\bundle.wxl" />
+      <Payload Id="lic-es-ES" Compressed="yes" Name="3082\license.rtf" SourceFile="theme\es-ES\eula.rtf" />
 
       <Payload Name='eula.rtf' Compressed='yes' SourceFile='!(wix.WixStdbaLicenseRtf)' />
     </PayloadGroup>

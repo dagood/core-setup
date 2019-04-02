@@ -50,6 +50,8 @@ Ready? Set? Let's go!</String>
   <String Id="FailureRestartText">es-ES !!! You must restart your computer to complete the rollback of the software.</String>
   <String Id="FailureRestartButton">es-ES !!! &amp;Restart</String>
   <String Id="FailureCloseButton">es-ES !!! &amp;Close</String>
+  <String Id="FailureNotSupportedCurrentOperatingSystem">es-ES !!! The [PRODUCT_NAME] is not supported on this operating system. For more information, see [LINK_PREREQ_PAGE].</String>
+  <String Id="FailureNotSupportedX86OperatingSystem">es-ES !!! The [PRODUCT_NAME] isn't supported on x86 operating systems. Please install using the corresponding x86 installer.</String>
   <String Id="FilesInUseHeader">es-ES !!! Files In Use</String>
   <String Id="FilesInUseLabel">es-ES !!! The following applications are using files that need to be updated:</String>
   <String Id="FilesInUseCloseRadioButton">es-ES !!! Close the &amp;applications and attempt to restart them.</String>

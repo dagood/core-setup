@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WixLocalization Culture="en-us" Language="1033" xmlns="http://schemas.microsoft.com/wix/2006/localization">es-ES !!! 
-  <String Id="Caption">es-ES !!! [WixBundleName] Installer</String>
-  <String Id="Title">es-ES !!! [BUNDLEMONIKER]</String>
-  <String Id="Motto">es-ES !!! You just need a shell, a text editor and 10 minutes of your time.
+<WixLocalization Culture="en-us" Language="1033" xmlns="http://schemas.microsoft.com/wix/2006/localization">{ !!! es-ES 
+  <String Id="Caption">{ !!! es-ES [WixBundleName] Installer !!! }</String>
+  <String Id="Title">{ !!! es-ES [BUNDLEMONIKER] !!! }</String>
+  <String Id="Motto">{ !!! es-ES You just need a shell, a text editor and 10 minutes of your time.
 
-Ready? Set? Let's go!</String>
-  <String Id="ConfirmCancelMessage">es-ES !!! Are you sure you want to cancel?</String>
-  <String Id="ExecuteUpgradeRelatedBundleMessage">es-ES !!! Previous version</String>
-  <String Id="HelpHeader">es-ES !!! Setup Help</String>
-  <String Id="HelpText">es-ES !!! /install | /repair | /uninstall | /layout [directory] - installs, repairs, uninstalls or
+Ready? Set? Let's go! !!! }</String>
+  <String Id="ConfirmCancelMessage">{ !!! es-ES Are you sure you want to cancel? !!! }</String>
+  <String Id="ExecuteUpgradeRelatedBundleMessage">{ !!! es-ES Previous version !!! }</String>
+  <String Id="HelpHeader">{ !!! es-ES Setup Help !!! }</String>
+  <String Id="HelpText">{ !!! es-ES /install | /repair | /uninstall | /layout [directory] - installs, repairs, uninstalls or
    creates a complete local copy of the bundle in directory. Install is the default.
 
 /passive | /quiet -  displays minimal UI with no prompts or displays no UI and
    no prompts. By default UI and all prompts are displayed.
 
 /norestart   - suppress any attempts to restart. By default UI will prompt before restart.
-/log log.txt - logs to a specific file. By default a log file is created in %TEMP%.</String>
-  <String Id="HelpCloseButton">es-ES !!! &amp;Close</String>
-  <String Id="InstallAcceptCheckbox">es-ES !!! I &amp;agree to the license terms and conditions</String>
-  <String Id="InstallOptionsButton">es-ES !!! &amp;Options</String>
-  <String Id="InstallInstallButton">es-ES !!! &amp;Install</String>
-  <String Id="InstallCloseButton">es-ES !!! &amp;Close</String>
-  <String Id="OptionsHeader">es-ES !!! Setup Options</String>
-  <String Id="OptionsLocationLabel">es-ES !!! Install location:</String>
-  <String Id="OptionsBrowseButton">es-ES !!! &amp;Browse</String>
-  <String Id="OptionsOkButton">es-ES !!! &amp;OK</String>
-  <String Id="OptionsCancelButton">es-ES !!! &amp;Cancel</String>
-  <String Id="ProgressHeader">es-ES !!! Setup Progress</String>
-  <String Id="ProgressLabel">es-ES !!! Processing:</String>
-  <String Id="OverallProgressPackageText">es-ES !!! Initializing...</String>
-  <String Id="ProgressCancelButton">es-ES !!! &amp;Cancel</String>
-  <String Id="ModifyHeader">es-ES !!! Modify Setup</String>
-  <String Id="ModifyRepairButton">es-ES !!! &amp;Repair</String>
-  <String Id="ModifyUninstallButton">es-ES !!! &amp;Uninstall</String>
-  <String Id="ModifyCloseButton">es-ES !!! &amp;Close</String>
-  <String Id="SuccessRepairHeader">es-ES !!! Repair Successfully Completed</String>
-  <String Id="SuccessUninstallHeader">es-ES !!! Uninstall Successfully Completed</String>
-  <String Id="SuccessInstallHeader">es-ES !!! Installation was successful</String>
-  <String Id="SuccessHeader">es-ES !!! Setup Successful</String>
-  <String Id="SuccessLaunchButton">es-ES !!! &amp;Launch</String>
-  <String Id="SuccessRestartText">es-ES !!! You must restart your computer before you can use the software.</String>
-  <String Id="SuccessRestartButton">es-ES !!! &amp;Restart</String>
-  <String Id="SuccessCloseButton">es-ES !!! &amp;Close</String>
-  <String Id="FailureHeader">es-ES !!! Setup Failed</String>
-  <String Id="FailureInstallHeader">es-ES !!! Setup Failed</String>
-  <String Id="FailureUninstallHeader">es-ES !!! Uninstall Failed</String>
-  <String Id="FailureRepairHeader">es-ES !!! Repair Failed</String>
-  <String Id="FailureHyperlinkLogText">es-ES !!! One or more issues caused the setup to fail. Please fix the issues and then retry setup. For more information see the &lt;a href="#"&gt;log file&lt;/a&gt;.</String>
-  <String Id="FailureRestartText">es-ES !!! You must restart your computer to complete the rollback of the software.</String>
-  <String Id="FailureRestartButton">es-ES !!! &amp;Restart</String>
-  <String Id="FailureCloseButton">es-ES !!! &amp;Close</String>
-  <String Id="FailureNotSupportedCurrentOperatingSystem">es-ES !!! The [PRODUCT_NAME] is not supported on this operating system. For more information, see [LINK_PREREQ_PAGE].</String>
-  <String Id="FailureNotSupportedX86OperatingSystem">es-ES !!! The [PRODUCT_NAME] isn't supported on x86 operating systems. Please install using the corresponding x86 installer.</String>
-  <String Id="FilesInUseHeader">es-ES !!! Files In Use</String>
-  <String Id="FilesInUseLabel">es-ES !!! The following applications are using files that need to be updated:</String>
-  <String Id="FilesInUseCloseRadioButton">es-ES !!! Close the &amp;applications and attempt to restart them.</String>
-  <String Id="FilesInUseDontCloseRadioButton">es-ES !!! &amp;Do not close applications. A reboot will be required.</String>
-  <String Id="FilesInUseOkButton">es-ES !!! &amp;OK</String>
-  <String Id="FilesInUseCancelButton">es-ES !!! &amp;Cancel</String>
-  <String Id="WelcomeHeaderMessage">es-ES !!! .NET Core Runtime</String>
-  <String Id="WelcomeDescription">es-ES !!! .NET Core is a development platform that you can use to build command-line applications, microservices and modern websites. It is open source, cross-platform, and supported by Microsoft. We hope you enjoy it!</String>
-  <String Id="LearnMoreTitle">es-ES !!! Learn more about .NET Core</String>
-  <String Id="SuccessInstallLocation">es-ES !!! The following was installed at [DOTNETHOME]</String>
-  <String Id="SuccessInstallProductName">es-ES !!!  - [BUNDLEMONIKER] </String>
-  <String Id="ResourcesHeader">es-ES !!! Resources</String>
-  <String Id="DocumentationLink">es-ES !!! &lt;A HREF=&quot;https://aka.ms/dotnet-docs&quot;&gt;Documentation&lt;/A&gt;</String>
-  <String Id="RelaseNotesLink">es-ES !!! &lt;A HREF=&quot;https://aka.ms/20-p2-rel-notes&quot;&gt;Release Notes&lt;/A&gt;</String>
-  <String Id="TutorialLink">es-ES !!! &lt;A HREF=&quot;https://aka.ms/dotnet-tutorials&quot;&gt;Tutorials&lt;/A&gt;</String>
-  <String Id="TelemetryLink">es-ES !!! &lt;A HREF=&quot;https://aka.ms/dotnet-cli-telemetry&quot;&gt;.NET Core Telemetry&lt;/A&gt;</String>
-  <String Id="PrivacyStatementLink">es-ES !!! &lt;A HREF=&quot;https://aka.ms/dev-privacy&quot;&gt;Privacy Statement&lt;/A&gt;</String>
-  <String Id="EulaLink">es-ES !!! &lt;A HREF=&quot;https://go.microsoft.com/fwlink/?LinkId=329770&quot;&gt;.NET Library EULA&lt;/A&gt;</String>
+/log log.txt - logs to a specific file. By default a log file is created in %TEMP%. !!! }</String>
+  <String Id="HelpCloseButton">{ !!! es-ES &amp;Close !!! }</String>
+  <String Id="InstallAcceptCheckbox">{ !!! es-ES I &amp;agree to the license terms and conditions !!! }</String>
+  <String Id="InstallOptionsButton">{ !!! es-ES &amp;Options !!! }</String>
+  <String Id="InstallInstallButton">{ !!! es-ES &amp;Install !!! }</String>
+  <String Id="InstallCloseButton">{ !!! es-ES &amp;Close !!! }</String>
+  <String Id="OptionsHeader">{ !!! es-ES Setup Options !!! }</String>
+  <String Id="OptionsLocationLabel">{ !!! es-ES Install location: !!! }</String>
+  <String Id="OptionsBrowseButton">{ !!! es-ES &amp;Browse !!! }</String>
+  <String Id="OptionsOkButton">{ !!! es-ES &amp;OK !!! }</String>
+  <String Id="OptionsCancelButton">{ !!! es-ES &amp;Cancel !!! }</String>
+  <String Id="ProgressHeader">{ !!! es-ES Setup Progress !!! }</String>
+  <String Id="ProgressLabel">{ !!! es-ES Processing: !!! }</String>
+  <String Id="OverallProgressPackageText">{ !!! es-ES Initializing... !!! }</String>
+  <String Id="ProgressCancelButton">{ !!! es-ES &amp;Cancel !!! }</String>
+  <String Id="ModifyHeader">{ !!! es-ES Modify Setup !!! }</String>
+  <String Id="ModifyRepairButton">{ !!! es-ES &amp;Repair !!! }</String>
+  <String Id="ModifyUninstallButton">{ !!! es-ES &amp;Uninstall !!! }</String>
+  <String Id="ModifyCloseButton">{ !!! es-ES &amp;Close !!! }</String>
+  <String Id="SuccessRepairHeader">{ !!! es-ES Repair Successfully Completed !!! }</String>
+  <String Id="SuccessUninstallHeader">{ !!! es-ES Uninstall Successfully Completed !!! }</String>
+  <String Id="SuccessInstallHeader">{ !!! es-ES Installation was successful !!! }</String>
+  <String Id="SuccessHeader">{ !!! es-ES Setup Successful !!! }</String>
+  <String Id="SuccessLaunchButton">{ !!! es-ES &amp;Launch !!! }</String>
+  <String Id="SuccessRestartText">{ !!! es-ES You must restart your computer before you can use the software. !!! }</String>
+  <String Id="SuccessRestartButton">{ !!! es-ES &amp;Restart !!! }</String>
+  <String Id="SuccessCloseButton">{ !!! es-ES &amp;Close !!! }</String>
+  <String Id="FailureHeader">{ !!! es-ES Setup Failed !!! }</String>
+  <String Id="FailureInstallHeader">{ !!! es-ES Setup Failed !!! }</String>
+  <String Id="FailureUninstallHeader">{ !!! es-ES Uninstall Failed !!! }</String>
+  <String Id="FailureRepairHeader">{ !!! es-ES Repair Failed !!! }</String>
+  <String Id="FailureHyperlinkLogText">{ !!! es-ES One or more issues caused the setup to fail. Please fix the issues and then retry setup. For more information see the &lt;a href="#"&gt;log file&lt;/a&gt;. !!! }</String>
+  <String Id="FailureRestartText">{ !!! es-ES You must restart your computer to complete the rollback of the software. !!! }</String>
+  <String Id="FailureRestartButton">{ !!! es-ES &amp;Restart !!! }</String>
+  <String Id="FailureCloseButton">{ !!! es-ES &amp;Close !!! }</String>
+  <String Id="FailureNotSupportedCurrentOperatingSystem">{ !!! es-ES The [PRODUCT_NAME] is not supported on this operating system. For more information, see [LINK_PREREQ_PAGE]. !!! }</String>
+  <String Id="FailureNotSupportedX86OperatingSystem">{ !!! es-ES The [PRODUCT_NAME] isn't supported on x86 operating systems. Please install using the corresponding x86 installer. !!! }</String>
+  <String Id="FilesInUseHeader">{ !!! es-ES Files In Use !!! }</String>
+  <String Id="FilesInUseLabel">{ !!! es-ES The following applications are using files that need to be updated: !!! }</String>
+  <String Id="FilesInUseCloseRadioButton">{ !!! es-ES Close the &amp;applications and attempt to restart them. !!! }</String>
+  <String Id="FilesInUseDontCloseRadioButton">{ !!! es-ES &amp;Do not close applications. A reboot will be required. !!! }</String>
+  <String Id="FilesInUseOkButton">{ !!! es-ES &amp;OK !!! }</String>
+  <String Id="FilesInUseCancelButton">{ !!! es-ES &amp;Cancel !!! }</String>
+  <String Id="WelcomeHeaderMessage">{ !!! es-ES .NET Core Runtime !!! }</String>
+  <String Id="WelcomeDescription">{ !!! es-ES .NET Core is a development platform that you can use to build command-line applications, microservices and modern websites. It is open source, cross-platform, and supported by Microsoft. We hope you enjoy it! !!! }</String>
+  <String Id="LearnMoreTitle">{ !!! es-ES Learn more about .NET Core !!! }</String>
+  <String Id="SuccessInstallLocation">{ !!! es-ES The following was installed at [DOTNETHOME] !!! }</String>
+  <String Id="SuccessInstallProductName">{ !!! es-ES  - [BUNDLEMONIKER]  !!! }</String>
+  <String Id="ResourcesHeader">{ !!! es-ES Resources !!! }</String>
+  <String Id="DocumentationLink">{ !!! es-ES &lt;A HREF=&quot;https://aka.ms/dotnet-docs&quot;&gt;Documentation&lt;/A&gt; !!! }</String>
+  <String Id="RelaseNotesLink">{ !!! es-ES &lt;A HREF=&quot;https://aka.ms/20-p2-rel-notes&quot;&gt;Release Notes&lt;/A&gt; !!! }</String>
+  <String Id="TutorialLink">{ !!! es-ES &lt;A HREF=&quot;https://aka.ms/dotnet-tutorials&quot;&gt;Tutorials&lt;/A&gt; !!! }</String>
+  <String Id="TelemetryLink">{ !!! es-ES &lt;A HREF=&quot;https://aka.ms/dotnet-cli-telemetry&quot;&gt;.NET Core Telemetry&lt;/A&gt; !!! }</String>
+  <String Id="PrivacyStatementLink">{ !!! es-ES &lt;A HREF=&quot;https://aka.ms/dev-privacy&quot;&gt;Privacy Statement&lt;/A&gt; !!! }</String>
+  <String Id="EulaLink">{ !!! es-ES &lt;A HREF=&quot;https://go.microsoft.com/fwlink/?LinkId=329770&quot;&gt;.NET Library EULA&lt;/A&gt; !!! }</String>
   
 </WixLocalization>

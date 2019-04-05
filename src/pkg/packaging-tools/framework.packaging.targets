@@ -299,10 +299,8 @@
       Include="@(TargetingPackDataEntries)" />
   </Target>
 
-  <Target Name="GenerateSharedFramework" Condition="'$(GenerateSharedFramework)' == 'true'">
-    <PropertyGroup>
-      <SharedFrameworkLayoutDir>$(IntermediateOutputRootPath)sharedFxLayout/</SharedFrameworkLayoutDir>
-    </PropertyGroup>
+  <Target Name="GenerateSharedFramework"
+          Condition="'$(GenerateSharedFramework)' == 'true'">
     <!--
       Build a csproj that lays out the shared framework using the SDK publish targets. Pass
       properties to make the csproj restore and publish specific to the current pkgproj.

@@ -75,6 +75,10 @@
     <InstallerFile>$(AssetOutputPath)$(InstallerFileNameWithoutExtension)$(InstallerExtension)</InstallerFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SharedFrameworkLayoutDir>$(IntermediateOutputRootPath)sharedFxLayout/</SharedFrameworkLayoutDir>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(IsFrameworkPackage)' == 'true'">
     <Version>$(ProductVersion)</Version>
     <OmitDependencies>true</OmitDependencies>

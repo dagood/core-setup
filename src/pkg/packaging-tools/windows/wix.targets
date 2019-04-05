@@ -24,12 +24,18 @@
       <DirectoryToHarvest
         Include="$(PackLayoutDir)"
         Name="install-files"
-        Substitute="var.TargetingPackSrc"
+        SubstituteVar="TargetingPackSrc"
         ComponentGroupName="InstallFiles"
         DirectoryRef="DOTNETHOME" />
     </ItemGroup>
 
-    <ItemGroup Condition="">
+    <ItemGroup Condition="'$(GenerateSharedFramework)' == 'true'">
+      <DirectoryToHarvest
+        Include="$(SharedFrameworkLayoutDir)"
+        Name="install-shared-framework"
+        SubstituteVar="TargetingPackSrc"
+        ComponentGroupName="InstallFiles"
+        DirectoryRef="SHARED" />
     </ItemGroup>
 
   </Target>
@@ -48,7 +54,7 @@
           -template fragment ^
           -sreg ^
           -gg ^
-          -var %(Substitute) ^
+          -var var.%(SubstituteVar) ^
           -cg %(ComponentGroupName) ^
           -srd ^
           -dr %(DirectoryRef) ^
@@ -78,6 +84,8 @@
       <_wixArgs>$(_wixArgs) -dTargetArchitecture="$(TargetArchitecture)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dUpgradeCode="$(UpgradeCode)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dDependencyKeyName="$(InstallerName.Replace('-', '_'))"</_wixArgs>
+
+      <_wixArgs>$(_wixArgs) -d%(DirectoryToHarvest.SubstituteVar)="$(DirectoryToHarvest.Identity)" </_wixArgs>
 
       <_wixArgs>$(_wixArgs) "$(MSBuildThisFileDirectory)targetingPack/product.wxs"</_wixArgs>
       <_wixArgs>$(_wixArgs) "$(MSBuildThisFileDirectory)provider.wxs"</_wixArgs>

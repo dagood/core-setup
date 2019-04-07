@@ -5,7 +5,7 @@
     <ComponentGroup Id="AuthoredRegistryKeys">
       <Component Id="SetupRegistry_x86" Directory="TARGETDIR" Win64="no">
         <RegistryKey Root="HKLM" Key="SOFTWARE\dotnet\Setup\InstalledVersions\$(var.Platform)\sharedfx\$(var.FrameworkName)">
-          <RegistryValue Action="write" Name="$(var.FrameworkDisplayVersion)" Type="integer" Value="1" KeyPath="yes"/>
+          <RegistryValue Action="write" Name="$(var.NugetVersion)" Type="integer" Value="1" KeyPath="yes"/>
         </RegistryKey>
       </Component>
     </ComponentGroup>

@@ -99,10 +99,16 @@ jobs:
       condition: succeeded()
 
     # Build Shared Frameworks
-    - script: |
-        build.cmd -sharedfx-netcoreapp -- '$(CommonMSBuildArgs) /bl:$(Build.SourcesDirectory)\sharedframework-netcoreapp.binlog'
-        build.cmd -sharedfx -- '$(CommonMSBuildArgs) /bl:$(Build.SourcesDirectory)\sharedframework.binlog'
-      displayName: Build sharedframework layouts
+    - script: build.cmd -sharedfx-netcoreapp
+        -- '$(CommonMSBuildArgs) 
+        /bl:$(Build.SourcesDirectory)\sharedframework-netcoreapp.binlog'
+      displayName: Build .NET Core App sharedframework layout
+      condition: succeeded()
+
+    - script: build.cmd -sharedfx
+        -- '$(CommonMSBuildArgs) 
+        /bl:$(Build.SourcesDirectory)\sharedframework.binlog'
+      displayName: Build project-based sharedframework layouts
       condition: succeeded()
 
     - ${{ if ne(parameters.skipTests, 'true') }}:

@@ -100,13 +100,13 @@ jobs:
 
     # Build Shared Frameworks
     - script: build.cmd -sharedfx-netcoreapp
-        -- '$(CommonMSBuildArgs) 
+        -- '$(CommonMSBuildArgs)
         /bl:$(Build.SourcesDirectory)\sharedframework-netcoreapp.binlog'
       displayName: Build sharedframework layout (legacy infrastructure)
       condition: succeeded()
 
     - script: build.cmd -sharedfx
-        -- '$(CommonMSBuildArgs) 
+        -- '$(CommonMSBuildArgs)
         /bl:$(Build.SourcesDirectory)\sharedframework.binlog'
       displayName: Build sharedframework layouts (new infrastructure)
       condition: succeeded()

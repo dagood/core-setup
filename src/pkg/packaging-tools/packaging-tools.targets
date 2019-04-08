@@ -15,6 +15,7 @@
     <!-- Detect framework pack suffix and apply defaults. -->
     <PropertyGroup Condition="'$(FrameworkPackType)' == 'targeting'">
       <InstallerName>$(ShortFrameworkName)-targeting-pack</InstallerName>
+      <WixProductMoniker>$(TargetingPackBrandName)</WixProductMoniker>
 
       <MacOSComponentName>com.microsoft.$(ShortFrameworkName).pack.$(FrameworkPackType).$(ProductVersion).component.osx.x64</MacOSComponentName>
       <MacOSSharedInstallDir>/usr/local/share/dotnet</MacOSSharedInstallDir>
@@ -22,6 +23,7 @@
 
     <PropertyGroup Condition="'$(GenerateSharedFramework)' == 'true'">
       <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
+      <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -47,7 +47,6 @@
     <ItemGroup>
       <WixSrcFile Include="$(MSBuildThisFileDirectory)provider.wxs" />
     </ItemGroup>
-
   </Target>
 
   <Target Name="RunHeatHarvester"
@@ -87,7 +86,7 @@
       <_wixArgs>$(_wixArgs) -arch $(MsiArch)</_wixArgs>
 
       <_wixArgs>$(_wixArgs) -dMicrosoftEula="$(MicrosoftEulaFile)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dProductMoniker="$(TargetingPackBrandName)"</_wixArgs>
+      <_wixArgs>$(_wixArgs) -dProductMoniker="$(WixProductMoniker)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dFrameworkName="$(SharedFrameworkName)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dBuildVersion="$(MsiVersionString)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dNugetVersion="$(ProductVersion)"</_wixArgs>

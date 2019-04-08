@@ -9,7 +9,7 @@
 
   <!--
     Set up properties for installer file. These depend on properties defined in the project file.
-    (Unlike properties set up in packaging-tools.props.)
+    (Unlike properties set up in packaging-tools.props, which shouldn't.)
   -->
   <Target Name="GetInstallerProperties">
     <!-- Detect framework pack suffix and apply defaults. -->

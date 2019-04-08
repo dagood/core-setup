@@ -8,8 +8,10 @@
     <PlatformManifestTargetPath>$(BuildTargetPath)</PlatformManifestTargetPath>
     <FileVersionPropsTargetPath>$(BuildTargetPath)</FileVersionPropsTargetPath>
 
-    <GenerateSharedFramework>true</GenerateSharedFramework>
     <GenerateRuntimeGraph>true</GenerateRuntimeGraph>
+
+    <!-- NETCoreApp sfx is still built by old tooling. Switchover is pending validation. -->
+    <GenerateSharedFramework>false</GenerateSharedFramework>
   </PropertyGroup>
 
   <!-- Identity / Reference package content -->

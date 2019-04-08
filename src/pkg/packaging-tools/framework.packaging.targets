@@ -306,6 +306,8 @@
 
   <Target Name="GenerateSharedFramework"
           Condition="'$(GenerateSharedFramework)' == 'true'">
+    <!-- Delete layout directory and sfx NuGet cache to ensure freshness. -->
+    <RemoveDir Directories="$(SharedFrameworkLayoutDir);$(IntermediateOutputPath)sharedFx/" />
     <!--
       Build a csproj that lays out the shared framework using the SDK publish targets. Pass
       properties to make the csproj restore and publish specific to the current pkgproj.

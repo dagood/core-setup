@@ -306,11 +306,30 @@
 
   <Target Name="GenerateSharedFramework"
           Condition="'$(GenerateSharedFramework)' == 'true'">
+    <PropertyGroup>
+      <SharedFrameworkIntermediateOutputPath>$(IntermediateOutputPath)sharedFx/</SharedFrameworkIntermediateOutputPath>
+    </PropertyGroup>
+
     <!-- Delete layout directory and sfx NuGet cache to ensure freshness. -->
-    <RemoveDir Directories="$(SharedFrameworkLayoutDir);$(IntermediateOutputPath)sharedFx/" />
+    <RemoveDir Directories="$(SharedFrameworkLayoutDir);$(SharedFrameworkIntermediateOutputPath)" />
+
     <!--
       Build a csproj that lays out the shared framework using the SDK publish targets. Pass
       properties to make the csproj restore and publish specific to the current pkgproj.
+
+      Noteworthy inputs:
+        SharedFrameworkName:
+          Name of the shared framework, such as Microsoft.NETCore.App.
+        SharedFrameworkPkgprojFile:
+          Full path of the pkgproj that produces the framework package. The framework package
+          identity is extracted from here via an MSBuild task, to be restored.
+        SharedFrameworkLayoutDir:
+          Directory to lay out "<id>/<version>/<files>" of the shared fx.
+        IntermediateOutputPath:
+          Typical: directory for intermediates, custom to avoid clashing.
+        MSBuildProjectExtensionsPath:
+          Same as IntermediateOutputPath. Passed in as a workaround, because the SDK needs the value
+          in its props file before we have a chance to override in this project.
     -->
     <MSBuild
       Projects="$(MSBuildThisFileDirectory)sharedFramework/sharedFramework.csproj"
@@ -318,8 +337,8 @@
         SharedFrameworkName=$(MSBuildProjectName);
         SharedFrameworkPkgprojFile=$(MSBuildProjectFullPath);
         SharedFrameworkLayoutDir=$(SharedFrameworkLayoutDir);
-        IntermediateOutputPath=$(IntermediateOutputPath)sharedFx/;
-        MSBuildProjectExtensionsPath=$(IntermediateOutputPath)sharedFx/;
+        IntermediateOutputPath=$(SharedFrameworkIntermediateOutputPath);
+        MSBuildProjectExtensionsPath=$(SharedFrameworkIntermediateOutputPath);
         PackageRID=$(PackageRID);
         GenerateNetCoreAppRuntimeConfig=$(GenerateNetCoreAppRuntimeConfig);
         GenerateRuntimeGraph=$(GenerateRuntimeGraph)" />

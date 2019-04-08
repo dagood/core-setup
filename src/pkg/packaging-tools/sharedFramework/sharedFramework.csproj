@@ -1,19 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" InitialTargets="GetPackageReference" DefaultTargets="Restore;Publish">
   <!--
-    This project lays out a shared framework, using the SDK targets.
-
-    Inputs:
-      SharedFrameworkName:
-        Name of the shared framework, such as Microsoft.NETCore.App.
-      SharedFrameworkPkgprojFile:
-        Full path of the pkgproj that produces the framework package.
-      SharedFrameworkLayoutDir:
-        Directory to lay out "<id>/<version>/<files>" of the shared fx.
-      IntermediateOutputPath:
-        Typical: directory for intermediates, custom to avoid clashing.
-      MSBuildProjectExtensionsPath:
-        Same as IntermediateOutputPath. Passed in as a workaround, because the SDK needs the value
-        in its props file before we have a chance to override in this project.
+    This project lays out a shared framework using the SDK targets.
   -->
 
   <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />

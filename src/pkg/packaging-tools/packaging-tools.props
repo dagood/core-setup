@@ -36,7 +36,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SharedFrameworkLayoutDir>$(IntermediateOutputRootPath)sharedFxLayout/</SharedFrameworkLayoutDir>
+    <SharedFrameworkLayoutDir>$(InstallerSourceIntermediateOutputDir)sharedFxLayout/</SharedFrameworkLayoutDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsFrameworkPackage)' == 'true'">

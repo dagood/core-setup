@@ -25,6 +25,7 @@
   -->
   <Target Name="CreateDeb"
           DependsOnTargets="
+            GetInstallerProperties;
             InitializeDotnetDebTool;
             CreateInstallerLayout;
             GetDebInstallerJsonProperties"
@@ -75,6 +76,7 @@
   -->
   <Target Name="CreateRpm"
           DependsOnTargets="
+            GetInstallerProperties;
             CreateInstallerLayout;
             GetRpmInstallerJsonProperties"
           Condition="'$(FPMPresent)' == 'true'">
@@ -138,14 +140,17 @@
     Create MSI installer, using WiX tools.
   -->
   <Target Name="CreateMsi"
-          DependsOnTargets="RunLightLinker">
+          DependsOnTargets="
+            GetInstallerProperties;
+            RunLightLinker">
     <Message Text="Created '$(InstallerFile)'" Importance="High" />
   </Target>
 
   <!--
     Create macOS pkg installer.
   -->
-  <Target Name="CreatePkg">
+  <Target Name="CreatePkg"
+          DependsOnTargets="GetInstallerProperties">
     <PropertyGroup>
       <_pkgArgs></_pkgArgs>
       <_pkgArgs>$(_pkgArgs) --root $(PackLayoutDir)</_pkgArgs>

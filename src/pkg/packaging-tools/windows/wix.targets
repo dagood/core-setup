@@ -11,6 +11,7 @@
     bundles.
   -->
   <Target Name="GetUpgradeCode"
+          DependsOnTargets="GetInstallerProperties"
           Condition="'$(UpgradeCode)' == ''">
     <GenerateGuidFromName Name="$(InstallerFile)">
       <Output TaskParameter="GeneratedGuid" PropertyName="UpgradeCode" />
@@ -18,7 +19,7 @@
   </Target>
 
   <!-- Set up information to pass to WiX, depending on the type of installer being created. -->
-  <Target Name="GetWixBuildConfiguration">
+  <Target Name="GetWixBuildConfiguration" DependsOnTargets="GetInstallerProperties">
 
     <ItemGroup Condition="'$(FrameworkPackType)' == 'targeting'">
       <DirectoryToHarvest

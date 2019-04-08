@@ -102,13 +102,13 @@ jobs:
     - script: build.cmd -sharedfx-netcoreapp
         -- '$(CommonMSBuildArgs) 
         /bl:$(Build.SourcesDirectory)\sharedframework-netcoreapp.binlog'
-      displayName: Build .NET Core App sharedframework layout
+      displayName: Build sharedframework layout (legacy infrastructure)
       condition: succeeded()
 
     - script: build.cmd -sharedfx
         -- '$(CommonMSBuildArgs) 
         /bl:$(Build.SourcesDirectory)\sharedframework.binlog'
-      displayName: Build project-based sharedframework layouts
+      displayName: Build sharedframework layouts (new infrastructure)
       condition: succeeded()
 
     - ${{ if ne(parameters.skipTests, 'true') }}:

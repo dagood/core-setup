@@ -293,14 +293,6 @@
       <NuGetPushCommand>$(DotnetToolCommand) nuget push --source $(NuGetFeedUrl) --api-key $(NuGetApiKey) --timeout $(NuGetPushTimeoutSeconds)</NuGetPushCommand>
       <NuGetPushSymbolsCommand>$(DotnetToolCommand) nuget push --source $(NuGetSymbolsFeedUrl) --api-key $(NuGetApiKey) --timeout $(NuGetPushTimeoutSeconds)</NuGetPushSymbolsCommand>
     </PropertyGroup>
-
-    <ExecWithRetriesForNuGetPush Command="$(NuGetPushCommand) %(_DownloadedStandardPackages.Identity)"
-                                 IgnoredErrorMessagesWithConditional="@(IgnorableErrorMessages)" />
-
-    <Message Condition="'@(_DownloadedSymbolsPackages)' != ''" Text="Pushing CoreHost symbols packages to $(NuGetSymbolsFeedUrl)" />
-    <ExecWithRetriesForNuGetPush Condition="'@(_DownloadedSymbolsPackages)' != ''"
-                                 Command="$(NuGetPushSymbolsCommand) %(_DownloadedSymbolsPackages.Identity)"
-                                 IgnoredErrorMessagesWithConditional="@(IgnorableErrorMessages)" />
   </Target>
 
   <Target Name="DoPushCoreHostPackagesToAzure"
@@ -319,17 +311,6 @@
       <ItemsToPush Include="@(_DownloadedStandardPackages)"/>
       <ItemsToPush Include="@(_DownloadedSymbolsPackages)"/>
     </ItemGroup>
-    <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
-                    AccountKey="$(TransportFeedAccessToken)"
-                    ItemsToPush="@(ItemsToPush)"
-                    Overwrite="$(OverwriteOnPublish)" 
-                    ManifestBuildData="Location=$(ExpectedFeedUrl)"
-                    ManifestRepoUri="$(BUILD_REPOSITORY_URI)"
-                    ManifestBranch="$(BUILD_SOURCEBRANCH)"
-                    ManifestBuildId="$(BUILD_BUILDNUMBER)"
-                    ManifestCommit="$(BUILD_SOURCEVERSION)" 
-                    AssetManifestPath="$(AssetManifestFilePath)"
-                    />
   </Target>
   
   <Target Name="PublishFilesToAzureBlobFeed">
@@ -347,18 +328,6 @@
         <RelativeBlobPath>assets/core-setup/$(InstallersRelativePath)%(Filename)%(Extension)</RelativeBlobPath>
     </ItemsToPush>
   </ItemGroup>
-  <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
-                  AccountKey="$(TransportFeedAccessToken)"
-                  ItemsToPush="@(ItemsToPush)"
-                  PublishFlatContainer="true"
-                  Overwrite="$(OverwriteOnPublish)" 
-                  ManifestBuildData="Location=$(ExpectedFeedUrl)"
-                  ManifestRepoUri="$(BUILD_REPOSITORY_URI)"
-                  ManifestBranch="$(BUILD_SOURCEBRANCH)"
-                  ManifestBuildId="$(BUILD_BUILDNUMBER)"
-                  ManifestCommit="$(BUILD_SOURCEVERSION)" 
-                  AssetManifestPath="$(AssetManifestFilePath)"
-                  />
 </Target>
 
   <Import Project="$(ToolsDir)VersionTools.targets" Condition="Exists('$(ToolsDir)VersionTools.targets')" />

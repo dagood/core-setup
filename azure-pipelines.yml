@@ -30,16 +30,9 @@ variables:
   # Set variables only for Official build from internal
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
-      value: real
+      value: test
   # Variable groups
-    - group: DotNet-Blob-Feed
     - group: DotNet-Symbol-Server-Pats
-    # Used for publishing individual leg assets to azure blobstorage
-    - group: DotNet-DotNetCli-Storage
-    # Used for publishing to myget
-    - group: DotNet-MyGet-Publish
-    # Used for dotnet/versions update
-    - group: DotNet-Versions-Publish
 
     # BlobFeed update
     - name: _PublishBlobFeedUrl
@@ -49,36 +42,27 @@ variables:
         /p:SymbolPackagesUrl=$(_PublishBlobFeedUrl)
         /p:TransportFeedAccessToken=$(dotnetfeed-storage-access-key-1)
 
-    - name: _DotNetVersionsArgs
-      value: >-
-        /p:GitHubUser=dotnet-build-bot
-        /p:GitHubEmail=dotnet-build-bot@microsoft.com
-        /p:GitHubAuthToken=$(AccessToken-dotnet-build-bot-public-repo)
-        /p:VersionsRepoOwner=dotnet
-        /p:VersionsRepo=versions
-        /p:VersionsRepoPath=build-info/dotnet/core-setup/$(FullBranchName)
-
     # Symbol Server update
     - name: _SymbolServerArgs
       value: >-
         /p:MicrosoftSymbolServerPat=$(microsoft-symbol-server-pat)
         /p:SymwebSymbolServerPat=$(symweb-symbol-server-pat)
-
     # ******** Official values *****
     - name: _CommonPublishArgs
-      value: /p:AzureAccountName=dotnetcli
-        /p:ContainerName=dotnet
-        /p:AzureAccessToken=$(dotnetcli-storage-key)
-        /p:ChecksumAzureAccountName=dotnetclichecksums
-        /p:ChecksumContainerName=dotnet
-        /p:ChecksumAzureAccessToken=$(dotnetclichecksums-storage-key)
+      value: >-
+        /p:AzureAccountName=$(AzureAccountName2)
+        /p:ContainerName=$(ContainerName2)
+        /p:AzureAccessToken=$(AzureAccessToken)
+        /p:ChecksumAzureAccountName=$(ChecksumAzureAccountName2)
+        /p:ChecksumContainerName=$(ChecksumContainerName2)
+        /p:ChecksumAzureAccessToken=$(ChecksumAzureAccessToken)
     # Used for publishing to dotnet myget account
     - name: MyGetApiKey
-      value: $(dotnet-myget-org-api-key)
+      value: $(NUGET_API_KEY)
     - name: MyGetFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/api/v2/package
+      value: https://www.myget.org/F/raksinghranchi/api/v2
     - name: MyGetSymbolsFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/symbols/api/v2/package
+      value: https://www.myget.org/F/raksinghranchi/symbols/api/v2/package
     - name: _NugetFeedArgs
       value: /p:NuGetFeedUrl=$(MyGetFeedUrl)
         /p:NuGetSymbolsFeedUrl=$(MyGetSymbolsFeedUrl)
@@ -227,13 +211,3 @@ jobs:
       - Build_Windows_x86
       _PublishType: nopublishtype
 
-  ################################################################################
-  # Publish to B.A.R
-  ################################################################################
-  - template: /eng/common/templates/job/publish-build-assets.yml
-    parameters:
-      pool:
-        name: NetCoreInternal-Int-Pool
-        queue: buildpool.windows.10.amd64.vs2017
-      dependsOn:
-        - Finalize_Publish

@@ -309,6 +309,15 @@
       <SharedFrameworkTokenValue Include="%RUNTIME_DEPS_REVISION%">
         <ReplacementString>$(RuntimeDepsDebPackageRelease)</ReplacementString>
       </SharedFrameworkTokenValue>
+
+      <!--
+        In every runtime deps Deb package, include all known libicu versions as alternatives. Also
+        include bare 'libicu' in case a new distro/release starts to provide that.
+      -->
+      <KnownLibIcuVersion Include="63;60;57;55;52" />
+      <SharedFrameworkTokenValue
+        Include="%LIBICU_DEPENDENCY_LIST%"
+        ReplacementString="libicu | @(KnownLibIcuVersion -> 'libicu%(Identity)', ' | ')" />
     </ItemGroup>
 
     <ReplaceFileContents InputFile="$(ConfigJsonFile)"

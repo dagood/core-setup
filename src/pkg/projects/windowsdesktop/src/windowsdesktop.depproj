@@ -2,18 +2,122 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
 
+  <UsingTask TaskName="JoinItems" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.Private.WindowsDesktop.App" Version="$(MicrosoftPrivateWindowsDesktopAppPackageVersion)" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="$(MicrosoftWindowsCompatibilityPackageVersion)" />
+    <PackageReference Include="System.Resources.Extensions" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Windows.Extensions" Version="$(SystemWindowsExtensionsPackageVersion)" />
+
+    <PackageReference Include="$(MicrosoftDotNetWpfDncEngPackage)" Version="$(MicrosoftDotNetWpfDncEngPackageVersion)" />
+    <PackageReference Include="$(MicrosoftDotNetWpfGitHubPackage)" Version="$(MicrosoftDotNetWpfGitHubPackageVersion)" />
+    <PackageReference Include="Microsoft.Private.Winforms" Version="$(MicrosoftPrivateWinformsPackageVersion)" />
   </ItemGroup>
 
-  <Target Name="GetDependencyVersionFiles" DependsOnTargets="ResolveNuGetPackages">
+  <ItemGroup>
+    <RedistPackageReference Include="@(PackageReference)" Redist="true" />
+    <RedistPackageReference
+      Include="@(RedistPackageReference -> 'runtime.$(NuGetRuntimeIdentifier).%(Identity)')"
+      Condition="'$(NuGetRuntimeIdentifier)' != ''" />
+  </ItemGroup>
+
+  <!--
+    Redistribute assemblies from the compat pack.
+  -->
+  <ItemGroup>
+    <ReferenceRedist Include="Microsoft.Win32.Registry" />
+    <ReferenceRedist Include="Microsoft.Win32.SystemEvents" />
+    <ReferenceRedist Include="System.CodeDom" />
+    <ReferenceRedist Include="System.Configuration.ConfigurationManager" />
+    <ReferenceRedist Include="System.Drawing.Common" />
+    <ReferenceRedist Include="System.IO.Packaging" />
+    <ReferenceRedist Include="System.Resources.Extensions" />
+    <ReferenceRedist Include="System.Security.AccessControl" />
+    <ReferenceRedist Include="System.Security.Cryptography.Cng" />
+    <ReferenceRedist Include="System.Security.Cryptography.Pkcs" />
+    <ReferenceRedist Include="System.Security.Cryptography.ProtectedData" />
+    <ReferenceRedist Include="System.Security.Cryptography.Xml" />
+    <ReferenceRedist Include="System.Security.Permissions" />
+    <ReferenceRedist Include="System.Security.Principal.Windows" />
+    <ReferenceRedist Include="System.Windows.Extensions" />
+
+    <RuntimeRedist Include="System.Diagnostics.EventLog" />
+    <RuntimeRedist Include="System.DirectoryServices" />
+    <RuntimeRedist Include="System.IO.FileSystem.AccessControl" />
+    <RuntimeRedist Include="System.Threading.AccessControl" />
+  </ItemGroup>
+
+  <!-- Pick up unconventional WPF package natives in lib\<rid>. -->
+  <Target Name="GetLibNativeFilePackagePaths"
+          Condition="'$(NuGetRuntimeIdentifier)' != ''">
     <ItemGroup>
-      <DependencyVersionFile
-        Include="$(PackagesDir)$([System.String]::new('%(Reference.NuGetPackageId)').ToLowerInvariant())/%(Reference.NuGetPackageVersion)/version.txt"
-        Condition="$([System.String]::new('%(Reference.Identity)').ToLowerInvariant().Contains('system.xaml.dll'))"
-        Name="dotnet-trusted" />
+      <_lowercasePackageId
+        Include="$([System.String]::new('%(RedistPackageReference.Identity)').ToLowerInvariant())"
+        NuGetPackageId="%(RedistPackageReference.Identity)"
+        Version="%(RedistPackageReference.Version)" />
+
+      <_packageNativeDir Include="@(_lowercasePackageId -> '$(PackagesDir)%(Identity)/%(Version)/lib/$(NuGetRuntimeIdentifier)/')" />
+
+      <ReferenceCopyLocalPaths
+        Include="%(_packageNativeDir.Identity)**/*.*"
+        IsNative="true"
+        NuGetPackageId="%(_packageNativeDir.NuGetPackageId)" />
     </ItemGroup>
   </Target>
+
+  <!--
+    Microsoft.Windows.Compatibility brings in many packages via dependencies. We only want to redist
+    some of those files. If a file comes from a package not marked for redistribution, only include
+    it if the filename is explicitly included.
+  -->
+  <Target Name="FilterCompatPackFiles"
+          BeforeTargets="GetFilesFromPackages"
+          DependsOnTargets="GetLibNativeFilePackagePaths">
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
+      <_resolvedPackageFile Include="@(ReferenceCopyLocalPaths)" />
+      <_redistFilename Include="@(RuntimeRedist)" Redist="true" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' == ''">
+      <_resolvedPackageFile Include="@(Reference)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_redistFilename Include="@(ReferenceRedist)" Redist="true" />
+    </ItemGroup>
+
+    <JoinItems
+      Left="@(_resolvedPackageFile)" LeftItemSpec="Identity" LeftKey="NuGetPackageId" LeftMetadata="*"
+      Right="@(RedistPackageReference)" RightMetadata="Redist">
+      <Output TaskParameter="JoinResult" ItemName="_packageFileToRedist" />
+    </JoinItems>
+
+    <JoinItems
+      Left="@(_resolvedPackageFile)" LeftItemSpec="Identity" LeftKey="Filename" LeftMetadata="*"
+      Right="@(_redistFilename)" RightMetadata="Redist">
+      <Output TaskParameter="JoinResult" ItemName="_packageFileToRedist" />
+    </JoinItems>
+
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+      <ReferenceCopyLocalPaths
+        Include="@(_packageFileToRedist)"
+        Condition="'%(_packageFileToRedist.Redist)' == 'true'" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' == ''">
+      <Reference Remove="@(Reference)" />
+      <Reference
+        Include="@(_packageFileToRedist)"
+        Condition="'%(_packageFileToRedist.Redist)' == 'true'" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Version.txt files aren't provided by some packages, but they aren't necessary anymore.
+    Dependency information is in Version.Details.xml and BAR. Stub target.
+  -->
+  <Target Name="GetDependencyVersionFiles" />
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

@@ -11,12 +11,19 @@
     <MicrosoftPrivateCoreFxNETCoreAppPackageVersion>4.6.0-preview6.19226.3</MicrosoftPrivateCoreFxNETCoreAppPackageVersion>
     <MicrosoftNETCorePlatformsPackageVersion>3.0.0-preview6.19226.3</MicrosoftNETCorePlatformsPackageVersion>
     <MicrosoftNETCoreTargetsPackageVersion>2.0.0</MicrosoftNETCoreTargetsPackageVersion>
+    <MicrosoftWindowsCompatibilityPackageVersion>3.0.0-preview6.19225.8</MicrosoftWindowsCompatibilityPackageVersion>
+    <SystemResourcesExtensionsPackageVersion>4.6.0-preview6.19225.8</SystemResourcesExtensionsPackageVersion>
+    <SystemWindowsExtensionsPackageVersion>4.6.0-preview6.19225.8</SystemWindowsExtensionsPackageVersion>
     <!-- standard -->
     <NETStandardLibraryPackageVersion>2.1.0-prerelease.19226.1</NETStandardLibraryPackageVersion>
     <!-- coreclr -->
     <MicrosoftNETCoreRuntimeCoreCLRPackageVersion>3.0.0-preview6-27624-71</MicrosoftNETCoreRuntimeCoreCLRPackageVersion>
-    <!-- dotnet-trusted -->
-    <MicrosoftPrivateWindowsDesktopAppPackageVersion>3.0.0-preview6-27626-22</MicrosoftPrivateWindowsDesktopAppPackageVersion>
+    <!-- winforms -->
+    <MicrosoftPrivateWinformsPackageVersion>4.8.0-preview6.19224.11</MicrosoftPrivateWinformsPackageVersion>
+    <!-- wpf -->
+    <MicrosoftDotNetWpfGitHubPackageVersion>4.8.0-preview6.19225.2</MicrosoftDotNetWpfGitHubPackageVersion>
+    <!-- wpf-int -->
+    <MicrosoftDotNetWpfDncEngPackageVersion>4.8.0-preview6.19225.5</MicrosoftDotNetWpfDncEngPackageVersion>
     <!-- Not auto-updated. -->
     <MicrosoftBclJsonSourcesPackageVersion>4.6.0-preview.19072.2</MicrosoftBclJsonSourcesPackageVersion>
   </PropertyGroup>
@@ -27,6 +34,8 @@
     <MicrosoftNETCoreTargetsPackage>Microsoft.NETCore.Targets</MicrosoftNETCoreTargetsPackage>
     <NETStandardLibraryPackage>NETStandard.Library</NETStandardLibraryPackage>
     <MicrosoftNETCoreRuntimeCoreCLRPackage>Microsoft.NETCore.Runtime.CoreCLR</MicrosoftNETCoreRuntimeCoreCLRPackage>
+    <MicrosoftDotNetWpfGitHubPackage>Microsoft.DotNet.Wpf.GitHub</MicrosoftDotNetWpfGitHubPackage>
+    <MicrosoftDotNetWpfDncEngPackage>Microsoft.DotNet.Wpf.DncEng</MicrosoftDotNetWpfDncEngPackage>
     <MicrosoftBclJsonSourcesPackage>Microsoft.Bcl.Json.Sources</MicrosoftBclJsonSourcesPackage>
   </PropertyGroup>
 </Project>

@@ -5,13 +5,51 @@
   <UsingTask TaskName="JoinItems" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="$(MicrosoftWindowsCompatibilityPackageVersion)" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.Win32.Registry.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.CodeDom" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Data.Odbc" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0-preview6.19225.8" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.DirectoryServices" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Drawing.Common" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.IO.Packaging" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="4.5.1" />
+    <PackageReference Include="System.IO.Ports" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Management" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Runtime.Caching" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Permissions" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.5.3" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.5.3" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.5.3" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.5.3" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.5.3" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Threading.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+
     <PackageReference Include="System.Resources.Extensions" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Windows.Extensions" Version="$(SystemWindowsExtensionsPackageVersion)" />
 
     <PackageReference Include="$(MicrosoftDotNetWpfDncEngPackage)" Version="$(MicrosoftDotNetWpfDncEngPackageVersion)" />
     <PackageReference Include="$(MicrosoftDotNetWpfGitHubPackage)" Version="$(MicrosoftDotNetWpfGitHubPackageVersion)" />
     <PackageReference Include="Microsoft.Private.Winforms" Version="$(MicrosoftPrivateWinformsPackageVersion)" />
+    <!-- TODO: Use package references without the list of files below, Exclude=Compile for runtimes maybe, don't use Compatibility transitive graph? -->
   </ItemGroup>
 
   <ItemGroup>

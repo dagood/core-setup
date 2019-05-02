@@ -30,17 +30,18 @@
     <RuntimeOnlyPackageReference Include="System.Diagnostics.EventLog" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <RuntimeOnlyPackageReference Include="System.DirectoryServices" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <RuntimeOnlyPackageReference Include="System.IO.FileSystem.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <RuntimeOnlyPackageReference Include="System.Threading.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
 
     <PackageReference Include="@(RuntimeOnlyPackageReference)" ExcludeAssets="Compile" />
   </ItemGroup>
 
-  <!-- Pick up unconventional WPF package natives in lib\<rid>. -->
+  <!-- Pick up unconventional WPF runtime package natives in lib\<rid>. -->
   <Target Name="GetLibNativeFilePackagePaths"
           BeforeTargets="GetFilesFromPackages"
           Condition="'$(NuGetRuntimeIdentifier)' != ''">
     <ItemGroup>
       <_lowercasePackageId
-        Include="$([System.String]::new('%(PackageReference.Identity)').ToLowerInvariant())"
+        Include="$([System.String]::new('runtime.$(NuGetRuntimeIdentifier).%(PackageReference.Identity)').ToLowerInvariant())"
         NuGetPackageId="%(PackageReference.Identity)"
         Version="%(PackageReference.Version)" />
 

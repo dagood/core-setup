@@ -5,33 +5,33 @@
   <UsingTask TaskName="JoinItems" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
 
   <ItemGroup>
+    <PackageReference Include="$(MicrosoftDotNetWpfDncEngPackage)" Version="$(MicrosoftDotNetWpfDncEngPackageVersion)" />
+    <PackageReference Include="$(MicrosoftDotNetWpfGitHubPackage)" Version="$(MicrosoftDotNetWpfGitHubPackageVersion)" />
+    <PackageReference Include="Microsoft.Private.Winforms" Version="$(MicrosoftPrivateWinformsPackageVersion)" />
+
     <PackageReference Include="Microsoft.Win32.Registry" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="Microsoft.Win32.SystemEvents" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.CodeDom" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Drawing.Common" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.IO.Packaging" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Resources.Extensions" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Cryptography.Cng" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Permissions" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Security.Principal.Windows" Version="$(SystemResourcesExtensionsPackageVersion)" />
-    <PackageReference Include="System.Threading.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
-
-    <RuntimePackageReference Include="System.Diagnostics.EventLog" Version="$(SystemResourcesExtensionsPackageVersion)" />
-    <RuntimePackageReference Include="System.DirectoryServices" Version="$(SystemResourcesExtensionsPackageVersion)" />
-    <RuntimePackageReference Include="System.IO.FileSystem.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
-    <RuntimePackageReference Include="System.Security.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
-
-    <PackageReference Include="@(RuntimePackageReference)" ExcludeAssets="Compile" />
-
-    <PackageReference Include="System.Resources.Extensions" Version="$(SystemResourcesExtensionsPackageVersion)" />
     <PackageReference Include="System.Windows.Extensions" Version="$(SystemWindowsExtensionsPackageVersion)" />
+  </ItemGroup>
 
-    <PackageReference Include="$(MicrosoftDotNetWpfDncEngPackage)" Version="$(MicrosoftDotNetWpfDncEngPackageVersion)" />
-    <PackageReference Include="$(MicrosoftDotNetWpfGitHubPackage)" Version="$(MicrosoftDotNetWpfGitHubPackageVersion)" />
-    <PackageReference Include="Microsoft.Private.Winforms" Version="$(MicrosoftPrivateWinformsPackageVersion)" />
+  <ItemGroup>
+    <RuntimeOnlyPackageReference Include="System.Diagnostics.EventLog" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <RuntimeOnlyPackageReference Include="System.DirectoryServices" Version="$(SystemResourcesExtensionsPackageVersion)" />
+    <RuntimeOnlyPackageReference Include="System.IO.FileSystem.AccessControl" Version="$(SystemResourcesExtensionsPackageVersion)" />
+
+    <PackageReference Include="@(RuntimeOnlyPackageReference)" ExcludeAssets="Compile" />
   </ItemGroup>
 
   <!-- Pick up unconventional WPF package natives in lib\<rid>. -->

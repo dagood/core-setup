@@ -60,13 +60,28 @@
       <_ToolsToPackage Include="$(_runtimePackageDir)tools/**/*.*"/>
       <FilesToPackage Include="@(_ToolsToPackage)">
         <NuGetPackageId>$(_runtimePackageId)</NuGetPackageId>
-        <TargetPath>tools/%(RecursiveDir)</TargetPath>
+        <TargetPath>$([System.String]::new('tools/%(RecursiveDir)').TrimEnd('/'))</TargetPath>
         <IsNative>true</IsNative>
       </FilesToPackage>
       <FilesToPackage Condition="'$(_crossDir)' != ''" Include="$(_jitPackageDir)runtimes$(_crossDir)/native/*.*">
         <TargetPath>runtimes$(_crossDir)/native</TargetPath>
         <IsNative>true</IsNative>
       </FilesToPackage>
+    </ItemGroup>
+  </Target>
+
+  <!--
+    If a createdump binary is provided by CoreCLR, move it to the tools dir. It is in the transport
+    package as 'runtime/<rid>/native/createdump' and would otherwise be included by publish.
+  -->
+  <Target Name="MoveCreatedumpToToolsDir"
+          BeforeTargets="GetRuntimeFilesToPackage"
+          DependsOnTargets="GetCorePackagePaths">
+    <ItemGroup>
+      <FilesToPackage
+        Condition="'%(Filename)%(Extension)' == 'createdump'"
+        TargetPath="tools"
+        IsNative="true" />
     </ItemGroup>
   </Target>
 

@@ -77,6 +77,14 @@
       <BuildDebPackage>false</BuildDebPackage>
       <BuildRpmPackage>false</BuildRpmPackage>
     </PropertyGroup>
+
+    <!-- Get the ID of the current framework pack, for use when determining install destination. -->
+    <PropertyGroup>
+      <FrameworkPackNuGetId>$(Id)</FrameworkPackNuGetId>
+      <FrameworkPackNuGetId Condition="'$(BuildRidSpecificPacks)' == 'true'">$(FrameworkPackNuGetId).$(PackageTargetRid)</FrameworkPackNuGetId>
+
+      <FrameworkPackContentSubdir>packs/$(FrameworkPackNuGetId)/$(ProductVersion)</FrameworkPackContentSubdir>
+    </PropertyGroup>
   </Target>
 
   <!--

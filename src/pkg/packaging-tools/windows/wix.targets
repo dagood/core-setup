@@ -27,7 +27,7 @@
         Name="install-files"
         SubstituteVar="PackSrc"
         ComponentGroupName="InstallFiles"
-        DirectoryRef="DOTNETHOME" />
+        DirectoryRef="FRAMEWORKPACKCONTENT" />
 
       <WixSrcFile Include="$(MSBuildThisFileDirectory)pack/product.wxs" />
     </ItemGroup>
@@ -103,6 +103,7 @@
       <_wixArgs>$(_wixArgs) -dProductMoniker="$(WixProductMoniker)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dFrameworkName="$(SharedFrameworkName)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dBuildVersion="$(MsiVersionString)"</_wixArgs>
+      <_wixArgs>$(_wixArgs) -dNugetId="$(FrameworkPackNuGetId)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dNugetVersion="$(ProductVersion)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dTargetArchitecture="$(TargetArchitecture)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dUpgradeCode="$(UpgradeCode)"</_wixArgs>

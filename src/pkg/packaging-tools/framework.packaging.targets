@@ -176,7 +176,7 @@
       <_pkgArgs>$(_pkgArgs) --root $(PackLayoutDir)</_pkgArgs>
       <_pkgArgs>$(_pkgArgs) --identifier $(MacOSComponentName)</_pkgArgs>
       <_pkgArgs>$(_pkgArgs) --version $(ProductVersion)</_pkgArgs>
-      <_pkgArgs>$(_pkgArgs) --install-location $(MacOSSharedInstallDir)</_pkgArgs>
+      <_pkgArgs>$(_pkgArgs) --install-location $(MacOSSharedInstallDir)/$(FrameworkPackContentSubdir)</_pkgArgs>
       <_pkgArgs>$(_pkgArgs) $(InstallerFile)</_pkgArgs>
     </PropertyGroup>
 
@@ -220,7 +220,7 @@
 
     <Copy
       SourceFiles="@(LayoutFiles)"
-      DestinationFiles="@(LayoutFiles->'$(LayoutPackageRoot)/%(RecursiveDir)%(Filename)%(Extension)')" />
+      DestinationFiles="@(LayoutFiles->'$(LayoutPackageRoot)/$(FrameworkPackContentSubdir)/%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="FixLayoutPermissions"
@@ -321,7 +321,7 @@
 
     <ZipFileExtractToDirectory
       SourceArchive="$(FrameworkPackNupkgFile)"
-      DestinationDirectory="$(PackLayoutDir)packs/$(Id)/$(Version)/"
+      DestinationDirectory="$(PackLayoutDir)/"
       OverwriteDestination="true"
       Include="@(FrameworkPackDataEntries)" />
   </Target>

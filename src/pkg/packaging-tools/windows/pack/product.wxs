@@ -21,7 +21,13 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.Program_Files)">
-        <Directory Id="DOTNETHOME" Name="dotnet"/>
+        <Directory Id="DOTNETHOME" Name="dotnet">
+          <Directory Id="FrameworkPackDir" Name="packs">
+            <Directory Id="FrameworkPackIdDir" Name="$(var.NugetId)">
+              <Directory Id="FRAMEWORKPACKCONTENT" Name="$(var.NugetVersion)" />
+            </Directory>
+          </Directory>
+        </Directory>
       </Directory>
     </Directory>
   </Fragment>

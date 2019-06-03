@@ -23,6 +23,11 @@
       <WixProductMoniker>$(AppHostPackBrandName)</WixProductMoniker>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(FrameworkPackType)' == 'runtime'">
+      <InstallerName>$(ShortFrameworkName)-runtime-pack</InstallerName>
+      <WixProductMoniker>$(RuntimePackBrandName)</WixProductMoniker>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(GenerateSharedFramework)' == 'true'">
       <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
       <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>

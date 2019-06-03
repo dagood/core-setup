@@ -77,20 +77,5 @@
     </ItemGroup>
   </Target>
 
-  <!--
-    If a createdump binary is provided by CoreCLR, move it to the tools dir. It is in the transport
-    package as 'runtime/<rid>/native/createdump' and would otherwise be included by publish.
-  -->
-  <Target Name="MoveCreatedumpToToolsDir"
-          BeforeTargets="GetRuntimeFilesToPackage"
-          DependsOnTargets="GetCorePackagePaths">
-    <ItemGroup>
-      <FilesToPackage
-        Condition="'%(Filename)%(Extension)' == 'createdump'"
-        TargetPath="tools"
-        IsNative="true" />
-    </ItemGroup>
-  </Target>
-
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

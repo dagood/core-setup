@@ -7,13 +7,14 @@
   <!-- Detect framework pack suffix and apply defaults. -->
   <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Ref'))">
     <FrameworkPackType>targeting</FrameworkPackType>
-    <IncludePlatformManifest>true</IncludePlatformManifest>
+
+    <!-- Include the platform manifest in the data dir. -->
+    <PlatformManifestTargetPath>data/PlatformManifest.txt</PlatformManifestTargetPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Runtime'))">
     <FrameworkPackType>runtime</FrameworkPackType>
     <BuildRidSpecificPacks>true</BuildRidSpecificPacks>
-    <IncludePlatformManifest>true</IncludePlatformManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Host'))">
@@ -54,9 +55,6 @@
 
     <!-- Include a list of framework files in the data dir. -->
     <FrameworkListTargetPath>data/</FrameworkListTargetPath>
-
-    <!-- Include the platform manifest in the data dir. -->
-    <PlatformManifestTargetPath Condition="'$(IncludePlatformManifest)' == 'true'">data/PlatformManifest.txt</PlatformManifestTargetPath>
   </PropertyGroup>
 
   <PropertyGroup>

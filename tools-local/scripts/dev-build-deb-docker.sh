@@ -68,7 +68,7 @@ package() {
         src/pkg/packaging/dir.proj \
         /p:UsePrebuiltPortableBinariesForInstallers=true \
         /p:SharedFrameworkPublishDir=/work/bin/obj/linux-x64.Release/sharedFrameworkPublish/ \
-        /p:InstallerSourceOSPlatformConfig=linux-x64.Release \
+        /p:InstallerSourceOSPlatform=linux-x64 \
         /p:GenerateProjectInstallers=true \
         /p:ConfigurationGroup=Release \
         /p:OSGroup=Linux \

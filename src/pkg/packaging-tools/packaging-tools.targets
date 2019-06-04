@@ -80,8 +80,15 @@
 
     <!-- Get the ID of the current framework pack, for use when determining install destination. -->
     <PropertyGroup>
+      <!--
+        Normally, use PackageTargetRid. During official builds, use the RID from the portable build
+        that is being packaged.
+      -->
+      <FrameworkPackRid>$(PackageTargetRid)</FrameworkPackRid>
+      <FrameworkPackRid Condition="'$(InstallerSourceOSPlatform)' != ''">$(InstallerSourceOSPlatform)</FrameworkPackRid>
+
       <FrameworkPackNuGetId>$(Id)</FrameworkPackNuGetId>
-      <FrameworkPackNuGetId Condition="'$(BuildRidSpecificPacks)' == 'true'">$(FrameworkPackNuGetId).$(PackageTargetRid)</FrameworkPackNuGetId>
+      <FrameworkPackNuGetId Condition="'$(BuildRidSpecificPacks)' == 'true'">$(FrameworkPackNuGetId).$(FrameworkPackRid)</FrameworkPackNuGetId>
 
       <FrameworkPackContentSubdir>packs/$(FrameworkPackNuGetId)/$(ProductVersion)</FrameworkPackContentSubdir>
     </PropertyGroup>

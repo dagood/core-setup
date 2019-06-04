@@ -81,7 +81,7 @@
       for multiple Debian-based distros.
     -->
     <InstallerSourceOSPlatformConfig>$(OSPlatformConfig)</InstallerSourceOSPlatformConfig>
-    <InstallerSourceOSPlatformConfig Condition="'$(InstallerSourceOSPlatform)' == ''">$(InstallerSourceOSPlatform).$(ConfigurationGroup)</InstallerSourceOSPlatformConfig>
+    <InstallerSourceOSPlatformConfig Condition="'$(InstallerSourceOSPlatform)' != ''">$(InstallerSourceOSPlatform).$(ConfigurationGroup)</InstallerSourceOSPlatformConfig>
     
   </PropertyGroup>
 

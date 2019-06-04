@@ -78,7 +78,6 @@ jobs:
       PackagePortableBitsArgs: >-
         /p:SharedFrameworkPublishDir=/root/sharedFrameworkPublish/
         /p:InstallerSourceOSPlatform=linux-x64
-        /p:InstallerSourceOSPlatformConfig=linux-x64.$(_BuildConfig)
 
       MSBuildScript: /root/coresetup/Tools/msbuild.sh
       DockerRunMSBuild: >-

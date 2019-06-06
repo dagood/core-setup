@@ -1,6 +1,14 @@
 <Project>
+  <PropertyGroup>
+    <RestoreSources Condition="'$(DotNetBuildOffline)' != 'true'">
+      https://dotnet.myget.org/F/dotnet-buildtools/api/v3/index.json;
+      https://dotnet.myget.org/F/sourcelink/api/v3/index.json;
+      $(OverridePackageSource);
+      $(RestoreSources)
+    </RestoreSources>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.BuildTools" Version="$(BuildToolsPackageVersion)" />
     <PackageReference Include="$(FeedTasksPackage)" Version="$(FeedTasksPackageVersion)" />
     <PackageReference Include="$(PublishSymbolsPackage)" Version="$(PublishSymbolsPackageVersion)" />
   </ItemGroup>

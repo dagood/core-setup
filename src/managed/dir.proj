@@ -5,18 +5,14 @@
 
   <Target Name="Build"
           DependsOnTargets="GetLatestCommitHash">
-    <MakeDir Condition="!Exists('$(pOutDir)')" Directories="$(pOutDir)" />
-
     <ItemGroup>
       <PackageProjects Include="$(MSBuildThisFileDirectory)Microsoft.DotNet.PlatformAbstractions/Microsoft.DotNet.PlatformAbstractions.csproj" />
       <PackageProjects Include="$(MSBuildThisFileDirectory)Microsoft.Extensions.DependencyModel/Microsoft.Extensions.DependencyModel.csproj" />
       <PackageProjects Include="$(MSBuildThisFileDirectory)Microsoft.NET.HostModel/Microsoft.NET.HostModel.csproj" />
     </ItemGroup>
 
-    <PropertyGroup>
-      <BuildArgs>$(NoRestoreArg) $(MSBuildPassThroughPropertyList) /p:BaseOutputPath=$(IntermediateOutputForPackaging)</BuildArgs>
-    </PropertyGroup>
-
-    <Exec Command="$(DotNetTool) build $(BuildArgs) %(PackageProjects.Identity)" />
+    <MSBuild
+      Projects="@(PackageProjects)"
+      Properties="BaseOutputPath=$(IntermediateOutputForPackaging)" />
   </Target>
 </Project>

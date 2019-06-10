@@ -1,5 +1,5 @@
 <Project>
-  <UsingTask TaskName="GenerateDebRepoUploadJsonFile" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
+  <UsingTask TaskName="GenerateDebRepoUploadJsonFile" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="GenerateChecksums" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
 
   <Target Name="GatherPublishToAzureBinaries">

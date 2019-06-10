@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildThisFileDirectory)Directory.Build.props" />
   <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll" />
   <UsingTask TaskName="ListAzureBlobs" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll" />
-  <UsingTask TaskName="ValidateBinInspectResults" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
+  <UsingTask TaskName="ValidateBinInspectResults" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <Target Name="Validate" DependsOnTargets="BinInspectBinaries;ValidateBinInspectResults" />
 

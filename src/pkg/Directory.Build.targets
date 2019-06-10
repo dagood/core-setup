@@ -8,9 +8,6 @@
   <UsingTask TaskName="DownloadFilesFromUrl" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
   <UsingTask TaskName="ZipFileExtractToDirectory" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
 
-  <UsingTask TaskName="GenerateGuidFromName" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
-  <UsingTask TaskName="GenerateMsiVersion" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
-
   <!-- Create deb tool package and set up the project that consumes it as a CLI tool. -->
   <Target Name="InitializeDotnetDebTool">
     <!--

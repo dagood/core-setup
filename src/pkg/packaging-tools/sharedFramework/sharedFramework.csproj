@@ -3,7 +3,7 @@
     This project lays out a shared framework using the SDK targets.
   -->
 
-  <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
+  <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <PropertyGroup>
     <TargetFramework>$(NETCoreAppFramework)</TargetFramework>

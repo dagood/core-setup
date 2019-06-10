@@ -69,7 +69,7 @@
     <RemoveDir Directories="$(BinDir)" />
   </Target>
 
-  <UsingTask TaskName="RegenerateReadmeTable" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
+  <UsingTask TaskName="RegenerateReadmeTable" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <Target Name="RegenerateReadmeTable">
     <!--

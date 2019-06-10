@@ -3,8 +3,8 @@
     Shared targets specific to projects building 'Microsoft.*.App*' packages.
   -->
 
-  <UsingTask TaskName="BuildFPMToolPreReqs" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
-  <UsingTask TaskName="GenerateJsonObjectString" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
+  <UsingTask TaskName="BuildFPMToolPreReqs" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
+  <UsingTask TaskName="GenerateJsonObjectString" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
 
   <Import Project="$(MSBuildThisFileDirectory)windows/wix.targets" />
 

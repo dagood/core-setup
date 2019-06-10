@@ -3,8 +3,8 @@
 
   <Import Project="$(PackagingToolsDir)packaging-tools.targets" />
 
-  <UsingTask TaskName="CreateFrameworkListFile" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
-  <UsingTask TaskName="GenerateFileVersionProps" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll"/>
+  <UsingTask TaskName="CreateFrameworkListFile" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
+  <UsingTask TaskName="GenerateFileVersionProps" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
 
   <PropertyGroup>
     <RestorePackages>true</RestorePackages>

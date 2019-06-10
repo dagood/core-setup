@@ -6,6 +6,11 @@
   <Target Name="RebuildAndTest" DependsOnTargets="Rebuild;Test" />
   <Target Name="Test" />
 
+  <UsingTask TaskName="GenerateGuidFromName" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="GenerateMsiVersion" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="GetTargetMachineInfo" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="RegenerateReadmeTable" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+
   <Target Name="BuildCustomTasks">
     <MSBuild Projects="$(CustomTaskProject)" Targets="Restore;Build"/>
   </Target>

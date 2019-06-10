@@ -16,6 +16,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Managed API isn't completely documented yet. TODO: https://github.com/dotnet/core-setup/issues/5108 -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!--
+      Arcade specifies a default en-US NeutralLanguage, which creates a
+      System.Resources.NeutralResourcesLanguageAttribute that doesn't compile with existing
+      references for PlatformAbstractions on netstandard1.3. Remove it for now.
+    -->
+    <NeutralLanguage></NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup>

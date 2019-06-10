@@ -37,7 +37,7 @@
 
     <!-- Input Directories -->
     <PackagesDir>$(DotNetRestorePackagesPath)</PackagesDir>
-    <PackagesDir Condition="'$(PackagesDir)'==''">$(RepoRoot)packages/</PackagesDir>
+    <PackagesDir Condition="'$(PackagesDir)' == ''">$(NuGetPackageRoot)</PackagesDir>
 
     <LocalBuildToolsDir>$(ObjDir)local-build-tasks\</LocalBuildToolsDir>
     <LocalBuildToolsTaskDir>$(LocalBuildToolsDir)netstandard2.0\</LocalBuildToolsTaskDir>

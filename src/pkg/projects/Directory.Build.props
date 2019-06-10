@@ -85,6 +85,10 @@
     <CrossGenSymbolsOutputPath>$(PackageSymbolsBinDir)/$(MSBuildProjectName)</CrossGenSymbolsOutputPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">$(PackageTargetFramework)</TargetFramework>
+  </PropertyGroup>
+
   <!-- Add required legal files to packages -->
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.pkgproj'">
     <File Condition="Exists('$(PackageLicenseFile)')"

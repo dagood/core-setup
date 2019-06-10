@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(RunningOnUnix)' != 'true'">$(TargetFrameworks);net46</TargetFrameworks>
     <ProjectGuid>{360F25FA-3CD9-4338-B961-A4F3122B88B2}</ProjectGuid>
-    <OutputPath>$(LocalToolRuntimePath)</OutputPath>
+    <OutputPath>$(LocalBuildToolsDir)</OutputPath>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>

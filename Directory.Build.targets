@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="Sdk.targets" Sdk="Microsoft.DotNet.Arcade.Sdk" />
 
   <!-- Provide default targets which can be hooked onto or overridden as necessary -->
   <Target Name="BuildAndTest" DependsOnTargets="Build;Test" />

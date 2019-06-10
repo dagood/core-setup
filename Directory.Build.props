@@ -1,5 +1,15 @@
 <Project>
 
+  <!--
+    Import the arcade sdk with these requirements.
+    After:
+      Configuration setup
+    Before:
+      DebugType needs to be not be set to embedded at least for facades
+      OutputPath setup
+  -->
+  <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+
   <PropertyGroup>
     <!--
     NOTE: This .props file assumes it is only imported by projects that use the SDK="Microsoft.NET.Sdk" in their project.

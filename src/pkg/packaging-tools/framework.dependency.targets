@@ -115,8 +115,7 @@
     Get paths from packages that are needed for crossgen. Only relevant for runtime-specific builds.
   -->
   <Target Name="GetCorePackagePaths"
-          Condition="'$(NuGetRuntimeIdentifier)' != ''"
-          DependsOnTargets="ResolveNuGetPackages">
+          Condition="'$(NuGetRuntimeIdentifier)' != ''">
     <PropertyGroup>
       <_runtimePackageId>transport.runtime.$(NuGetRuntimeIdentifier).$(MicrosoftNETCoreRuntimeCoreCLRPackage.ToLowerInvariant())</_runtimePackageId>
       <_runtimePackageVersion>$(MicrosoftNETCoreRuntimeCoreCLRPackageVersion)</_runtimePackageVersion>

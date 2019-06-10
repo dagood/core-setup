@@ -156,8 +156,11 @@
       AdditionalProperties="%(AdditionalProperties);BaseId=%(BaseId);IdPrefix=" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <RuntimeIdentifiers>@(BuildRID -> '%(BuildRID)')</RuntimeIdentifiers>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
-    <ProjectReference Include="@(RuntimeProject)" />
   </ItemGroup>
   
 </Project>

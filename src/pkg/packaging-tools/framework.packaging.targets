@@ -50,7 +50,7 @@
 
     <!-- Run deb tool in the directory of the consumer project. -->
     <Exec
-      Command="$(DotnetToolCommand) deb-tool $(DebToolArgs)"
+      Command="$(DotNetTool) deb-tool $(DebToolArgs)"
       WorkingDirectory="$(DebtoolConsumerDeployDir)" />
 
     <!-- Copy package to output. -->

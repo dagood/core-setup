@@ -17,6 +17,6 @@
       <BuildArgs>$(NoRestoreArg) $(MSBuildPassThroughPropertyList) /p:BaseOutputPath=$(IntermediateOutputForPackaging)</BuildArgs>
     </PropertyGroup>
 
-    <Exec Command="$(DotnetToolCommand) build $(BuildArgs) %(PackageProjects.Identity)" />
+    <Exec Command="$(DotNetTool) build $(BuildArgs) %(PackageProjects.Identity)" />
   </Target>
 </Project>

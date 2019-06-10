@@ -211,9 +211,9 @@
   </ItemGroup>
   <PropertyGroup>
     <DotnetRestorePrefix Condition="'$(RunningOnUnix)' == 'true'">DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 </DotnetRestorePrefix>
-    <DotnetRestoreCommand>$(DotnetRestorePrefix)$(DotnetRestoreCommand)</DotnetRestoreCommand>
+    <DotnetRestoreCommand>$(DotnetRestorePrefix)$(DotNetTool) restore</DotnetRestoreCommand>
     <!-- Same as $(DotnetRestoreCommand), only doesn't specify `packages` arg -->
-    <DotnetRestoreCommandNoPackages>$(DotnetRestorePrefix)"$(DotnetToolCommand)" restore $(DotnetRestoreSource)</DotnetRestoreCommandNoPackages>
+    <DotnetRestoreCommandNoPackages>$(DotnetRestorePrefix)"$(DotNetTool)" restore $(DotnetRestoreSource)</DotnetRestoreCommandNoPackages>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(BuildAllProjects)'=='true'">

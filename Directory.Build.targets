@@ -6,7 +6,7 @@
   <Target Name="Test" />
 
   <Target Name="BuildCustomTasks">
-    <Exec Command="$(DotnetToolCommand) build $(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj" />
+    <MSBuild Projects="$(CustomTaskProject)" Targets="Restore;Build"/>
   </Target>
 
   <Target Name="GetLatestCommitHash"

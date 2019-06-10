@@ -154,9 +154,13 @@
     <DotnetSourceList Include="$(RestoreSources)" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CustomTaskProject>$(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj</CustomTaskProject>
+  </PropertyGroup>
+
   <!-- list of projects to perform batch restore -->
   <ItemGroup>
-    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj" />
+    <SdkRestoreProjects Include="$(CustomTaskProject)" />
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\pkg\deps\deps.csproj" />
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.DotNet.PlatformAbstractions\Microsoft.DotNet.PlatformAbstractions.csproj" />
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.Extensions.DependencyModel\Microsoft.Extensions.DependencyModel.csproj" />

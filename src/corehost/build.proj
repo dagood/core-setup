@@ -14,7 +14,7 @@
 
   <PropertyGroup Condition="'$(OSGroup)' != 'Windows_NT'">
     <GenerateVersionSourceFile>true</GenerateVersionSourceFile>
-    <NativeVersionSourceFile>$(BaseIntermediateOutputPath)version.cpp</NativeVersionSourceFile>
+    <NativeVersionSourceFile>$(ObjDir)version.cpp</NativeVersionSourceFile>
   </PropertyGroup>
 
   <Target Name="BuildCoreHostUnix"

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Project Include="$(MSBuildThisFileDirectory)corehost/build.proj" />
+    <Project Include="$(MSBuildThisFileDirectory)corehost/build.proj" Condition="'$(SkipCorehostBuild)' != 'true'"/>
     <Project Include="$(MSBuildThisFileDirectory)managed/dir.proj" />
     <Project Include="$(MSBuildThisFileDirectory)pkg/projects/src.builds" />
   </ItemGroup>

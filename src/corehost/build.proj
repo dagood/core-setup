@@ -7,7 +7,11 @@
   <!-- Target that builds dotnet, hostfxr and hostpolicy with the same version as what NetCoreApp will be built for
        since the build produced artifacts should always version the same (even if they may not get used).
   -->
-  <Target Name="Build" DependsOnTargets="BuildCoreHostUnix;BuildCoreHostWindows" />
+  <Target Name="Build"
+          DependsOnTargets="
+            GenerateNativeVersionFile;
+            BuildCoreHostUnix;
+            BuildCoreHostWindows" />
 
   <PropertyGroup Condition="'$(OSGroup)' != 'Windows_NT'">
     <GenerateVersionSourceFile>true</GenerateVersionSourceFile>

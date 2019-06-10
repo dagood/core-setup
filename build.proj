@@ -14,8 +14,6 @@
 
   <PropertyGroup>
     <TraversalBuildDependencies>
-      CreateOrUpdateCurrentVersionFile;
-      CreateVersionInfoFile;
       CreateHostMachineInfoFile;
       BatchRestorePackages;
       BuildCustomTasks;

@@ -208,6 +208,7 @@
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\pkg\deps\deps.csproj" />
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.DotNet.PlatformAbstractions\Microsoft.DotNet.PlatformAbstractions.csproj" />
     <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.Extensions.DependencyModel\Microsoft.Extensions.DependencyModel.csproj" />
+    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.NET.HostModel\Microsoft.NET.HostModel.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <DotnetRestorePrefix Condition="'$(RunningOnUnix)' == 'true'">DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 </DotnetRestorePrefix>

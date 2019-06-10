@@ -19,7 +19,7 @@
 
   <Target Name="BuildCoreHostUnix"
           Condition="'$(OSGroup)' != 'Windows_NT'"
-          DependsOnTargets="GetLatestCommitHash;GenerateVersionSourceFile">
+          DependsOnTargets="GetLatestCommitHash;GenerateNativeVersionFile">
     <PropertyGroup>
       <CMakeBuildDir>$(IntermediateOutputRootPath)corehost\cmake\</CMakeBuildDir>
 

@@ -20,10 +20,10 @@
   </PropertyGroup>
 
   <!--
-    Remove duplicate files returned by PrereleaseResolveNuGetPackageAssets. The resolve task
-    performs extra detection to pick up a PDB file for any file listed in the assets file. This
-    causes duplicates if the assets file lists PDBs. If foo.dll and foo.pdb exist in the package and
-    both are listed in the assets file, the task finds:
+    Remove duplicate files returned by restore. The resolve task performs extra detection to pick up
+    a PDB file for any file listed in the assets file. This causes duplicates if the assets file
+    lists PDBs. If foo.dll and foo.pdb exist in the package and both are listed in the assets file,
+    the task finds:
 
       foo.dll
       foo.pdb (based on foo.dll entry)

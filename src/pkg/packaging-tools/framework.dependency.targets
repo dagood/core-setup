@@ -45,12 +45,11 @@
   </Target>
 
   <Target Name="GetFilesToPackage"
-          DependsOnTargets="ResolveNuGetPackageAssets;GetFilesFromPackages"
+          DependsOnTargets="GetFilesFromPackages"
           Returns="@(FilesToPackage)" />
 
   <Target Name="GetDependenciesToPackage"
           Condition="'@(DependenciesToPackage)' != ''"
-          DependsOnTargets="ResolveNuGetPackageAssets"
           Returns="@(_DependenciesToPackageWithVersion)">
     <ItemGroup>
       <!-- intersect ReferencedPackage with DependenciesToPackage -->
@@ -115,8 +114,7 @@
     Get paths from packages that are needed for crossgen. Only relevant for runtime-specific builds.
   -->
   <Target Name="GetCorePackagePaths"
-          Condition="'$(NuGetRuntimeIdentifier)' != ''"
-          DependsOnTargets="ResolveNuGetPackageAssets">
+          Condition="'$(NuGetRuntimeIdentifier)' != ''">
     <PropertyGroup>
       <_runtimePackageId>transport.runtime.$(NuGetRuntimeIdentifier).$(MicrosoftNETCoreRuntimeCoreCLRPackage.ToLowerInvariant())</_runtimePackageId>
       <_runtimePackageVersion>$(MicrosoftNETCoreRuntimeCoreCLRPackageVersion)</_runtimePackageVersion>

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <InstallerSourceIntermediateOutputDir>$(ObjDir)$(InstallerSourceOSPlatformConfig)\$(MSBuildProjectName)\</InstallerSourceIntermediateOutputDir>
+
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
   </PropertyGroup>
 
   <!-- Detect framework pack suffix and apply defaults. -->

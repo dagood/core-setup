@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <PackagePlatform>AnyCPU</PackagePlatform>
-    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == ''">obj/$(Configuration)/</IntermediateOutputPath>
     <IntermediateOutputPath Condition="'$(NuGetRuntimeIdentifier)' != ''">$(IntermediateOutputPath)$(NuGetRuntimeIdentifier)/</IntermediateOutputPath>
     
     <SkipPackageFileCheck>true</SkipPackageFileCheck>

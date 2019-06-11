@@ -95,6 +95,7 @@
 
   <PropertyGroup>
     <TargetFramework Condition="'$(TargetFramework)' == ''">$(PackageTargetFramework)</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">$(NETCoreAppFramework)</TargetFramework>
   </PropertyGroup>
 
   <!-- Add required legal files to packages -->

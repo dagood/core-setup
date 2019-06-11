@@ -157,7 +157,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RuntimeIdentifiers>@(BuildRID -> '%(BuildRID)')</RuntimeIdentifiers>
+    <RuntimeIdentifiers>@(BuildRID)</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">

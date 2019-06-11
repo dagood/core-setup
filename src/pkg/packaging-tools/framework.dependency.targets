@@ -359,9 +359,6 @@
   <Target Name="GetReferenceFilenames"
           Returns="@(Reference -> '%(Filename)')" />
 
-  <!-- Required by Common.Targets but not used for depproj -->
-  <Target Name="CreateManifestResourceNames" />
-
   <!-- Target overrides (can't be shared with pkgproj) -->
 
   <Target Name="Build" DependsOnTargets="GenerateHashVersionsFile;GetFilesToPackage" />

@@ -7,6 +7,9 @@
   <Import Project="framework.dependency.targets" Condition="'$(MSBuildProjectExtension)' == '.depproj'" />
   <Import Project="framework.packaging.targets" Condition="'$(IsFrameworkPackage)' == 'true'" />
 
+  <!-- Required by Common.Targets but not used by packaging projects. -->
+  <Target Name="CreateManifestResourceNames" />
+
   <!--
     Set up properties for installer file. These depend on properties defined in the project file.
     (Unlike properties set up in packaging-tools.props, which shouldn't.)

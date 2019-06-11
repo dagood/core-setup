@@ -10,6 +10,14 @@
   -->
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
 
+  <!--
+    Before Microsoft.Common.targets, set the extensions path to match the restore dir as Arcade
+    sets it, so MSBuild packages with targets files will be found and imported.
+  -->
+  <PropertyGroup>
+    <MSBuildProjectExtensionsPath>$(IntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
     <!-- SDK-based projects' Platform should default to AnyCPU, not $(TargetArchitecture) like Directory.Build.props sets. -->
     <Platform>AnyCPU</Platform>

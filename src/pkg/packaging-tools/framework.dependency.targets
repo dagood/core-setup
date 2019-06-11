@@ -357,8 +357,7 @@
           DependsOnTargets="PrepareForCrossGen;GetCrossGenSymbolsFiles" />
 
   <Target Name="GetReferenceFilenames"
-          Returns="@(Reference -> '%(Filename)')"
-          DependsOnTargets="ResolveNuGetPackages" />
+          Returns="@(Reference -> '%(Filename)')" />
 
   <!-- Target overrides (can't be shared with pkgproj) -->
 

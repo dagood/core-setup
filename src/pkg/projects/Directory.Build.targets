@@ -32,8 +32,7 @@
 
     The duplicates cause package validation failure and must be filtered out.
   -->
-  <Target Name="RemoveDuplicateResolvedNuGetPackageAssets"
-          AfterTargets="ResolveNuGetPackages">
+  <Target Name="RemoveDuplicateResolvedNuGetPackageAssets">
     <RemoveDuplicates Inputs="@(ReferenceCopyLocalPaths)">
       <Output TaskParameter="Filtered" ItemName="FilteredReferenceCopyLocalPaths"/>
     </RemoveDuplicates>

@@ -12,6 +12,8 @@
     
     <PackageTargetRuntime Condition="'$(PackageTargetRuntime)' == '' AND '$(MSBuildProjectExtension)' == '.depproj'">$(NuGetRuntimeIdentifier)</PackageTargetRuntime>
 
+    <RuntimeIdentifier Condition="'$(PackageTargetRuntime)' != ''">$(PackageTargetRuntime)</RuntimeIdentifier>
+
     <IsLineupPackage Condition="'$(PackageTargetRuntime)' == ''">true</IsLineupPackage>
 
     <BuildRuntimePackages>true</BuildRuntimePackages>
@@ -154,10 +156,6 @@
       BaseId="$(MSBuildProjectName).%(BuildRID)"
       AdditionalProperties="%(AdditionalProperties);BaseId=%(BaseId);IdPrefix=" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <RuntimeIdentifiers>@(BuildRID)</RuntimeIdentifiers>
-  </PropertyGroup>
 
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
   </ItemGroup>

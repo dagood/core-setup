@@ -23,6 +23,7 @@
 
     <!-- Prevent unintended Microsoft.NETCore.Platforms package downgrade. -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
 
     <!-- Include RID in restore outputs to avoid clashing. -->
     <RestoreOutputPath>$(IntermediateOutputPath)</RestoreOutputPath>

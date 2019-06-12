@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <!-- Identity / Reference package content -->
-  <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and 'this does not cause a circular dependency' == 'true'">
+  <ItemGroup Condition="'$(PackageTargetRuntime)' == ''">
     <!-- reference RID specific packages to generate lineup -->
     <ProjectReference Include="@(RuntimeProject)" />
 

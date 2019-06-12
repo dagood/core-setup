@@ -10,7 +10,7 @@
     
     <PackageTargetRuntime Condition="'$(PackageTargetRuntime)' == '' AND '$(MSBuildProjectExtension)' == '.depproj'">$(NuGetRuntimeIdentifier)</PackageTargetRuntime>
 
-    <RuntimeIdentifier Condition="'$(PackageTargetRuntime)' != ''">$(PackageTargetRuntime)</RuntimeIdentifier>
+    <RuntimeIdentifiers Condition="'$(PackageTargetRuntime)' != ''">$(PackageTargetRuntime)</RuntimeIdentifiers>
 
     <IsLineupPackage Condition="'$(PackageTargetRuntime)' == ''">true</IsLineupPackage>
 
@@ -26,7 +26,7 @@
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
 
     <!-- Include RID in restore outputs to avoid clashing. -->
-    <RestoreOutputPath>$(IntermediateOutputPath)</RestoreOutputPath>
+    <RestoreOutputPath>$(BaseIntermediateOutputPath)</RestoreOutputPath>
     <!-- Tell NuGet where the assets file is. I think the intermediate output path got more complex with Arcade. -->
     <ProjectAssetsFile>$(RestoreOutputPath)\project.assets.json</ProjectAssetsFile>
   </PropertyGroup>
@@ -131,6 +131,8 @@
       <ExcludeFromPlatformManifest>true</ExcludeFromPlatformManifest>
     </BuildRID>
     <BuildRID Include="@(_buildingOnRID)"/>
+
+    <RestoreBuildRID Include="@(BuildRID)" Exclude="@(UnofficialBuildRID)" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -169,5 +171,9 @@
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
     <LineupProjectReference Include="@(RuntimeProject)" />
   </ItemGroup>
-  
+
+  <PropertyGroup Condition="'$(RestoreAllRuntimeIdentifiers)' == 'true'">
+    <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
+  </PropertyGroup>
+
 </Project>

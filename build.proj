@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <Project Include="src/dir.proj" />
-    <Project Include="src/pkg/packaging/dir.proj"/>
+    <Project Include="src/pkg/packaging/dir.proj" />
     <Project Include="$(MSBuildThisFileDirectory)src/test/dir.proj" Condition="'$(SkipTests)' != 'true'"/>
   </ItemGroup>
 

@@ -11,6 +11,7 @@
   <Target Name="ExpandProjects"
           BeforeTargets="
             Build;
+            Restore;
             GenerateInstallers;
             GenerateSharedFramework">
     <MSBuild Projects="@(ProjectProvider)" Targets="GetProjectsToBuild">
@@ -29,7 +30,9 @@
     Filter runtime package builds down to the current RID and packages that aren't RID-specific.
   -->
   <Target Name="FilterProjects"
-          BeforeTargets="Build"
+          BeforeTargets="
+            Build;
+            Restore"
           DependsOnTargets="ExpandProjects">
     <Error Condition="'$(PackageRID)' == ''" Text="'PackageRID' property must be specified." />
 

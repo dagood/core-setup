@@ -301,6 +301,12 @@
         Condition="
           '$(FrameworkPackType)' != '' AND
           '$(BuildDistroIndependentInstallers)' == 'true'" />
+
+      <!-- Restore each project only once, and with the most RIDs. -->
+      <Project
+        Include="$(MSBuildProjectFullPath)"
+        AdditionalProperties="RestoreAllRuntimeIdentifiers=true"
+        Phase="restore" />
     </ItemGroup>
 
     <!-- Create shared framework and its installers. -->

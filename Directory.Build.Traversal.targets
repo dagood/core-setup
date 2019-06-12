@@ -24,6 +24,14 @@
     <Error Condition="'$(MSBuildLastTaskResult)'=='false'" />
   </Target>
 
+  <Target Name="RestoreAllProjects">
+    <MSBuild
+      Targets="Restore"
+      Projects="@(Project)"
+      BuildInParallel="true"
+      SkipNonexistentTargets="true" />
+  </Target>
+
   <Target Name="CleanAllProjects">
     <PropertyGroup>
       <DefaultCleanAllTarget Condition="'$(DefaultCleanAllTarget)'==''">Clean</DefaultCleanAllTarget>
@@ -80,6 +88,11 @@
       BuildAllProjects;
     </TraversalBuildDependsOn>
 
+    <TraversalRestoreDependsOn>
+      $(TraversalRestoreDependsOn);
+      RestoreAllProjects;
+    </TraversalRestoreDependsOn>
+
     <TraversalCleanDependsOn>
       $(TraversalCleanDependsOn);
       CleanAllProjects;
@@ -92,6 +105,8 @@
   </PropertyGroup>
 
   <Target Name="Build" DependsOnTargets="$(TraversalBuildDependsOn)" />
+
+  <Target Name="Restore" DependsOnTargets="$(TraversalRestoreDependsOn)" />
 
   <Target Name="Clean" DependsOnTargets="$(TraversalCleanDependsOn)" />
 

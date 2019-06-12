@@ -4,6 +4,10 @@
   <Import Project="Directory.Build.targets" />
   <Import Project="Directory.Build.Traversal.targets" />
 
+  <ItemGroup>
+    <Project Include="$(MSBuildThisFileDirectory)packages.builds" />
+  </ItemGroup>
+
   <Target Name="Build">
     <MSBuild Projects="packages.builds" />
 
@@ -14,5 +18,9 @@
     <Copy SourceFiles="@(Nupkgs)"
           DestinationFolder="$(BaseOutputRootPath)corehost"/>
   </Target>
-  
+
+  <Target Name="Restore">
+    <MSBuild Projects="projects\restore.builds" />
+  </Target>
+
 </Project>

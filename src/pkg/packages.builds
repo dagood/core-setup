@@ -10,9 +10,8 @@
   </PropertyGroup>  
 
   <ItemGroup>
-    <Project Include="$(ProjectsBasePath)pkg.builds">
-      <AdditionalProperties>$(AdditionalProperties)</AdditionalProperties>
-    </Project>
+    <Project Include="$(ProjectsBasePath)pkg.builds" AdditionalProperties="$(AdditionalProperties)" />
   </ItemGroup>  
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.Traversal.targets))\Directory.Build.Traversal.targets" />
 </Project>

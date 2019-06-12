@@ -9,13 +9,20 @@
       GenerateCompressedFiles;
       GenerateNugetPackages;
       GenerateInstallers;
-      GenerateProjectInstallers;
     </PackageTargets>
   </PropertyGroup>
 
-  <Target Name="Build" DependsOnTargets="BuildInstallers;BuildCombinedInstallers" Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
+  <Target Name="Build" DependsOnTargets="BuildDependencies;BuildInstallers;BuildCombinedInstallers" Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
   <Target Name="BuildInstallers" DependsOnTargets="$(PackageTargets)" Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
   <Target Name="BuildCombinedInstallers" DependsOnTargets="GenerateCombinedInstallers" Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
+
+  <!--
+    To build installers, we need layouts to be built first. Call MSBuild on the requirements so that
+    parallel MSBuild does the ordering work.
+  -->
+  <Target Name="BuildDependencies">
+    <MSBuild Projects="$(SourceDir)pkg\projects\netcoreapp\pkg\workaround\Microsoft.NETCore.App.pkgproj" />
+  </Target>
 
   <Target Name="InitPackage">
     <ItemGroup>
@@ -186,11 +193,6 @@
   <Target Name="GenerateInstallers" DependsOnTargets="InitPackage;$(InstallerDependsOn)" />
 
   <Target Name="GenerateCombinedInstallers" DependsOnTargets="InitPackage;GenerateBundles" />
-
-  <!-- Run the project-based installer creation infrastructure as well. -->
-  <Target Name="GenerateProjectInstallers">
-    <MSBuild Projects="..\projects\installer.builds" />
-  </Target>
 
   <Target Name="GenerateNugetPackages" DependsOnTargets="InitPackage" Condition="'$(UsePrebuiltPortableBinariesForInstallers)' == 'false'">
 

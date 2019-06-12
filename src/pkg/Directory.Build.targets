@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <UsingTask TaskName="DownloadFilesFromUrl" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
-  <UsingTask TaskName="ZipFileExtractToDirectory" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
 
   <!-- Create deb tool package and set up the project that consumes it as a CLI tool. -->
   <Target Name="InitializeDotnetDebTool">
@@ -86,9 +85,9 @@
 
     <DownloadFilesFromUrl Items="@(_wixToolDownload)" />
 
-    <ZipFileExtractToDirectory
-      SourceArchive="$(WixDestinationPath)"
-      DestinationDirectory="$(WixToolsDir)" />
+    <Unzip
+      SourceFiles="$(WixDestinationPath)"
+      DestinationFolder="$(WixToolsDir)" />
   </Target>
 
   <Target Name="GetAcquireWixProperties">

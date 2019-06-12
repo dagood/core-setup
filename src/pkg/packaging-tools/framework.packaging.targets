@@ -5,6 +5,7 @@
 
   <UsingTask TaskName="BuildFPMToolPreReqs" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
   <UsingTask TaskName="GenerateJsonObjectString" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
+  <UsingTask TaskName="ZipFileGetEntries" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <Import Project="$(MSBuildThisFileDirectory)windows/wix.targets" />
 

@@ -170,10 +170,9 @@
 
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
     <LineupProjectReference Include="@(RuntimeProject)" Condition="'$(AddRuntimeJsonProjectReferences)' != 'true'" />
-    <ProjectReference Include="@(RuntimeProject)" Condition="'$(AddRuntimeJsonProjectReferences)' == 'true'" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(RestoreAllRuntimeIdentifiers)' == 'true'">
+  <PropertyGroup>
     <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
   </PropertyGroup>
 

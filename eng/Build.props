@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
-    <ProjectToBuild Include="$(MSBuildThisFileDirectory)..\build.proj" />
+    <ProjectToBuild Include="$(RepoRoot)build.proj" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.*proj" />
   </ItemGroup>
 </Project>

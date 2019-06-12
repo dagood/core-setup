@@ -172,6 +172,13 @@
     </MSBuild>
   </Target>
 
+  <Target Name="InjectLineupDependenciesForRuntimeJson"
+          BeforeTargets="DetermineRuntimeDependencies">
+    <ItemGroup>
+      <RuntimeDependency Include="@(LineupProjectReference)" />
+    </ItemGroup>
+  </Target>
+
   <!--
     Creates the platform manifest and props file. Set properties "IncludePlatformManifestFile" and
     "IncludeFileVersionPropsFile" to true to include them, respectively.

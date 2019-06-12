@@ -328,9 +328,9 @@
     <OSPlatformConfig>$(OutputRid).$(ConfigurationGroup)</OSPlatformConfig>
 
     <BaseOutputPath Condition="'$(BaseOutputPath)'==''">$(BinDir)</BaseOutputPath>
-    <BaseOutputRootPath>$(BaseOutputPath)$(OSPlatformConfig)\</BaseOutputRootPath>
+    <OutputPath Condition="'$(OutputPath)'==''">$(BaseOutputPath)$(OSPlatformConfig)\</OutputPath>
+    <BaseOutputRootPath>$(BinDir)$(OSPlatformConfig)\</BaseOutputRootPath>
     <CrossGenRootPath>$(BaseOutputRootPath)\crossgen</CrossGenRootPath>
-    <OutputPath Condition="'$(OutputPath)'==''">$(BaseOutputPath)$(OSPlatformConfig)\$(MSBuildProjectName)\</OutputPath>
 
     <IntermediateOutputRootPath Condition="'$(IntermediateOutputRootPath)' == ''">$(ObjDir)$(OSPlatformConfig)\</IntermediateOutputRootPath>
 

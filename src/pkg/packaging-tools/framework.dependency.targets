@@ -3,6 +3,9 @@
     Shared targets specific to dependency projects (depproj).
   -->
 
+  <!-- Provide default stub targets for packaging tasks. Allows freer use of ProjectReferences. -->
+  <Target Name="DetermineRuntimeDependencies" />
+
   <!-- Fetches all the file items from the packages that we want to redist -->
   <Target Name="GetFilesFromPackages">
     <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
@@ -83,14 +86,6 @@
                        File="$(IntermediateOutputPath)\$(FrameworkPackageName).versions.txt"
                        Overwrite="true"/>
   </Target>
-
-  <!--
-    Stub DetermineRuntimeDependencies target so that when GenerateRuntimeDependencies builds this
-    target on the depproj, the build doesn't fail. BuildTools gives pkgproj a default implementation
-    that depproj doesn't get.
-    remove when fixing https://github.com/dotnet/buildtools/issues/1273
-  -->
-  <Target Name="DetermineRuntimeDependencies" />
 
   <Target Name="AddCrossgenToolPackageReferences"
           BeforeTargets="CollectPackageReferences">
@@ -359,6 +354,7 @@
           DependsOnTargets="PrepareForCrossGen;GetCrossGenSymbolsFiles" />
 
   <Target Name="GetReferenceFilenames"
+          DependsOnTargets="ResolveReferences"
           Returns="@(Reference -> '%(Filename)')" />
 
   <!-- Target overrides (can't be shared with pkgproj) -->

@@ -20,7 +20,12 @@
                                     OldVersion="$(OldVersion)"
                                     NewVersion="$(NewVersion)" />
   </Target>
-  
+
+  <!-- Provide default stub targets for packaging tasks. Allows freer use of ProjectReferences. -->
+  <Target Name="GetFilesToPackage" />
+  <Target Name="GetDependenciesToPackage" />
+  <Target Name="DetermineRuntimeDependencies" />
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.targets))\Directory.Build.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.Traversal.targets))\Directory.Build.Traversal.targets" />
 </Project>

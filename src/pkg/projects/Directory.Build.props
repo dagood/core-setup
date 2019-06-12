@@ -174,7 +174,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
-    <LineupProjectReference Include="@(RuntimeProject)" Condition="'$(AddRuntimeJsonProjectReferences)' != 'true'" />
+    <RuntimeDependency
+      Include="@(RuntimeProject)"
+      TargetRuntime="%(BuildRID)" />
   </ItemGroup>
 
   <PropertyGroup>

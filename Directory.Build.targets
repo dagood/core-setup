@@ -13,10 +13,6 @@
   <UsingTask TaskName="GetTargetMachineInfo" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="RegenerateReadmeTable" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
-  <Target Name="BuildCustomTasks">
-    <MSBuild Projects="$(CustomTaskProject)" Targets="Restore;Build"/>
-  </Target>
-
   <Target Name="GetLatestCommitHash"
           Condition="'$(LatestCommit)' == ''">
     <!-- Get the latest commit hash -->

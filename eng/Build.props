@@ -1,6 +1,20 @@
 <Project>
+
   <ItemGroup>
     <ProjectToBuild Include="$(RepoRoot)build.proj" />
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.*proj" />
   </ItemGroup>
+
+  <!--
+    Use this extensibility point to build custom tasks during Build.proj, before any restoring or
+    building happens in the repo. These DLLs would ideally live in Arcade and be restored as tools,
+    so the idea is building them here is somewhat equivalent.
+  -->
+  <Target Name="BuildRepoTools" BeforeTargets="Execute">
+    <MSBuild
+      Projects="$(RepoRoot)tools-local\tasks\core-setup.tasks.csproj"
+      Properties="RepoRoot=$(RepoRoot)"
+      Targets="Restore;Build"/>
+  </Target>
+
 </Project>

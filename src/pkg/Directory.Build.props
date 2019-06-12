@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionTxtFile>$(ObjDir)version.txt</VersionTxtFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageLicenseFile>$(ProjectDir)LICENSE.TXT</PackageLicenseFile>
     <PackageThirdPartyNoticesFile>$(ProjectDir)THIRD-PARTY-NOTICES.TXT</PackageThirdPartyNoticesFile>
     <LicenseUrl>https://github.com/dotnet/core-setup/blob/master/LICENSE.TXT</LicenseUrl>

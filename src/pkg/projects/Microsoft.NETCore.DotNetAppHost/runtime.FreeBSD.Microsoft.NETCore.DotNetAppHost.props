@@ -8,6 +8,5 @@
     <File Include="@(ArchitectureSpecificNativeFile)">
       <TargetPath>runtimes/$(PackageTargetRuntime)/native</TargetPath>
     </File>
-    <File Include="$(VersionTxtFile)" />
   </ItemGroup>
 </Project>

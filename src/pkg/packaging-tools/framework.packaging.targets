@@ -487,7 +487,18 @@
     nested build when these runtime-specific packages are necessary.
   -->
   <Target Name="Build"
-          DependsOnTargets="BuildRidAgnosticPackage">
+          DependsOnTargets="
+            BuildRidAgnosticPackage;
+            BuildRidSpecificPackage" />
+
+  <Target Name="BuildRidAgnosticPackage"
+          DependsOnTargets="$(BuildDependsOn)"
+          Condition="'$(BuildLineupPackage)' == 'true'">
+    <Message Text="$(MSBuildProjectName) -> $(NuSpecPath)" Importance="high" />
+  </Target>
+
+  <Target Name="BuildRidSpecificPackage"
+          Condition="'$(BuildRuntimePackages)' == 'true'">
     <PropertyGroup>
       <PackageBuildRID Condition="'%(Identity)' == '$(PackageRID)'">@(BuildRID)</PackageBuildRID>
     </PropertyGroup>
@@ -508,7 +519,7 @@
         '$(PackageBuildRID)' != '' and
         ('$(FrameworkPackType)' == '' or '$(BuildRidSpecificPacks)' == 'true')"
       Projects="$(MSBuildProjectFullPath)"
-      Targets="BuildRidSpecificPackage"
+      Targets="InnerBuildRidSpecificPackage"
       Properties="
         DisableOrderDependencies=true;
         PackageTargetRuntime=$(PackageBuildRID);
@@ -516,13 +527,7 @@
         $(RidSpecificPackProperties)" />
   </Target>
 
-  <Target Name="BuildRidAgnosticPackage"
-          DependsOnTargets="$(BuildDependsOn)"
-          Condition="'$(BuildLineupPackage)' == 'true'">
-    <Message Text="$(MSBuildProjectName) -> $(NuSpecPath)" Importance="high" />
-  </Target>
-
-  <Target Name="BuildRidSpecificPackage"
+  <Target Name="InnerBuildRidSpecificPackage"
           DependsOnTargets="$(BuildDependsOn)">
     <Message Text="$(MSBuildProjectName) -> $(NuSpecPath)" Importance="high" />
   </Target>

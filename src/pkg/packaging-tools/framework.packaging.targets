@@ -485,14 +485,9 @@
     Redefine build. The packaging tools require a parameterized build call to use IDs other than the
     project name such as the runtime pack RID suffix and runtime package RID prefix. Perform a
     nested build when these runtime-specific packages are necessary.
-
-    Resolve references to make sure dependencies (e.g. native build) runs first. The global
-    properties mean we can't let the inner build handle this itself.
   -->
   <Target Name="Build"
-          DependsOnTargets="
-            ResolveReferences;
-            BuildRidAgnosticPackage">
+          DependsOnTargets="BuildRidAgnosticPackage">
     <PropertyGroup>
       <PackageBuildRID Condition="'%(Identity)' == '$(PackageRID)'">@(BuildRID)</PackageBuildRID>
     </PropertyGroup>
@@ -500,6 +495,13 @@
     <PropertyGroup Condition="'$(BuildRidSpecificPacks)' == 'true'">
       <RidSpecificPackProperties>BaseId=$(MSBuildProjectName).$(PackageBuildRID);IdPrefix=</RidSpecificPackProperties>
     </PropertyGroup>
+
+    <!--
+      Ensure all project references are built to make sure dependencies (e.g. native build) runs
+      first. The global properties mean we can't let the inner build handle this itself because it
+      would miss the cache of finished builds.
+    -->
+    <MSBuild Projects="@(ProjectReference)" />
 
     <MSBuild
       Condition="

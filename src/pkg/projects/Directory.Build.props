@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <!-- Most packages need the host to be built first. -->
-  <ItemGroup>
+  <ItemGroup Condition="'$(DisableOrderDependencies)' != 'true'">
     <ProjectReference Include="$(SourceDir)dir.proj" />
   </ItemGroup>
 

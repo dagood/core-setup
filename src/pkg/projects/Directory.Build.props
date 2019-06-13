@@ -21,9 +21,6 @@
 
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-    <RestorePackages>true</RestorePackages>
-    <PrereleaseResolveNuGetPackages>true</PrereleaseResolveNuGetPackages>
-
     <!-- Prevent unintended Microsoft.NETCore.Platforms package downgrade. -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
@@ -96,8 +93,6 @@
     <PackageTargetFramework>$(NETCoreAppFramework)</PackageTargetFramework>
     <CrossGenOutputPath>$(CrossGenRootPath)/$(MSBuildProjectName)/$(NuGetRuntimeIdentifier)</CrossGenOutputPath>
     <ContainsPackageReferences>true</ContainsPackageReferences>
-    <!-- Disable restore normally: this is handled by ParallelSafeRestore. -->
-    <RestorePackages>false</RestorePackages>
     <RidSpecificAssets Condition="'$(NuGetRuntimeIdentifier)' != ''">true</RidSpecificAssets>
     <AdditionalRestoreArgs>/p:HasRuntimePackages=false /p:IntermediateOutputPath=$(IntermediateOutputPath) /bl:$(IntermediateOutputPath)/dotnet-restore.binlog</AdditionalRestoreArgs>
     <CrossGenSymbolsOutputPath>$(PackageSymbolsBinDir)/$(MSBuildProjectName)</CrossGenSymbolsOutputPath>

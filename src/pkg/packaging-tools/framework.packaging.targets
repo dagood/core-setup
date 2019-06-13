@@ -508,6 +508,7 @@
       Projects="$(MSBuildProjectFullPath)"
       Targets="BuildRidSpecificPackage"
       Properties="
+        DisableOrderDependencies=true;
         PackageTargetRuntime=$(PackageBuildRID);
         NuGetRuntimeIdentifier=$(PackageBuildRID);
         $(RidSpecificPackProperties)" />

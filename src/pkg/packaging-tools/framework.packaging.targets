@@ -511,9 +511,9 @@
     </PropertyGroup>
 
     <!--
-      Ensure all project references are built to make sure dependencies (e.g. native build) runs
-      first. The global properties mean we can't let the inner build handle this itself because it
-      would miss the cache of finished builds.
+      Ensure all project references are built to make sure dependencies (e.g. native build and
+      depproj's crossgen) runs first. The global properties mean we can't let the inner build handle
+      this itself because it would miss the cache of finished builds.
     -->
     <MSBuild Projects="@(ProjectReference)" />
 
@@ -527,6 +527,7 @@
       Projects="$(MSBuildProjectFullPath)"
       Targets="InnerBuildRidSpecificPackage"
       Properties="
+        BuildPackageLibraryReferences=false;
         DisableOrderDependencies=true;
         PackageTargetRuntime=$(PackageBuildRID);
         NuGetRuntimeIdentifier=$(PackageBuildRID);

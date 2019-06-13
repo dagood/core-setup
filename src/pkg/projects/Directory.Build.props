@@ -173,12 +173,6 @@
       AdditionalProperties="%(AdditionalProperties);BaseId=%(BaseId);IdPrefix=" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(PackageTargetRuntime)' == '' and '$(HasRuntimePackages)' != 'false'">
-    <RuntimeDependency
-      Include="@(RuntimeProject)"
-      TargetRuntime="%(BuildRID)" />
-  </ItemGroup>
-
   <PropertyGroup>
     <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
   </PropertyGroup>

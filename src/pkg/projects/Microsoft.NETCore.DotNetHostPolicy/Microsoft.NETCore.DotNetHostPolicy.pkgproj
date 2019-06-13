@@ -10,6 +10,6 @@
     </Dependency>
   </ItemGroup>   
 
-  <Import Condition="'$(PackageTargetRuntime)' != ''" Project="$(MSBuildThisFileDirectory)runtime.$(OSGroup).$(MSBuildProjectName).props" />
+  <Import Project="$(MSBuildProjectName).props" />
 
 </Project>

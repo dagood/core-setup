@@ -488,18 +488,24 @@
   -->
   <Target Name="Build"
           DependsOnTargets="BuildRidAgnosticPackage">
+    <PropertyGroup>
+      <PackageBuildRID Condition="'%(Identity)' == '$(PackageRID)'">@(BuildRID)</PackageBuildRID>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(BuildRidSpecificPacks)' == 'true'">
-      <RidSpecificPackProperties>BaseId=$(MSBuildProjectName).$(PackageRID);IdPrefix=</RidSpecificPackProperties>
+      <RidSpecificPackProperties>BaseId=$(MSBuildProjectName).$(PackageBuildRID);IdPrefix=</RidSpecificPackProperties>
     </PropertyGroup>
 
     <MSBuild
-      Condition="'$(FrameworkPackType)' == '' or '$(BuildRidSpecificPacks)' == 'true'"
+      Condition="
+        '$(PackageBuildRID)' != '' and
+        ('$(FrameworkPackType)' == '' or '$(BuildRidSpecificPacks)' == 'true')"
       Projects="$(MSBuildProjectFullPath)"
       Targets="BuildRidSpecificPackage"
       Properties="
         DisableOrderDependencies=true;
-        PackageTargetRuntime=$(PackageRID);
-        NuGetRuntimeIdentifier=$(PackageRID);
+        PackageTargetRuntime=$(PackageBuildRID);
+        NuGetRuntimeIdentifier=$(PackageBuildRID);
         $(RidSpecificPackProperties)" />
   </Target>
 

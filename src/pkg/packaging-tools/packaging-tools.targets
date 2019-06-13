@@ -5,7 +5,7 @@
     overrides that shouldn't be applied to other projects.
   -->
   <Import Project="framework.dependency.targets" Condition="'$(MSBuildProjectExtension)' == '.depproj'" />
-  <Import Project="framework.packaging.targets" Condition="'$(IsFrameworkPackage)' == 'true'" />
+  <Import Project="framework.packaging.targets" Condition="'$(MSBuildProjectExtension)' == '.pkgproj'" />
 
   <!-- Required by Common.Targets but not used by packaging projects. -->
   <Target Name="CreateManifestResourceNames" />

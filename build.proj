@@ -25,8 +25,8 @@
 
   <ItemGroup>
     <Project Include="src/dir.proj" />
-    <Project Include="src/pkg/packaging/installers.proj" />
-    <Project Include="$(MSBuildThisFileDirectory)src/test/dir.proj" Condition="'$(SkipTests)' != 'true'"/>
+    <!-- <Project Include="src/pkg/packaging/installers.proj" /> -->
+    <!-- <Project Include="$(MSBuildThisFileDirectory)src/test/dir.proj" Condition="'$(SkipTests)' != 'true'"/> -->
   </ItemGroup>
 
   <Target Name="BuildTraversalBuildDependencies"

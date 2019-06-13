@@ -497,8 +497,11 @@
     <Message Text="$(MSBuildProjectName) -> $(NuSpecPath)" Importance="high" />
   </Target>
 
-  <Target Name="BuildRidSpecificPackage"
-          Condition="'$(BuildRuntimePackages)' == 'true'">
+  <Target Name="BuildRidSpecificPackage">
+    <!--
+      If PackageRID should be built for the current package, PackageBuildRID is set to PackageRID.
+      Otherwise, PackageBuildRID is left empty.
+    -->
     <PropertyGroup>
       <PackageBuildRID Condition="'%(Identity)' == '$(PackageRID)'">@(BuildRID)</PackageBuildRID>
     </PropertyGroup>
@@ -517,7 +520,10 @@
     <MSBuild
       Condition="
         '$(PackageBuildRID)' != '' and
-        ('$(FrameworkPackType)' == '' or '$(BuildRidSpecificPacks)' == 'true')"
+        (
+          '$(BuildRidSpecificPacks)' == 'true' or
+          ('$(FrameworkPackType)' == '' and '$(BuildRuntimePackages)' == 'true')
+        )"
       Projects="$(MSBuildProjectFullPath)"
       Targets="InnerBuildRidSpecificPackage"
       Properties="

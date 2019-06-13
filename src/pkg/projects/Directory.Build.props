@@ -10,8 +10,6 @@
     
     <PackageTargetRuntime Condition="'$(PackageTargetRuntime)' == '' AND '$(MSBuildProjectExtension)' == '.depproj'">$(NuGetRuntimeIdentifier)</PackageTargetRuntime>
 
-    <RuntimeIdentifiers Condition="'$(PackageTargetRuntime)' != ''">$(PackageTargetRuntime)</RuntimeIdentifiers>
-
     <IsLineupPackage Condition="'$(PackageTargetRuntime)' == ''">true</IsLineupPackage>
 
     <BuildRuntimePackages>true</BuildRuntimePackages>
@@ -174,6 +172,7 @@
 
   <PropertyGroup>
     <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
+    <RuntimeIdentifier>$(PackageTargetRuntime)</RuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

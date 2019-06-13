@@ -32,8 +32,14 @@
   </PropertyGroup>
 
   <!-- Most packages need the host to be built first. -->
-  <ItemGroup Condition="'$(DisableOrderDependencies)' != 'true'">
-    <ProjectReference Include="$(SourceDir)dir.proj" />
+  <ItemGroup>
+    <ProjectReference
+      Include="$(SourceDir)dir.proj"
+      GlobalPropertiesToRemove="
+        PackageTargetRuntime;
+        NuGetRuntimeIdentifier;
+        BaseId;
+        IdPrefix" />
   </ItemGroup>
 
   <!-- In *.builds projects, the current phase's name is the same as the project name. -->

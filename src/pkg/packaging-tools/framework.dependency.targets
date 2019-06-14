@@ -110,15 +110,14 @@
     Get paths from packages that are needed for crossgen. Only relevant for runtime-specific builds.
   -->
   <Target Name="GetCorePackagePaths"
-          Condition="'$(NuGetRuntimeIdentifier)' != ''"
           DependsOnTargets="ResolveReferences">
     <PropertyGroup>
-      <_runtimePackageId>transport.runtime.$(NuGetRuntimeIdentifier).$(MicrosoftNETCoreRuntimeCoreCLRPackage.ToLowerInvariant())</_runtimePackageId>
+      <_runtimePackageId>transport.runtime.$(PackageRID).$(MicrosoftNETCoreRuntimeCoreCLRPackage.ToLowerInvariant())</_runtimePackageId>
       <_runtimePackageVersion>$(MicrosoftNETCoreRuntimeCoreCLRPackageVersion)</_runtimePackageVersion>
 
       <_runtimePackageDir>$(PackagesDir)$(_runtimePackageId)/$(_runtimePackageVersion)/</_runtimePackageDir>
-      <_jitPackageDir>$(PackagesDir)transport.runtime.$(NuGetRuntimeIdentifier).microsoft.netcore.jit/$(MicrosoftNETCoreRuntimeCoreCLRPackageVersion)/</_jitPackageDir>
-      <_corefxPackageDir>$(PackagesDir)runtime.$(NuGetRuntimeIdentifier).$(MicrosoftPrivateCoreFxNETCoreAppPackage.ToLowerInvariant())/$(MicrosoftPrivateCoreFxNETCoreAppPackageVersion)/</_corefxPackageDir>
+      <_jitPackageDir>$(PackagesDir)transport.runtime.$(PackageRID).microsoft.netcore.jit/$(MicrosoftNETCoreRuntimeCoreCLRPackageVersion)/</_jitPackageDir>
+      <_corefxPackageDir>$(PackagesDir)runtime.$(PackageRID).$(MicrosoftPrivateCoreFxNETCoreAppPackage.ToLowerInvariant())/$(MicrosoftPrivateCoreFxNETCoreAppPackageVersion)/</_corefxPackageDir>
       <_winmdPackageDir>$(PackagesDir)$(MicrosoftTargetingPackPrivateWinRTPackage.ToLowerInvariant())/$(MicrosoftTargetingPackPrivateWinRTPackageVersion)/</_winmdPackageDir>
     </PropertyGroup>
 
@@ -138,7 +137,6 @@
   </Target>
 
   <Target Name="GetCrossgenToolPaths"
-          Condition="'$(NuGetRuntimeIdentifier)' != ''"
           DependsOnTargets="GetCorePackagePaths">
     <ItemGroup>
       <!-- Find crossgen tool assets in package cache to allow ExcludeAssets=All. -->
@@ -203,7 +201,7 @@
 
   <!-- Prepares all items for cross-gen and replaces package file items with their cross-gen'ed equivalents -->
   <Target Name="PrepareForCrossGen"
-          Condition="'$(NuGetRuntimeIdentifier)' != '' AND '$(DisableCrossgen)' != 'true'"
+          Condition="'$(DisableCrossgen)' != 'true'"
           DependsOnTargets="
             GetCorePackagePaths;
             GetFilesFromPackages">
@@ -266,6 +264,7 @@
           DependsOnTargets="PrepareForCrossGen"
           Inputs="@(_filesToCrossGen)"
           Outputs="%(_filesToCrossGen.CrossGenedPath)">
+    <Message Text="Crossgenning @(_filesToCrossGen)" />
     <PropertyGroup>
       <_crossGenResponseFile>$(_crossGenIntermediatePath)/%(_filesToCrossGen.FileName).rsp</_crossGenResponseFile>
     </PropertyGroup>
@@ -344,7 +343,7 @@
     <ItemGroup>
       <FilesToPackage Include="$(CrossGenSymbolsOutputPath)/**/*$(CrossGenSymbolExtension)">
         <IsSymbolFile>true</IsSymbolFile>
-        <TargetPath>runtimes/$(NuGetRuntimeIdentifier)/lib/$(PackageTargetFramework)</TargetPath>
+        <TargetPath>runtimes/$(PackageRID)/lib/$(PackageTargetFramework)</TargetPath>
       </FilesToPackage>
     </ItemGroup>
   </Target>

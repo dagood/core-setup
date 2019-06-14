@@ -211,10 +211,7 @@
   <!-- Prepares all items for cross-gen and replaces package file items with their cross-gen'ed equivalents -->
   <Target Name="PrepareForCrossGen"
           Condition="'$(DisableCrossgen)' != 'true'"
-          DependsOnTargets="
-            GetCorePackagePaths;
-            GetFilesFromPackages">
-    <Message Text="PrepareForCrossGen @(_filesToCrossGen)" />
+          DependsOnTargets="GetFilesFromPackages">
     <PropertyGroup>
       <_crossGenIntermediatePath>$(IntermediateOutputPath)crossgen\</_crossGenIntermediatePath>
     </PropertyGroup>
@@ -265,13 +262,15 @@
   <Target Name="CrossGen"
           BeforeTargets="Build"
           DependsOnTargets="
-            GetCrossgenToolPaths;
-            EnsureCrossGenIsExecutable;
+            PrepareForCrossGen;
             CreateCrossGenImages;
             CreateCrossGenSymbols" />
 
   <Target Name="CreateCrossGenImages"
-          DependsOnTargets="PrepareForCrossGen"
+          Condition="'@(_filesToCrossGen)' != ''"
+          DependsOnTargets="
+            GetCrossgenToolPaths;
+            EnsureCrossGenIsExecutable"
           Inputs="@(_filesToCrossGen)"
           Outputs="%(_filesToCrossGen.CrossGenedPath)">
     <PropertyGroup>

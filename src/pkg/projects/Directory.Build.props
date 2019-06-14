@@ -174,7 +174,7 @@
     <!-- During NuGet restore, grab assets for all applicable RIDs. -->
     <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
     <!-- When resolving assets to pack, use the target runtime (if any). -->
-    <RuntimeIdentifier>$(PackageTargetRuntime)</RuntimeIdentifier>
+    <RuntimeIdentifier>$(PackageRID)</RuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

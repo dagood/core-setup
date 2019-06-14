@@ -8,6 +8,9 @@
 
   <!-- Fetches all the file items from the packages that we want to redist -->
   <Target Name="GetFilesFromPackages">
+    <Message Text="ReferenceCopyLocalPaths @(ReferenceCopyLocalPaths)" />
+    <Message Text="Reference @(Reference)" />
+
     <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
       <!-- RID-specific: include all runtime files. -->
       <FilesToPackage Include="@(ReferenceCopyLocalPaths)">
@@ -205,6 +208,7 @@
           DependsOnTargets="
             GetCorePackagePaths;
             GetFilesFromPackages">
+    <Message Text="PrepareForCrossGen @(_filesToCrossGen)" />
     <PropertyGroup>
       <_crossGenIntermediatePath>$(IntermediateOutputPath)crossgen</_crossGenIntermediatePath>
     </PropertyGroup>
@@ -241,6 +245,7 @@
       <_crossGenedFilesToPackage Include="@(_filesToCrossGen->'%(CrossGenedPath)')" />
       <FilesToPackage Include="@(_crossGenedFilesToPackage)" />
     </ItemGroup>
+    <Message Text="PrepareForCrossGen @(_filesToCrossGen)" />
   </Target>
 
   <!-- Ensure crossgen is executable. See https://github.com/NuGet/Home/issues/4424 -->

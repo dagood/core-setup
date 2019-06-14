@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <SharedFxProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.Internal.pkgproj" />
+  </ItemGroup>
+
+</Project>

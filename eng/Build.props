@@ -2,7 +2,12 @@
 
   <ItemGroup>
     <ProjectToBuild Include="$(RepoRoot)build.proj" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.*proj" />
+    <!--
+      Build pkgproj/depproj but not sfxproj. sfxproj requires pkgprojs to build their nupkgs first,
+      before Restore, which doesn't seem supported by Arcade.
+    -->
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" />
   </ItemGroup>
 
   <!--

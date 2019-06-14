@@ -17,11 +17,13 @@
   <Target Name="BuildCombinedInstallers" DependsOnTargets="GenerateCombinedInstallers" Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
 
   <!--
-    To build installers, we need layouts to be built first. Call MSBuild on the requirements so that
-    parallel MSBuild does the ordering work.
+    To build installers, we need shared fx layouts to be built first. Call MSBuild on the
+    requirements so that parallel MSBuild does the ordering work.
   -->
   <Target Name="BuildDependencies">
-    <MSBuild Projects="$(SourceDir)pkg\projects\netcoreapp\pkg\workaround\Microsoft.NETCore.App.pkgproj" />
+    <MSBuild
+      Projects="$(SourceDir)pkg\projects\netcoreapp\sfx\Microsoft.NETCore.App.SharedFx.sfxproj"
+      Targets="Build"/>
   </Target>
 
   <Target Name="InitPackage">

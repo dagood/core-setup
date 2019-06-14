@@ -1,53 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk" InitialTargets="GetPackageReference" DefaultTargets="Restore;Publish">
+<Project>
   <!--
-    This project lays out a shared framework using the SDK targets.
+    Shared targets specific to shared framework projects (sfxproj).
   -->
 
   <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
-  <PropertyGroup>
-    <TargetFramework>$(NETCoreAppFramework)</TargetFramework>
-    <RuntimeIdentifier>$(PackageRID)</RuntimeIdentifier>
-    <PackageId>unused</PackageId>
-
-    <ProjectDepsFileName>$(SharedFrameworkName).deps.json</ProjectDepsFileName>
-
-    <!--
-      When blank, MicrosoftNETPlatformLibrary defaults to Microsoft.NETCore.App. This property
-      causes the SDK to trim dependencies when publishing a framework-dependent app. We want to be
-      able to create Microsoft.NETCore.App here, so disable this behavior. Use a non-'' value to
-      avoid the default and make it hint at the goal in case it shows up in a weird place.
-    -->
-    <MicrosoftNETPlatformLibrary>do-not-consider-existing-platform</MicrosoftNETPlatformLibrary>
-
-    <!-- Don't reference NETCore.App -->
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <!-- Only Restore from our built packages -->
-    <RestoreSources>$(PackageOutputPath)</RestoreSources>
-    <!-- Ensure only this repo's NuGet.config file is used. -->
-    <RestoreConfigFile>$(ProjectDir)NuGet.config</RestoreConfigFile>
-    <!-- Use repo-restored packages for platforms and targets dependencies -->
-    <RestoreFallbackFolders>$(PackagesDir)</RestoreFallbackFolders>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-    <!-- Don't error due to lack of runtime-specific deps, we're referencing those directly -->
-    <EnsureRuntimePackageDependencies>false</EnsureRuntimePackageDependencies>
-    <!-- Use a project-local packages folder. 'p', not 'packages': max path breathing room. -->
-    <RestorePackagesPath>$(IntermediateOutputPath)p</RestorePackagesPath>
-    <!-- Do not build or nor build in publish output or deps -->
-    <NoBuild>true</NoBuild>
-    <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
-    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
-    <IncludeMainProjectInDepsFile>false</IncludeMainProjectInDepsFile>
-  </PropertyGroup>
-
-  <Target Name="GetPackageReference">
-    <Error Condition="'$(SharedFrameworkName)' == ''" Text="'SharedFrameworkName' property not specified." />
-    <Error Condition="'$(SharedFrameworkPkgprojFile)' == ''" Text="'SharedFrameworkPkgprojFile' property not specified." />
-
+  <Target Name="GetPackageReference"
+          BeforeTargets="CollectPackageReferences">
     <MSBuild
-      Projects="$(SharedFrameworkPkgprojFile)"
-      Targets="GetPackageIdentity"
-      RemoveProperties="Configuration">
+      Projects="@(SharedFxProjectReference)"
+      Targets="GetPackageIdentity">
       <Output TaskParameter="TargetOutputs" ItemName="SfxIdentity" />
     </MSBuild>
 
@@ -58,9 +20,8 @@
     </PropertyGroup>
 
     <MSBuild
-      Projects="$(SharedFrameworkPkgprojFile)"
-      Targets="GetSharedFrameworkPackageReferences"
-      RemoveProperties="Configuration">
+      Projects="@(SharedFxProjectReference)"
+      Targets="GetSharedFrameworkPackageReferences">
       <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
     </MSBuild>
   </Target>
@@ -103,7 +64,7 @@
     </PropertyGroup>
 
     <WriteLinesToFile
-      File="$(PublishDir)$(SharedFrameworkName).runtimeconfig.json"
+      File="$(PublishDir)$(MSBuildProjectName).runtimeconfig.json"
       Lines="$(_runtimeConfigContent)"
       Overwrite="true" />
   </Target>
@@ -232,5 +193,24 @@
     <RemoveDir Directories="$(PublishDir);$(RestorePackagesPath)" />
     <Delete Files="$(ProjectAssetsFile)" />
   </Target>
+
+  <!--
+    Ensure the pkgproj is already built. This isn't a real ProjectReference because the SDK doesn't
+    seem to handle pkgproj nicely for Publish. For now we're using its nupkg directly.
+  -->
+  <Target Name="BuildSharedFxProjectReferences">
+    <MSBuild Projects="@(SharedFxProjectReference)" />
+  </Target>
+
+  <!-- Target overrides -->
+
+  <!--
+    Redefine build. Shared framework generation uses pkgproj packages.
+  -->
+  <Target Name="Build"
+          DependsOnTargets="
+            BuildSharedFxProjectReferences;
+            Restore;
+            Publish" />
 
 </Project>

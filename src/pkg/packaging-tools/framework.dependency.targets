@@ -8,8 +8,10 @@
 
   <!-- Fetches all the file items from the packages that we want to redist -->
   <Target Name="GetFilesFromPackages">
-    <Message Text="ReferenceCopyLocalPaths @(ReferenceCopyLocalPaths)" />
-    <Message Text="Reference @(Reference)" />
+    <ItemGroup>
+      <__ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" />
+      <__Reference Include="@(Reference)" />
+    </ItemGroup>
 
     <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
       <!-- RID-specific: include all runtime files. -->
@@ -224,7 +226,7 @@
         Resource DLLs in 'cs/', 'de/', ... subdirectories.
       -->
       <_filesToCrossGen
-        Include="@(FilesToPackage)"
+        Include="@(ReferenceCopyLocalPaths)"
         Condition="
           '%(FilesToPackage.IsNative)' != 'true' AND
           '%(FileName)' != 'System.Private.CoreLib' AND
@@ -245,7 +247,9 @@
       <_crossGenedFilesToPackage Include="@(_filesToCrossGen->'%(CrossGenedPath)')" />
       <FilesToPackage Include="@(_crossGenedFilesToPackage)" />
     </ItemGroup>
-    <Message Text="PrepareForCrossGen @(_filesToCrossGen)" />
+    <ItemGroup>
+      <__filesToCrossGen Include="@(_filesToCrossGen)" />
+    </ItemGroup>
   </Target>
 
   <!-- Ensure crossgen is executable. See https://github.com/NuGet/Home/issues/4424 -->
@@ -269,7 +273,6 @@
           DependsOnTargets="PrepareForCrossGen"
           Inputs="@(_filesToCrossGen)"
           Outputs="%(_filesToCrossGen.CrossGenedPath)">
-    <Message Text="Crossgenning @(_filesToCrossGen)" />
     <PropertyGroup>
       <_crossGenResponseFile>$(_crossGenIntermediatePath)/%(_filesToCrossGen.FileName).rsp</_crossGenResponseFile>
     </PropertyGroup>

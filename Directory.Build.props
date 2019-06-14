@@ -330,7 +330,7 @@
     <BaseOutputPath Condition="'$(BaseOutputPath)'==''">$(BinDir)</BaseOutputPath>
     <OutputPath Condition="'$(OutputPath)'==''">$(BaseOutputPath)$(OSPlatformConfig)\</OutputPath>
     <BaseOutputRootPath>$(BinDir)$(OSPlatformConfig)\</BaseOutputRootPath>
-    <CrossGenRootPath>$(BaseOutputRootPath)\crossgen</CrossGenRootPath>
+    <CrossGenRootPath>$(BaseOutputRootPath)crossgen\</CrossGenRootPath>
 
     <IntermediateOutputRootPath Condition="'$(IntermediateOutputRootPath)' == ''">$(ObjDir)$(OSPlatformConfig)\</IntermediateOutputRootPath>
 

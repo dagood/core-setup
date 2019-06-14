@@ -89,7 +89,7 @@
     <NuGetTargetMoniker>$(NETCoreAppFrameworkMoniker)</NuGetTargetMoniker>
     <NuGetTargetMonikerShort>$(NETCoreAppFramework)</NuGetTargetMonikerShort>
     <PackageTargetFramework>$(NETCoreAppFramework)</PackageTargetFramework>
-    <CrossGenOutputPath>$(CrossGenRootPath)/$(MSBuildProjectName)/$(NuGetRuntimeIdentifier)</CrossGenOutputPath>
+    <CrossGenOutputPath>$(CrossGenRootPath)$(MSBuildProjectName)\$(NuGetRuntimeIdentifier)\</CrossGenOutputPath>
     <ContainsPackageReferences>true</ContainsPackageReferences>
     <RidSpecificAssets Condition="'$(NuGetRuntimeIdentifier)' != ''">true</RidSpecificAssets>
     <AdditionalRestoreArgs>/p:HasRuntimePackages=false /p:IntermediateOutputPath=$(IntermediateOutputPath) /bl:$(IntermediateOutputPath)/dotnet-restore.binlog</AdditionalRestoreArgs>

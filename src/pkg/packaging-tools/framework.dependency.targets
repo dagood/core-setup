@@ -216,7 +216,7 @@
             GetFilesFromPackages">
     <Message Text="PrepareForCrossGen @(_filesToCrossGen)" />
     <PropertyGroup>
-      <_crossGenIntermediatePath>$(IntermediateOutputPath)crossgen</_crossGenIntermediatePath>
+      <_crossGenIntermediatePath>$(IntermediateOutputPath)crossgen\</_crossGenIntermediatePath>
     </PropertyGroup>
     
     <ItemGroup>
@@ -241,9 +241,9 @@
             '%(FileName)' != 'System.Runtime.WindowsRuntime' Or
             '$(OsEnvironment)'=='Windows_NT'
           )">
-        <CrossGenedDirectory>$(CrossGenOutputPath)/%(TargetPath)/</CrossGenedDirectory>
-        <CrossGenedPath>$(CrossGenOutputPath)/%(TargetPath)/%(FileName)%(Extension)</CrossGenedPath>
-        <CrossGenSymbolSemaphorePath>$(_crossGenIntermediatePath)/%(FileName).symbol.semaphore</CrossGenSymbolSemaphorePath>
+        <CrossGenedDirectory>$(CrossGenOutputPath)%(TargetPath)/</CrossGenedDirectory>
+        <CrossGenedPath>$(CrossGenOutputPath)%(TargetPath)/%(FileName)%(Extension)</CrossGenedPath>
+        <CrossGenSymbolSemaphorePath>$(_crossGenIntermediatePath)%(FileName).symbol.semaphore</CrossGenSymbolSemaphorePath>
       </_filesToCrossGen>
     </ItemGroup>
 
@@ -275,7 +275,7 @@
           Inputs="@(_filesToCrossGen)"
           Outputs="%(_filesToCrossGen.CrossGenedPath)">
     <PropertyGroup>
-      <_crossGenResponseFile>$(_crossGenIntermediatePath)/%(_filesToCrossGen.FileName).rsp</_crossGenResponseFile>
+      <_crossGenResponseFile>$(_crossGenIntermediatePath)%(_filesToCrossGen.FileName).rsp</_crossGenResponseFile>
     </PropertyGroup>
     <ItemGroup>
       <_crossGenArgs Include="-readytorun" />
@@ -314,7 +314,7 @@
           Inputs="%(_filesToCrossGen.CrossGenedPath)"
           Outputs="%(_filesToCrossGen.CrossGenSymbolSemaphorePath)">
     <PropertyGroup>
-      <_crossGenSymbolsResponseFile>$(_crossGenIntermediatePath)/%(_filesToCrossGen.FileName).symbols.rsp</_crossGenSymbolsResponseFile>
+      <_crossGenSymbolsResponseFile>$(_crossGenIntermediatePath)%(_filesToCrossGen.FileName).symbols.rsp</_crossGenSymbolsResponseFile>
       <_crossGenSymbolsOptionName Condition="'$(OS)' == 'Windows_NT'">CreatePDB</_crossGenSymbolsOptionName>
       <_crossGenSymbolsOptionName Condition="'$(_crossGenSymbolsOptionName)' == ''">CreatePerfMap</_crossGenSymbolsOptionName>
       <_crossGenSymbolsOutputDirectory>$(CrossGenSymbolsOutputPath)/%(_filesToCrossGen.TargetPath)</_crossGenSymbolsOutputDirectory>

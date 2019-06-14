@@ -19,6 +19,7 @@
 
     <!-- Only Restore from our built packages -->
     <RestoreSources>$(PackageOutputPath)</RestoreSources>
+    <AddDotnetfeedProjectSource>false</AddDotnetfeedProjectSource>
     <!-- Ensure only this repo's NuGet.config file is used. -->
     <RestoreConfigFile>$(ProjectDir)NuGet.config</RestoreConfigFile>
     <!-- Use repo-restored packages for platforms and targets dependencies -->
@@ -33,6 +34,8 @@
     <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <IncludeMainProjectInDepsFile>false</IncludeMainProjectInDepsFile>
+
+    <PublishDir>$(SharedFrameworkLayoutDir)shared/$(SfxIdentity)/$(SfxVersion)/</PublishDir>
   </PropertyGroup>
 
 </Project>

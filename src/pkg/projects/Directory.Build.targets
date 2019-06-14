@@ -338,41 +338,4 @@
     </ItemGroup>
   </Target>
 
-  <!--
-    Make CalculatePackageVersion available even when ExcludeRestorePackageImports=true, which is set
-    during Restore. GetPackageIdentity is used to populate a PackageReference for the shared
-    framework projects during Restore.
-  -->
-  <!-- <COPIED FROM PACKAGING TASKS PACKAGE> -->
-  <!-- Calculates the package version including any prerelease suffix -->
-  <Target Name="CalculatePackageVersion"
-        DependsOnTargets="GetAssemblyVersionFromProjects">
-
-    <Error Text="No VersionSuffix was set. Ensure it is set before targets in packaging are ran."
-           Condition="'$(VersionSuffix)' == ''" />
-
-    <Error Text="No version could be detected.  Either specify the Version property or provide at least one managed assembly."
-           Condition="'$(PackageVersion)' == '' AND '$(_AssemblyVersion)' == ''" />
-
-    <ItemGroup>
-      <_thisPackage Include="$(Id)">
-        <Version Condition="'$(PackageVersion)' != ''">$(PackageVersion)</Version>
-        <Version Condition="'$(PackageVersion)' == ''">$(_AssemblyVersion)</Version>
-      </_thisPackage>
-    </ItemGroup>
-
-    <ApplyPreReleaseSuffix Condition="'$(StableVersion)' == ''"
-                           OriginalPackages="@(_thisPackage)"
-                           StablePackages="@(StablePackage)"
-                           PackageIndexes="@(PackageIndex)"
-                           PreReleaseSuffix="-$(VersionSuffix)" >
-      <Output TaskParameter="UpdatedPackages" ItemName="_thisPackageFinal"/>
-    </ApplyPreReleaseSuffix>
-
-    <PropertyGroup Condition="'$(StableVersion)' == ''">
-      <PackageVersion>%(_thisPackageFinal.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
-  <!-- </COPIED FROM PACKAGING TASKS PACKAGE> -->
-
 </Project>

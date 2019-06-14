@@ -7,23 +7,14 @@
 
   <Target Name="GetPackageReference"
           BeforeTargets="CollectPackageReferences">
-    <MSBuild
-      Projects="@(SharedFxProjectReference)"
-      Targets="GetPackageIdentity">
-      <Output TaskParameter="TargetOutputs" ItemName="SfxIdentity" />
-    </MSBuild>
-
     <PropertyGroup>
-      <SfxIdentity>%(SfxIdentity.Identity)</SfxIdentity>
-      <SfxVersion>%(SfxIdentity.Version)</SfxVersion>
-      <PublishDir>$(SharedFrameworkLayoutDir)shared/$(SfxIdentity)/$(SfxVersion)/</PublishDir>
+      <SfxVersion Condition="'$(SfxVersion)' == ''">$(ProductVersion)</SfxVersion>
+      <SfxPackageIdentity Condition="'$(SfxPackageIdentity)' == ''">$(SfxIdentity)</SfxPackageIdentity>
     </PropertyGroup>
 
-    <MSBuild
-      Projects="@(SharedFxProjectReference)"
-      Targets="GetSharedFrameworkPackageReferences">
-      <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
-    </MSBuild>
+    <ItemGroup>
+      <PackageReference Include="$(SfxPackageIdentity)" Version="$(SfxVersion)" />
+    </ItemGroup>
   </Target>
 
   <!--
@@ -75,7 +66,7 @@
     <!-- Generate .version file -->
     <ItemGroup>
       <VersionLines Include="$(LatestCommit)" />
-      <VersionLines Include="%(PackageReference.Version)" />
+      <VersionLines Include="$(SfxVersion)" />
     </ItemGroup>
 
     <WriteLinesToFile
@@ -199,7 +190,7 @@
     seem to handle pkgproj nicely for Publish. For now we're using its nupkg directly.
   -->
   <Target Name="BuildSharedFxProjectReferences">
-    <MSBuild Projects="@(SharedFxProjectReference)" />
+    <MSBuild Projects="@(SharedFxProjectReference)" Targets="Build" />
   </Target>
 
   <!-- Target overrides -->

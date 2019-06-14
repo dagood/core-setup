@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <SfxIdentity>Microsoft.WindowsDesktop.App</SfxIdentity>
+  </PropertyGroup>
+
   <ItemGroup>
     <SharedFxProjectReference Include="..\pkg\Microsoft.WindowsDesktop.App.pkgproj" />
   </ItemGroup>

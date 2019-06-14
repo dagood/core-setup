@@ -21,8 +21,8 @@
         <IsNative Condition="$([System.String]::new('%(Identity)').ToLowerInvariant().Replace('\', '/').Contains('/native/'))">true</IsNative>
       </RidSpecificFilesToPackage>
       <RidSpecificFilesToPackage>
-        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' != 'true'">runtimes/$(NuGetRuntimeIdentifier)/lib/$(PackageTargetFramework)</TargetPath>
-        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' == 'true'">runtimes/$(NuGetRuntimeIdentifier)/native</TargetPath>
+        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' != 'true'">runtimes/$(PackageRID)/lib/$(PackageTargetFramework)</TargetPath>
+        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' == 'true'">runtimes/$(PackageRID)/native</TargetPath>
       </RidSpecificFilesToPackage>
       <!-- Ensure localization resource files make it to their subdirs. -->
       <RidSpecificFilesToPackage Condition="'%(RidSpecificFilesToPackage.DestinationSubDirectory)' != ''">

@@ -13,21 +13,25 @@
       <__Reference Include="@(Reference)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
+    <ItemGroup>
       <!-- RID-specific: include all runtime files. -->
-      <FilesToPackage Include="@(ReferenceCopyLocalPaths)">
+      <RidSpecificFilesToPackage Include="@(ReferenceCopyLocalPaths)">
         <!-- ResolveNugetPackageAssets doesn't preserve the asset type (native),
              calculate it by looking for native in the path -->
         <IsNative Condition="$([System.String]::new('%(Identity)').ToLowerInvariant().Replace('\', '/').Contains('/native/'))">true</IsNative>
-      </FilesToPackage>
-      <FilesToPackage>
-        <TargetPath Condition="'%(FilesToPackage.IsNative)' != 'true'">runtimes/$(NuGetRuntimeIdentifier)/lib/$(PackageTargetFramework)</TargetPath>
-        <TargetPath Condition="'%(FilesToPackage.IsNative)' == 'true'">runtimes/$(NuGetRuntimeIdentifier)/native</TargetPath>
-      </FilesToPackage>
+      </RidSpecificFilesToPackage>
+      <RidSpecificFilesToPackage>
+        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' != 'true'">runtimes/$(NuGetRuntimeIdentifier)/lib/$(PackageTargetFramework)</TargetPath>
+        <TargetPath Condition="'%(RidSpecificFilesToPackage.IsNative)' == 'true'">runtimes/$(NuGetRuntimeIdentifier)/native</TargetPath>
+      </RidSpecificFilesToPackage>
       <!-- Ensure localization resource files make it to their subdirs. -->
-      <FilesToPackage Condition="'%(FilesToPackage.DestinationSubDirectory)' != ''">
-        <TargetPath>%(FilesToPackage.TargetPath)/%(FilesToPackage.DestinationSubDirectory)</TargetPath>
-      </FilesToPackage>
+      <RidSpecificFilesToPackage Condition="'%(RidSpecificFilesToPackage.DestinationSubDirectory)' != ''">
+        <TargetPath>%(RidSpecificFilesToPackage.TargetPath)/%(RidSpecificFilesToPackage.DestinationSubDirectory)</TargetPath>
+      </RidSpecificFilesToPackage>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
+      <FilesToPackage Include="@(RidSpecificFilesToPackage)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' == ''">
@@ -226,13 +230,13 @@
         Resource DLLs in 'cs/', 'de/', ... subdirectories.
       -->
       <_filesToCrossGen
-        Include="@(ReferenceCopyLocalPaths)"
+        Include="@(RidSpecificFilesToPackage)"
         Condition="
-          '%(FilesToPackage.IsNative)' != 'true' AND
+          '%(RidSpecificFilesToPackage.IsNative)' != 'true' AND
           '%(FileName)' != 'System.Private.CoreLib' AND
           '%(FileName)' != 'mscorlib' AND
           '%(Extension)' == '.dll' AND
-          '%(FilesToPackage.DestinationSubDirectory)' == '' AND
+          '%(RidSpecificFilesToPackage.DestinationSubDirectory)' == '' AND
           (
             '%(FileName)' != 'System.Runtime.WindowsRuntime' Or
             '$(OsEnvironment)'=='Windows_NT'
@@ -241,14 +245,11 @@
         <CrossGenedPath>$(CrossGenOutputPath)/%(TargetPath)/%(FileName)%(Extension)</CrossGenedPath>
         <CrossGenSymbolSemaphorePath>$(_crossGenIntermediatePath)/%(FileName).symbol.semaphore</CrossGenSymbolSemaphorePath>
       </_filesToCrossGen>
-
-      <FilesToPackage Remove="@(_filesToCrossGen)" />
-
-      <_crossGenedFilesToPackage Include="@(_filesToCrossGen->'%(CrossGenedPath)')" />
-      <FilesToPackage Include="@(_crossGenedFilesToPackage)" />
     </ItemGroup>
-    <ItemGroup>
-      <__filesToCrossGen Include="@(_filesToCrossGen)" />
+
+    <ItemGroup Condition="'$(NuGetRuntimeIdentifier)' != ''">
+      <FilesToPackage Remove="@(_filesToCrossGen)" />
+      <FilesToPackage Include="@(_filesToCrossGen->'%(CrossGenedPath)')" />
     </ItemGroup>
   </Target>
 

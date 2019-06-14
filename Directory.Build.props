@@ -71,8 +71,6 @@
     <PortableBuild Condition="'$(PortableBuild)' == ''">true</PortableBuild>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)BranchInfo.props" />
-
   <PropertyGroup>
     <SharedFrameworkName>Microsoft.NETCore.App</SharedFrameworkName>
     <NETCoreAppFrameworkIdentifier>.NETCoreApp</NETCoreAppFrameworkIdentifier>
@@ -124,9 +122,8 @@
 
   <!-- Versioning -->
   <PropertyGroup>
-    <VersionSuffix></VersionSuffix>
-    <VersionSuffix Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">$(PreReleaseLabel)</VersionSuffix>
-    <VersionSuffix Condition="'$(IncludeBuildNumberInPackageVersion)' == 'true'">$(VersionSuffix)-$(BuildNumberMajor)-$(BuildNumberMinor)</VersionSuffix>
+    <IncludePreReleaseLabelInPackageVersion Condition="'$(DotNetFinalVersionKind)' != 'release'">true</IncludePreReleaseLabelInPackageVersion>
+    <IncludeBuildNumberInPackageVersion Condition="'$(StabilizePackageVersion)' != 'true'">true</IncludeBuildNumberInPackageVersion>
 
     <ProductVersionSuffix Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">-$(VersionSuffix)</ProductVersionSuffix>
     <ProductBandVersion Condition="'$(ProductBandVersion)' == ''">$(MajorVersion).$(MinorVersion)</ProductBandVersion>
@@ -139,6 +136,8 @@
     <RuntimeDepsDebVersion Condition="'$(RuntimeDepsDebVersion)'==''">$(ProductVersion)</RuntimeDepsDebVersion>
 
     <NuGetVersion>$(SharedFrameworkNugetVersion)</NuGetVersion>
+
+    <NETCoreAppMaximumVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppMaximumVersion>
 
     <!--
       By default, we are always building the nuget packages for HostPolicy, HostFXR and

@@ -105,7 +105,7 @@
   </Target>
 
   <Target Name="ValidatePreReleaseStrings" Condition="'$(StabilizePackageVersion)'!='true'">
-    <Error Condition="'$(PreReleaseLabel)'==''" Text="PreReleaseLabel is undefined" />
+    <Error Condition="'$(PreReleaseVersionLabel)'==''" Text="PreReleaseVersionLabel is undefined" />
     <Error Condition="'$(BuildNumberMajor)'==''" Text="BuildNumberMajor is undefined" />
     <Error Condition="'$(BuildNumberMinor)'==''" Text="BuildNumberMinor is undefined" />
   </Target>

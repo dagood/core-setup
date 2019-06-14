@@ -24,6 +24,10 @@
   </Target>
 
   <Target Name="GatherPublishToAzureChecksums" DependsOnTargets="CreateChecksums" >
+    <PropertyGroup>
+      <ChecksumsRelativePath>Runtime/$(ProductVersion)</ChecksumsRelativePath>
+    </PropertyGroup>
+
     <ItemGroup>
       <ChecksumItems Include="$(AssetOutputPath)**/*$(ChecksumExtension)" />
       <Project Include="publish.proj">
@@ -34,6 +38,10 @@
   </Target>
 
   <Target Name="CreateChecksums">
+    <PropertyGroup>
+      <ChecksumExtension>.sha512</ChecksumExtension>
+    </PropertyGroup>
+
     <ItemGroup>
       <ItemsToChecksum Include="@(CompressedFile)" />
       <ItemsToChecksum Include="@(InstallerFile)" />
@@ -45,6 +53,7 @@
   </Target>
 
   <Target Name="GenerateDebRepoFiles"
+          DependsOnTargets="GetInstallerLocations"
           Condition="('$(TargetsUbuntu)' == 'true' or '$(TargetsDebian)' == 'true') and '$(TargetArchitecture)' == 'x64'">
 
     <ItemGroup>

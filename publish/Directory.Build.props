@@ -4,9 +4,6 @@
   <PropertyGroup>
     <BaseUrl Condition="'$(BaseUrl)' == ''">https://dotnetcli.blob.core.windows.net/</BaseUrl>
     <NuGetPushTimeoutSeconds Condition="'$(NuGetPushTimeoutSeconds)' == ''">3600</NuGetPushTimeoutSeconds>
-
-    <ChecksumsRelativePath>Runtime/$(ProductVersion)</ChecksumsRelativePath>
-    <ChecksumExtension>.sha512</ChecksumExtension>
   </PropertyGroup>
 
   <ItemGroup>

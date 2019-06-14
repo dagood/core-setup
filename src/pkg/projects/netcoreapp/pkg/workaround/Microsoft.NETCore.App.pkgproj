@@ -19,12 +19,6 @@
     <GenerateSharedFramework>true</GenerateSharedFramework>
     <GenerateRuntimeGraph>true</GenerateRuntimeGraph>
 
-    <!--
-      Make sure the installer file is generated with the name from /Directory.Build.props. This
-      allows the existing infra to bundle it without any changes.
-    -->
-    <InstallerFile>$(SharedFrameworkInstallerFile)</InstallerFile>
-
     <!-- Lay out the sfx in the legacy location for old packaging to keep working for now. -->
     <SharedFrameworkLayoutDir>$(SharedFrameworkPublishDir)</SharedFrameworkLayoutDir>
 
@@ -32,7 +26,18 @@
     <IncludeWerRelatedKeys>true</IncludeWerRelatedKeys>
     <IncludeBreadcrumbStoreFolder>true</IncludeBreadcrumbStoreFolder>
   </PropertyGroup>
-  
+
+  <!--
+    Make sure the installer file is generated with the old infra's name and location. This allows
+    the existing infra to bundle it without any changes.
+  -->
+  <Target Name="PutSharedFrameworkMsiInLegacyLocation"
+          BeforeTargets="GetInstallerProperties">
+    <PropertyGroup>
+      <InstallerFile>$(SharedFrameworkInstallerFile)</InstallerFile>
+    </PropertyGroup>
+  </Target>
+
   <ItemGroup>
     <Dependency Include="Microsoft.NETCore.Platforms" Version="$(MicrosoftNETCorePlatformsPackageVersion)" />
   </ItemGroup>

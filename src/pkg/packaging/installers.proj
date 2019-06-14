@@ -5,6 +5,7 @@
 
   <PropertyGroup>
     <PackageTargets>
+      GetInstallerLocations;
       GenerateVersionBadge;
       GenerateCompressedFiles;
       GenerateNugetPackages;

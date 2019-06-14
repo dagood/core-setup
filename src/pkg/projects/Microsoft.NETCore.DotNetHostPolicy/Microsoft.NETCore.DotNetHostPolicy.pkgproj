@@ -5,10 +5,8 @@
   </PropertyGroup>   
 
   <ItemGroup>
-    <Dependency Include="Microsoft.NETCore.DotNetHostResolver">
-      <Version>$(HostResolverVersion)</Version>
-    </Dependency>
-  </ItemGroup>   
+    <Dependency Include="Microsoft.NETCore.DotNetHostResolver" Version="$(HostResolverVersion)" />
+  </ItemGroup>
 
   <Import Project="$(MSBuildProjectName).props" />
 

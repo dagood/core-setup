@@ -120,68 +120,6 @@
     </RestoreSources>
   </PropertyGroup>
 
-  <!-- Versioning -->
-  <PropertyGroup>
-    <IncludePreReleaseLabelInPackageVersion Condition="'$(DotNetFinalVersionKind)' != 'release'">true</IncludePreReleaseLabelInPackageVersion>
-    <IncludeBuildNumberInPackageVersion Condition="'$(StabilizePackageVersion)' != 'true'">true</IncludeBuildNumberInPackageVersion>
-
-    <VersionSuffixHere>$(VersionSuffix)</VersionSuffixHere>
-    <ProductVersionSuffix Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">-$(VersionSuffix)</ProductVersionSuffix>
-    <ProductBandVersion Condition="'$(ProductBandVersion)' == ''">$(MajorVersion).$(MinorVersion)</ProductBandVersion>
-    <ProductionVersion Condition="'$(ProductionVersion)' == ''">$(ProductBandVersion).$(PatchVersion)</ProductionVersion>
-    <ProductVersion>$(ProductionVersion)$(ProductVersionSuffix)</ProductVersion>
-
-    <SharedFrameworkNugetVersion>$(ProductVersion)</SharedFrameworkNugetVersion>
-
-    <RuntimeDepsRpmVersion Condition="'$(RuntimeDepsRpmVersion)'==''">$(ProductVersion)</RuntimeDepsRpmVersion>
-    <RuntimeDepsDebVersion Condition="'$(RuntimeDepsDebVersion)'==''">$(ProductVersion)</RuntimeDepsDebVersion>
-
-    <NuGetVersion>$(SharedFrameworkNugetVersion)</NuGetVersion>
-
-    <NETCoreAppMaximumVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppMaximumVersion>
-
-    <!--
-      By default, we are always building the nuget packages for HostPolicy, HostFXR and
-      Dotnet/AppHost. Thus, the "UseShipped*" properties (below) are always set to false.
-
-      However, there are scenarios when some of these components will not change (e.g. during
-      servicing, we may only change HostPolicy but not HostFXR and Dotnet/AppHost). In such cases,
-      set the appropriate "UseShipped*" property below to true so that we will use the last shipped
-      version of the package.
-    -->
-
-    <!-- The host/apphost package versions are only updated whenever there is a change in the components -->
-    <UseShippedHostPackage>false</UseShippedHostPackage>
-    <HostVersion Condition="'$(UseShippedHostPackage)' != 'true'">$(ProductVersion)</HostVersion>
-    <HostVersion Condition="'$(UseShippedHostPackage)' == 'true'">2.0.0</HostVersion>
-
-    <!-- The AppHostVersion is used for all hosts that aren't dotnet.exe -->
-    <UseShippedAppHostPackage>false</UseShippedAppHostPackage>
-    <AppHostVersion Condition="'$(UseShippedAppHostPackage)' != 'true'">$(ProductVersion)</AppHostVersion>
-    <AppHostVersion Condition="'$(UseShippedAppHostPackage)' == 'true'">2.0.0</AppHostVersion>
-
-    <!--
-        The FXR Resolver package version is only updated whenever there is a change in it.
-        If there is ever a need to use a shipped version of the package, then set the property
-        below to true.
-    -->
-    <UseShippedHostResolverPackage>false</UseShippedHostResolverPackage>
-    <HostResolverVersion Condition="'$(UseShippedHostResolverPackage)' != 'true'">$(ProductVersion)</HostResolverVersion>
-    <HostResolverVersion Condition="'$(UseShippedHostResolverPackage)' == 'true'">2.0.0</HostResolverVersion>
-
-    <!--
-         Host Policy package version is only updated whenever there is a change in it.
-         If there is ever a need to use a shipped version of the package, then set the property
-         below to true.
-    -->
-    <UseShippedHostPolicyPackage>false</UseShippedHostPolicyPackage>
-    <HostPolicyVersion Condition="'$(UseShippedHostPolicyPackage)' != 'true'">$(ProductVersion)</HostPolicyVersion>
-    <HostPolicyVersion Condition="'$(UseShippedHostPolicyPackage)' == 'true'">2.0.0</HostPolicyVersion>
-
-    <BinariesRelativePath>Runtime/$(SharedFrameworkNugetVersion)/</BinariesRelativePath>
-    <InstallersRelativePath>Runtime/$(SharedFrameworkNugetVersion)/</InstallersRelativePath>
-  </PropertyGroup>
-
   <!-- temporary workaround until https://github.com/dotnet/buildtools/pull/1707 is merged to master -->
   <ItemGroup>
     <DotnetSourceList Include="$(RestoreSources)" />
@@ -495,43 +433,6 @@
     <PackageTargetRid>$(OutputRid)</PackageTargetRid>
     <PackageTargetRid Condition="'$(OutputRid)' == 'osx.10.11-x64'">osx.10.10-x64</PackageTargetRid>
     <PackageTargetRid Condition="$(OutputRid.StartsWith('rhel.7.')) and $(OutputRid.EndsWith('-x64'))">rhel.7-x64</PackageTargetRid>
-    <ProductMoniker>$(SharedFrameworkNugetVersion)-$(PackageTargetRid)</ProductMoniker>
-    <HostResolverVersionMoniker>$(HostResolverVersion)-$(PackageTargetRid)</HostResolverVersionMoniker>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CombinedInstallerFile>$(CombinedInstallerStart)$(ProductMoniker)$(CombinedInstallerExtension)</CombinedInstallerFile>
-    <CombinedInstallerEngine>$(CombinedInstallerStart)$(ProductMoniker)-engine.exe</CombinedInstallerEngine>
-
-    <SharedHostInstallerFile>$(SharedHostInstallerStart)$(ProductMoniker)$(InstallerExtension)</SharedHostInstallerFile>
-    <HostFxrInstallerFile>$(HostFxrInstallerStart)$(HostResolverVersionMoniker)$(InstallerExtension)</HostFxrInstallerFile>
-    <SharedFrameworkInstallerFile>$(SharedFrameworkInstallerStart)$(ProductMoniker)$(InstallerExtension)</SharedFrameworkInstallerFile>
-    <DotnetRuntimeDependenciesPackageInstallerFile>$(DotnetRuntimeDependenciesPackageInstallerStart)$(ProductMoniker)$(InstallerExtension)</DotnetRuntimeDependenciesPackageInstallerFile>
-  </PropertyGroup>
-
-  <!-- Runtime Deb and Rpm packages are distro version agnostic -->
-  <PropertyGroup Condition="'$(InstallerExtension)' == '.deb' or '$(InstallerExtension)' == '.rpm'">
-    <SharedHostInstallerFile>$(SharedHostInstallerStart)$(SharedFrameworkNugetVersion)-$(TargetArchitecture)$(InstallerExtension)</SharedHostInstallerFile>
-    <HostFxrInstallerFile>$(HostFxrInstallerStart)$(HostResolverVersion)-$(TargetArchitecture)$(InstallerExtension)</HostFxrInstallerFile>
-    <SharedFrameworkInstallerFile>$(SharedFrameworkInstallerStart)$(SharedFrameworkNugetVersion)-$(TargetArchitecture)$(InstallerExtension)</SharedFrameworkInstallerFile>
-  </PropertyGroup>
-
-  <!-- Runtime-deps Deb package is distro version agnostic. -->
-  <PropertyGroup Condition="'$(InstallerExtension)' == '.deb'">
-    <DotnetRuntimeDependenciesPackageInstallerFile>$(DotnetRuntimeDependenciesPackageInstallerStart)$(SharedFrameworkNugetVersion)-$(TargetArchitecture)$(InstallerExtension)</DotnetRuntimeDependenciesPackageInstallerFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
-   <HostPackageVersion>$(HostVersion)</HostPackageVersion>
-   <HostPackageRelease>1</HostPackageRelease>
-   <HostResolverPackageVersion>$(HostResolverVersion)</HostResolverPackageVersion>
-   <HostResolverPackageRelease>1</HostResolverPackageRelease>
-   <RuntimePackageVersion>$(SharedFrameworkNugetVersion)</RuntimePackageVersion>
-   <RuntimePackageRelease>1</RuntimePackageRelease>
-   <RuntimeDepsDebPackageVersion>$(RuntimeDepsDebVersion)</RuntimeDepsDebPackageVersion>
-   <RuntimeDepsDebPackageRelease>1</RuntimeDepsDebPackageRelease>
-   <RuntimeDepsRpmPackageVersion>$(RuntimeDepsRpmVersion)</RuntimeDepsRpmPackageVersion>
-   <RuntimeDepsRpmPackageRelease>1</RuntimeDepsRpmPackageRelease>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(UsingNETSdkCompiler)' != 'true'">

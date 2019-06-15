@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>$(HostPolicyVersion)</Version>
-  </PropertyGroup>   
+    <VersionProp>HostPolicyVersion</VersionProp>
+  </PropertyGroup>
 
   <ItemGroup>
-    <Dependency Include="Microsoft.NETCore.DotNetHostResolver" Version="$(HostResolverVersion)" />
+    <Dependency Include="Microsoft.NETCore.DotNetHostResolver" VersionProp="HostResolverVersion" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectName).props" />

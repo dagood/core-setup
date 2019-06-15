@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>$(HostVersion)</Version>
-  </PropertyGroup>    
+    <VersionProp>HostVersion</VersionProp>
+  </PropertyGroup>
 
   <Import Condition="'$(PackageTargetRuntime)' != ''" Project="$(MSBuildThisFileDirectory)runtime.$(OSGroup).$(MSBuildProjectName).props" />
 

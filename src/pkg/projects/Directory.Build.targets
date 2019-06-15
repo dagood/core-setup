@@ -15,6 +15,35 @@
   </PropertyGroup>
 
   <!--
+    For any Dependency items with a VersionProp, set it to the property by that name given by the
+    version generation target.
+  -->
+  <Target Name="SetCustomPackageDependencyVersions"
+          BeforeTargets="GetPackageDependencies"
+          DependsOnTargets="GetProductVersions">
+    <ItemGroup>
+      <Dependency Version="$(%(Dependency.VersionProp))" Condition="'%(Dependency.VersionProp)' != ''" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    If the project is configured to use a shipped package version, set it. Use a target because we
+    need the versions from GetProductVersions.
+  -->
+  <Target Name="SetSpecificPackageVersion"
+          Condition="'$(VersionProp)' != ''"
+          BeforeTargets="GenerateNuSpec"
+          DependsOnTargets="GetProductVersions">
+    <!-- Use item metadata: $(%(foo)) works, $($(foo)) doesn't. -->
+    <ItemGroup>
+      <VersionPropItem Include="$(VersionProp)" />
+    </ItemGroup>
+    <PropertyGroup>
+      <Version>$(%(VersionPropItem.Identity))</Version>
+    </PropertyGroup>
+  </Target>
+
+  <!--
     Remove duplicate files returned by restore. The resolve task performs extra detection to pick up
     a PDB file for any file listed in the assets file. This causes duplicates if the assets file
     lists PDBs. If foo.dll and foo.pdb exist in the package and both are listed in the assets file,

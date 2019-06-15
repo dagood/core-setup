@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>$(AppHostVersion)</Version>
+    <VersionProp>AppHostVersion</VersionProp>
   </PropertyGroup>
 
   <Import Project="$(MSBuildProjectName).props" />

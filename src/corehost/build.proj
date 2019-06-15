@@ -8,6 +8,7 @@
   -->
   <Target Name="Build"
           DependsOnTargets="
+            GetProductVersions;
             GenerateNativeVersionFile;
             BuildCoreHostUnix;
             BuildCoreHostWindows" />

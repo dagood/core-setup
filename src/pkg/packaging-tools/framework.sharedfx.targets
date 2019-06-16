@@ -13,9 +13,11 @@
       <SfxPackageIdentity Condition="'$(SfxPackageIdentity)' == ''">$(SfxIdentity)</SfxPackageIdentity>
     </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="$(SfxPackageIdentity)" Version="$(SfxVersion)" />
-    </ItemGroup>
+    <MSBuild
+      Projects="@(SharedFxProjectReference)"
+      Targets="GetPackageIdentity">
+      <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
+    </MSBuild>
   </Target>
 
   <!--

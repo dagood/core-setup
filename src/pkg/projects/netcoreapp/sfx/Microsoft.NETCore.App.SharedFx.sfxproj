@@ -8,6 +8,7 @@
   <ItemGroup>
     <SharedFxProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.Internal.pkgproj" />
     <SharedFxProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.pkgproj" />
+    <SharedFxProjectReference Include="..\..\Microsoft.NETCore.DotNetHost\Microsoft.NETCore.DotNetHost.pkgproj" />
   </ItemGroup>
 
 </Project>

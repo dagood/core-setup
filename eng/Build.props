@@ -14,12 +14,17 @@
     Use this extensibility point to build custom tasks during Build.proj, before any restoring or
     building happens in the repo. These DLLs would ideally live in Arcade and be restored as tools,
     so the idea is building them here is somewhat equivalent.
+
+    Also create the host RID props file so the main build can use it statically.
   -->
   <Target Name="BuildRepoTools" BeforeTargets="Execute">
     <MSBuild
       Projects="$(RepoRoot)tools-local\tasks\core-setup.tasks.csproj"
       Properties="RepoRoot=$(RepoRoot)"
-      Targets="Restore;Build"/>
+      Targets="
+        Restore;
+        Build;
+        CreateHostMachineInfoFile"/>
   </Target>
 
 </Project>

@@ -6,6 +6,7 @@
   <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <Target Name="GetPackageReference"
+          DependsOnTargets="GetProductVersions"
           BeforeTargets="CollectPackageReferences">
     <PropertyGroup>
       <SfxVersion Condition="'$(SfxVersion)' == ''">$(ProductVersion)</SfxVersion>

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Dependency Include="Microsoft.NETCore.DotNetAppHost" VersionProp="AppHostVersion)" />
+    <Dependency Include="Microsoft.NETCore.DotNetAppHost" VersionProp="AppHostVersion" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectName).props" />

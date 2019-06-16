@@ -14,10 +14,10 @@
     <LineupProjectReference Include="@(RuntimeProject)" />
 
     <!-- references the host packages -->
-    <Dependency Include="Microsoft.NETCore.DotNetHostPolicy">
-       <Version>$(HostPolicyVersion)</Version>
-       <TargetFramework>$(NETCoreAppFramework)</TargetFramework>
-    </Dependency>
+    <Dependency
+      Include="Microsoft.NETCore.DotNetHostPolicy"
+      VersionProp="HostPolicyVersion"
+      TargetFramework="$(NETCoreAppFramework)" />
   </ItemGroup>
 
 </Project>

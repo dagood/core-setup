@@ -23,10 +23,11 @@
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <ImportNuGetBuildTasksPackTargetsFromSdk>false</ImportNuGetBuildTasksPackTargetsFromSdk>
 
-    <!-- Include RID in restore outputs to avoid clashing. -->
-    <RestoreOutputPath>$(BaseIntermediateOutputPath)</RestoreOutputPath>
     <!-- Tell NuGet where the assets file is. I think the intermediate output path got more complex with Arcade. -->
+    <RestoreOutputPath>$(BaseIntermediateOutputPath)</RestoreOutputPath>
     <ProjectAssetsFile>$(RestoreOutputPath)\project.assets.json</ProjectAssetsFile>
+
+    <RestoreAllBuildRids>true</RestoreAllBuildRids>
   </PropertyGroup>
 
   <!-- Most packages need the host to be built first. -->
@@ -172,7 +173,7 @@
 
   <PropertyGroup>
     <!-- During NuGet restore, grab assets for all applicable RIDs. -->
-    <RuntimeIdentifiers>@(RestoreBuildRID)</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="'$(RestoreAllBuildRids)' == 'true'">@(RestoreBuildRID)</RuntimeIdentifiers>
     <!-- When resolving assets to pack, use the target runtime (if any). -->
     <RuntimeIdentifier>$(PackageRID)</RuntimeIdentifier>
   </PropertyGroup>

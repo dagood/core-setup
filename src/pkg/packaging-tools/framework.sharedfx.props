@@ -20,6 +20,7 @@
     <!-- Only Restore from our built packages -->
     <RestoreSources>$(ArtifactsShippingPackagesDir)</RestoreSources>
     <AddDotnetfeedProjectSource>false</AddDotnetfeedProjectSource>
+    <RestoreAllBuildRids>false</RestoreAllBuildRids>
     <!-- Ensure only this repo's NuGet.config file is used. -->
     <RestoreConfigFile>$(ProjectDir)NuGet.config</RestoreConfigFile>
     <!-- Use repo-restored packages for platforms and targets dependencies -->

@@ -35,8 +35,6 @@
     <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <IncludeMainProjectInDepsFile>false</IncludeMainProjectInDepsFile>
-
-    <PublishDir>$(SharedFrameworkLayoutDir)shared/$(SfxIdentity)/$(SfxVersion)/</PublishDir>
   </PropertyGroup>
 
 </Project>

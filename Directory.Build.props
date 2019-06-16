@@ -277,7 +277,7 @@
     <PackagesBasePath Condition="'$(PackagesBasePath)'==''">$(BinDir)$(OSPlatformConfig)/</PackagesBasePath>
     <PackageOutputPath Condition="'$(PackageOutputPath)'==''">$(PackagesBasePath)packages/</PackageOutputPath>
     <AssetOutputPath Condition="'$(AssetOutputPath)'==''">$(PackageOutputPath)</AssetOutputPath>
-    <SymbolPackageOutputPath Condition="'$(SymbolPackageOutputPath)'==''">$(PackageOutputPath)</SymbolPackageOutputPath>
+    <SymbolPackageOutputPath Condition="'$(SymbolPackageOutputPath)'==''">$(ArtifactsNonShippingPackagesDir)</SymbolPackageOutputPath>
     <PackageSymbolsBinDir Condition="'$(PackageSymbolsBinDir)' == ''">$(PackagesBasePath)symbols/</PackageSymbolsBinDir>
 
     <!-- Use '/' instead of '\': used directly by WiX which doesn't accept trailing '\'. -->

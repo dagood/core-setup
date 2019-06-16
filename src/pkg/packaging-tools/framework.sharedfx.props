@@ -18,7 +18,7 @@
     <MicrosoftNETPlatformLibrary>do-not-consider-existing-platform</MicrosoftNETPlatformLibrary>
 
     <!-- Only Restore from our built packages -->
-    <RestoreSources>$(PackageOutputPath)</RestoreSources>
+    <RestoreSources>$(ArtifactsShippingPackagesDir)</RestoreSources>
     <AddDotnetfeedProjectSource>false</AddDotnetfeedProjectSource>
     <!-- Ensure only this repo's NuGet.config file is used. -->
     <RestoreConfigFile>$(ProjectDir)NuGet.config</RestoreConfigFile>

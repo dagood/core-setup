@@ -120,33 +120,8 @@
     </RestoreSources>
   </PropertyGroup>
 
-  <!-- temporary workaround until https://github.com/dotnet/buildtools/pull/1707 is merged to master -->
-  <ItemGroup>
-    <DotnetSourceList Include="$(RestoreSources)" />
-  </ItemGroup>
-
   <PropertyGroup>
     <CustomTaskProject>$(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj</CustomTaskProject>
-  </PropertyGroup>
-
-  <!-- list of projects to perform batch restore -->
-  <ItemGroup>
-    <SdkRestoreProjects Include="$(CustomTaskProject)" />
-    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\pkg\deps\deps.csproj" />
-    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.DotNet.PlatformAbstractions\Microsoft.DotNet.PlatformAbstractions.csproj" />
-    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.Extensions.DependencyModel\Microsoft.Extensions.DependencyModel.csproj" />
-    <SdkRestoreProjects Include="$(MSBuildThisFileDirectory)src\managed\Microsoft.NET.HostModel\Microsoft.NET.HostModel.csproj" />
-  </ItemGroup>
-  <PropertyGroup>
-    <DotnetRestorePrefix Condition="'$(RunningOnUnix)' == 'true'">DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 </DotnetRestorePrefix>
-    <DotnetRestoreCommand>$(DotnetRestorePrefix)$(DotNetTool) restore</DotnetRestoreCommand>
-    <!-- Same as $(DotnetRestoreCommand), only doesn't specify `packages` arg -->
-    <DotnetRestoreCommandNoPackages>$(DotnetRestorePrefix)"$(DotNetTool)" restore $(DotnetRestoreSource)</DotnetRestoreCommandNoPackages>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(BuildAllProjects)'=='true'">
-    <!-- When we do a traversal build we get all packages up front, don't restore them again -->
-    <RestorePackages>false</RestorePackages>
   </PropertyGroup>
 
   <PropertyGroup>

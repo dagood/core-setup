@@ -129,4 +129,5 @@
           DestinationFiles="@(SharedFrameworkPublishFiles->'$(TestsOutputDir)sharedFrameworkPublish/%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.targets))\Directory.Build.targets" />
 </Project>

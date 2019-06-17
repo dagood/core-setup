@@ -157,6 +157,17 @@
     </ItemGroup>
   </Target>
 
+  <!--
+    Overide package version calculation. We want to be able to use GetIdentity during NuGet restore,
+    where the packaging tool package isn't loaded. Core-Setup doesn't use the packageindex system so
+    the logic in the full implementation isn't required. Use the Arcade Version value.
+  -->
+  <Target Name="CalculatePackageVersion">
+    <PropertyGroup>
+      <PackageVersion>$(Version)</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
   <!-- override AssignPkgProjPackageDependenciesTargetFramework so that
        it doesn't attempt to resolve all files in order to get dependency
        TargetFrameworks.

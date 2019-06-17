@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PkgprojReference Include="..\pkg\legacy\Microsoft.NETCore.App.Internal.pkgproj" />
-    <PkgprojReference Include="..\pkg\legacy\Microsoft.NETCore.App.pkgproj" />
-    <PkgprojReference Include="..\..\Microsoft.NETCore.DotNetHost\Microsoft.NETCore.DotNetHost.pkgproj" />
+    <PkgProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.Internal.pkgproj" />
+    <PkgProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.pkgproj" />
+    <PkgProjectReference Include="..\..\Microsoft.NETCore.DotNetHost\Microsoft.NETCore.DotNetHost.pkgproj" />
   </ItemGroup>
 
 </Project>

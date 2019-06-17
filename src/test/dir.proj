@@ -51,7 +51,7 @@
       <RestorePrefix Condition="'$(OsEnvironment)' != 'Windows_NT'">DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1</RestorePrefix>
     </PropertyGroup>
 
-    <Exec Command="$(RestorePrefix) $(DotNetTool) restore $(RestoreArgs) %(RestoreTest.Identity) /bl:$(IntermediateOutputPath)test-restore.binlog"
+    <Exec Command="$(RestorePrefix) $(DotNetTool) restore $(RestoreArgs) %(RestoreTest.Identity) /bl:$(IntermediateOutputPath)test-restore-%(RestoreTest.Filename).binlog"
           EnvironmentVariables="NUGET_PACKAGES=$(PackagesDir.TrimEnd('/').TrimEnd('\'))" />
   </Target>
 
@@ -64,7 +64,7 @@
 
     <Message Text="Building Tests" Importance="High" />
     <Message Importance="High" Text="TestProjects: @(TestProjects)" />
-    <Exec Command="$(DotNetTool) build $(BuildArgs) %(TestProjects.Identity)"
+    <Exec Command="$(DotNetTool) build $(BuildArgs) %(TestProjects.Identity) /bl:$(IntermediateOutputPath)test-build-%(TestProjects.Filename).binlog"
           WorkingDirectory="$([System.IO.Path]::GetDirectoryName(%(TestProjects.Identity)))"
           EnvironmentVariables="NUGET_PACKAGES=$(PackagesDir.TrimEnd('/').TrimEnd('\'))" />
   </Target>

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Apphost Bundle Tests</Description>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>$(NETCoreAppFramework)</TargetFramework>
     <AssemblyName>AppHost.Bundle.Tests</AssemblyName>
     <PackageId>AppHost.Bundle.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>

@@ -13,9 +13,14 @@
       <SfxPackageIdentity Condition="'$(SfxPackageIdentity)' == ''">$(SfxIdentity)</SfxPackageIdentity>
     </PropertyGroup>
 
+    <!--
+      Get rid of NuGet's ExcludeRestorePackageImports=true so that the packaging tooling is
+      accessible for Id and version.
+    -->
     <MSBuild
       Projects="@(SharedFxProjectReference)"
-      Targets="GetPackageIdentity">
+      Targets="GetPackageIdentity"
+      Properties="ExcludeRestorePackageImports=false">
       <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
     </MSBuild>
   </Target>

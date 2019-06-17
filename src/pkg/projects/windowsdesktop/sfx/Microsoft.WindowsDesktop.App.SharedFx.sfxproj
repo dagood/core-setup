@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SharedFxProjectReference Include="..\pkg\Microsoft.WindowsDesktop.App.pkgproj" />
+    <PkgprojReference Include="..\pkg\Microsoft.WindowsDesktop.App.pkgproj" />
   </ItemGroup>
 
 </Project>

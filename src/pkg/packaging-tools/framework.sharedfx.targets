@@ -18,7 +18,7 @@
       accessible for Id and version.
     -->
     <MSBuild
-      Projects="@(SharedFxProjectReference)"
+      Projects="@(PkgProjectReference)"
       Targets="GetPackageIdentity"
       Properties="ExcludeRestorePackageImports=false">
       <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
@@ -197,8 +197,8 @@
     Ensure the pkgproj is already built. This isn't a real ProjectReference because the SDK doesn't
     seem to handle pkgproj nicely for Publish. For now we're using its nupkg directly.
   -->
-  <Target Name="BuildSharedFxProjectReferences">
-    <MSBuild Projects="@(SharedFxProjectReference)" Targets="Build" />
+  <Target Name="BuildPkgProjectReferences">
+    <MSBuild Projects="@(PkgProjectReference)" Targets="Build" />
   </Target>
 
   <Target Name="SetPublishDir"
@@ -215,7 +215,7 @@
   -->
   <Target Name="Build"
           DependsOnTargets="
-            BuildSharedFxProjectReferences;
+            BuildPkgProjectReferences;
             SetPublishDir;
             Restore;
             Publish" />

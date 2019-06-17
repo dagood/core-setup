@@ -9,6 +9,12 @@
     -->
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" />
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" />
+
+    <!-- Test projects. -->
+    <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\AppHost.Bundle.Tests\AppHost.Bundle.Tests.csproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\Microsoft.NET.HostModel.Bundle.Tests\Microsoft.NET.HostModel.Bundle.Tests.csproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\test\HostActivationTests\HostActivationTests.csproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\test\Microsoft.Extensions.DependencyModel.Tests\Microsoft.Extensions.DependencyModel.Tests.csproj" />
   </ItemGroup>
 
   <!--

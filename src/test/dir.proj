@@ -24,7 +24,8 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="RestoreTests">
+  <Target Name="RestoreTests"
+          DependsOnTargets="GetProductVersions">
     <ItemGroup>
       <RestoreTest Include="$(TestDir)/**/*.csproj" />
     </ItemGroup>
@@ -69,7 +70,9 @@
   </Target>
 
   <Target Name="RunTest"
-          DependsOnTargets="DetermineTestOutputDirectory"
+          DependsOnTargets="
+            GetProductVersions;
+            DetermineTestOutputDirectory"
           Inputs="%(TestProjects.Identity)"
           Outputs="fake">
     <PropertyGroup>

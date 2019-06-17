@@ -120,6 +120,11 @@
     </RestoreSources>
   </PropertyGroup>
 
+  <!-- temporary workaround until https://github.com/dotnet/buildtools/pull/1707 is merged to master -->
+  <ItemGroup>
+    <DotnetSourceList Include="$(RestoreSources)" />
+  </ItemGroup>
+
   <PropertyGroup>
     <CustomTaskProject>$(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj</CustomTaskProject>
   </PropertyGroup>

@@ -11,14 +11,6 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
 
-  <!--
-    Get rid of Newtonsoft.Json: we have the BCL sources from the implementation project due to
-    internals being visible.
-  -->
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" ExcludeAssets="all" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
     <PackageReference Include="FluentAssertions" Version="4.19.4" />

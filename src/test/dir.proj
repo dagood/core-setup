@@ -51,7 +51,7 @@
       <RestorePrefix Condition="'$(OsEnvironment)' != 'Windows_NT'">DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1</RestorePrefix>
     </PropertyGroup>
 
-    <Exec Command="$(RestorePrefix) $(DotNetTool) restore $(RestoreArgs) %(RestoreTest.Identity)"
+    <Exec Command="$(RestorePrefix) $(DotNetTool) restore $(RestoreArgs) %(RestoreTest.Identity) /bl:$(IntermediateOutputPath)test-restore.binlog"
           EnvironmentVariables="NUGET_PACKAGES=$(PackagesDir.TrimEnd('/').TrimEnd('\'))" />
   </Target>
 

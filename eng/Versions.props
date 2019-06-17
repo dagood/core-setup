@@ -9,7 +9,9 @@
     <StabilizePackageVersion Condition="'$(StabilizePackageVersion)' == ''">false</StabilizePackageVersion>
     <DotNetFinalVersionKind Condition="'$(StabilizePackageVersion)' == 'true'">release</DotNetFinalVersionKind>
     <!-- Disable SemVer v2 until after 3.0.0. -->
-    <SemanticVersioningV1 Condition="'$(MajorVersion).$(MinorVersion).$(PatchVersion)' == '3.0.0'">true</SemanticVersioningV1>
+    <SemanticVersioningV1 Condition="
+      $(MajorVersion) &lt; 3 or
+      '$(MajorVersion).$(MinorVersion).$(PatchVersion)' == '3.0.0'">true</SemanticVersioningV1>
     <!-- Release branding. -->
     <ReleaseSuffix>$(PreReleaseVersionLabel)</ReleaseSuffix>
     <ReleaseBrandSuffix>Preview 7</ReleaseBrandSuffix>

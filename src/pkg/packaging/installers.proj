@@ -8,7 +8,6 @@
       GetInstallerLocations;
       GenerateVersionBadge;
       GenerateCompressedFiles;
-      GenerateNugetPackages;
       GenerateInstallers;
     </PackageTargets>
   </PropertyGroup>
@@ -72,7 +71,7 @@
 
     <!-- Copy nethost -->
     <PropertyGroup>
-      <_NetHostOutputDir>$(BaseOutputPath)$(InstallerSourceOSPlatformConfig)\corehost\</_NetHostOutputDir>
+      <_NetHostOutputDir>$(BaseOutputRootPath)corehost\</_NetHostOutputDir>
     </PropertyGroup>
     <ItemGroup>
       <NetHostFiles Include="$(_NetHostOutputDir)nethost.h" />
@@ -200,27 +199,5 @@
   <Target Name="GenerateInstallers" DependsOnTargets="InitPackage;$(InstallerDependsOn)" />
 
   <Target Name="GenerateCombinedInstallers" DependsOnTargets="InitPackage;GenerateBundles" />
-
-  <Target Name="GenerateNugetPackages" DependsOnTargets="InitPackage" Condition="'$(UsePrebuiltPortableBinariesForInstallers)' == 'false'">
-
-    <ItemGroup>
-      <!-- The list of packages we are servicing -->
-      <PackageProjects Include="$(ProjectDir)src\managed\Microsoft.DotNet.PlatformAbstractions\Microsoft.DotNet.PlatformAbstractions.csproj" />
-      <PackageProjects Include="$(ProjectDir)src\managed\Microsoft.Extensions.DependencyModel\Microsoft.Extensions.DependencyModel.csproj" />
-      <PackageProjects Include="$(ProjectDir)src\managed\Microsoft.NET.HostModel\Microsoft.NET.HostModel.csproj" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(BuildAllPackages)' == 'true'">
-      <!-- The list of packages we are not servicing -->
-    </ItemGroup>
-
-    <PropertyGroup>
-      <PackArgs>--no-restore --no-build --output $(PackageOutputPath)</PackArgs>
-      <PackArgs>$(PackArgs) $(MSBuildPassThroughPropertyList) /p:BaseOutputPath=$(IntermediateOutputForPackaging)</PackArgs>
-    </PropertyGroup>
-
-    <Exec Command="$(DotNetTool) pack %(PackageProjects.Identity) $(PackArgs)"
-          Condition="'@(PackageProjects)' != ''" />
-  </Target>
 
 </Project>

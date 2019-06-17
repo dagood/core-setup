@@ -22,8 +22,12 @@
     requirements so that parallel MSBuild does the ordering work.
   -->
   <Target Name="BuildDependencies">
+    <ItemGroup>
+      <SharedFrameworkProject Include="$(SourceDir)pkg\projects\**\*.sfxproj" />
+    </ItemGroup>
+
     <MSBuild
-      Projects="$(SourceDir)pkg\projects\netcoreapp\sfx\Microsoft.NETCore.App.SharedFx.sfxproj"
+      Projects="@(SharedFrameworkProject)"
       Targets="Build"/>
   </Target>
 

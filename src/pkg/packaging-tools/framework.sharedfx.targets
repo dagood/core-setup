@@ -21,8 +21,12 @@
       Projects="@(PkgProjectReference)"
       Targets="GetPackageIdentity"
       Properties="ExcludeRestorePackageImports=false">
-      <Output TaskParameter="TargetOutputs" ItemName="PackageReference" />
+      <Output TaskParameter="TargetOutputs" ItemName="FrameworkPackageReference" />
     </MSBuild>
+
+    <ItemGroup>
+      <PackageReference Include="@(FrameworkPackageReference)" AllowExplicitVersion="true" />
+    </ItemGroup>
   </Target>
 
   <!--

@@ -12,10 +12,11 @@
   </Target>
 
   <Target Name="RestoreTestAssetProjects"
+          Condition="'$(RestoreTestAssetProjects)' == 'true'"
           DependsOnTargets="GetProductVersions"
           BeforeTargets="Test">
     <ItemGroup>
-      <TestAssetProjectToRestore Include="$(TestAssetsDir)**.csproj" />
+      <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
     </ItemGroup>
 
     <MSBuild

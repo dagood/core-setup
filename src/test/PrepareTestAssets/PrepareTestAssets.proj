@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Target Name="RefreshTestAssets"
-          DependsOnTargets="GetProductVersions">
+          DependsOnTargets="
+            GetProductVersions;
+            DetermineTestOutputDirectory">
     <!-- Ensure installers (and therefore shared framework projects) are built first. -->
     <MSBuild Projects="$(SourceDir)pkg\packaging\installers.proj" Targets="Build" />
 
@@ -11,8 +13,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <DirsToClean Include="$(TestDir)\**\bin" />
+      <DirsToClean Include="$(TestDir)\**\obj" />
       <DirsToClean Include="$(TestRestorePackagesPath)" />
       <DirsToClean Include="$(TempFolderRoot)$(TargetArchitecture)" />
+
+      <SharedFrameworkPublishFiles Include="$(SharedFrameworkPublishDir)**" />
 
       <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
 
@@ -21,6 +27,10 @@
     </ItemGroup>
 
     <RemoveDir Directories="@(DirsToClean)" />
+
+    <Copy
+      SourceFiles="@(SharedFrameworkPublishFiles)"
+      DestinationFiles="@(SharedFrameworkPublishFiles->'$(TestsOutputDir)sharedFrameworkPublish/%(RecursiveDir)%(Filename)%(Extension)')" />
 
     <MSBuild
       Projects="@(TestAssetProjectToRestore)"

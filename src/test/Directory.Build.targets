@@ -6,8 +6,22 @@
       Targets="RefreshTestAssets" />
   </Target>
 
+  <Target Name="DetermineTestOutputDirectory">
+    <GetTargetMachineInfo>
+      <Output TaskParameter="RuntimeIdentifier" PropertyName="_HostRid" />
+    </GetTargetMachineInfo>
+
+    <PropertyGroup>
+      <TestTargetRid Condition="'$(TestTargetRid)' == ''">$(_HostRid)</TestTargetRid>
+      <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
+      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(ObjDir)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="SetupTextFixtureEnvironment"
-          DependsOnTargets="GetProductVersions"
+          DependsOnTargets="
+            GetProductVersions;
+            DetermineTestOutputDirectory"
           BeforeTargets="RunTests">
     <PropertyGroup>
       <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>

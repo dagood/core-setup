@@ -13,17 +13,6 @@
 
   <Target Name="Build" DependsOnTargets="$(BuildTestTargets)" />
 
-  <Target Name="DetermineTestOutputDirectory">
-    <GetTargetMachineInfo>
-      <Output TaskParameter="RuntimeIdentifier" PropertyName="_HostRid" />
-    </GetTargetMachineInfo>
-    <PropertyGroup>
-      <TestTargetRid Condition="'$(TestTargetRid)' == ''">$(_HostRid)</TestTargetRid>
-      <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
-      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(BaseOutputPath)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
-    </PropertyGroup>
-  </Target>
-
   <Target Name="RestoreTests"
           DependsOnTargets="GetProductVersions">
     <ItemGroup>

@@ -31,9 +31,11 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
     <Compile Include="net46/ProcessSharedFrameworkDeps.net46.cs" />
 
-    <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression" />
   </ItemGroup>
 
   <!-- Remove source that require BuildTools to compile. -->

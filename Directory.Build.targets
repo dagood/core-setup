@@ -33,8 +33,6 @@
 
       <NuGetVersion>$(SharedFrameworkNugetVersion)</NuGetVersion>
 
-      <NETCoreAppMaximumVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppMaximumVersion>
-
       <!--
         By default, we are always building the nuget packages for HostPolicy, HostFXR and
         Dotnet/AppHost. Thus, the "UseShipped*" properties (below) are always set to false.

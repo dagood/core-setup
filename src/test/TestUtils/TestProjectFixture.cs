@@ -79,11 +79,11 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
         private TestProject CopyTestProject(TestProject sourceTestProject)
         {
-            EnsureDirectoryBuildProps(TestArtifact.TestArtifactsPath);
+            EnsureDirectoryBuildFiles(TestArtifact.TestArtifactsPath);
             return sourceTestProject.Copy();
         }
 
-        private void EnsureDirectoryBuildProps(string testArtifactDirectory)
+        private void EnsureDirectoryBuildFiles(string testArtifactDirectory)
         {
             Directory.CreateDirectory(testArtifactDirectory);
 
@@ -98,7 +98,7 @@ namespace Microsoft.DotNet.CoreSetup.Test
             string.Join(
                 Environment.NewLine,
                 "<Project>",
-                $" <Import Project=\"$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), TestProjects.{type}))\\TestProjects.{type}\" />",
+                $"  <Import Project=\"$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), TestProjects.{type}))\\TestProjects.{type}\" />",
                 "</Project>"));
 
         private void EnsureFileWithContent(string path, string content)

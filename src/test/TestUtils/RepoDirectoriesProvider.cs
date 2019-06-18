@@ -42,7 +42,7 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
             if (!Directory.Exists(DotnetSDK))
             {
-                throw new InvalidOperationException("ERROR: Test SDK folder not found.");
+                throw new InvalidOperationException($"ERROR: Test SDK folder '{DotnetSDK}' not found.");
             }
 
             Artifacts = Path.Combine(baseArtifactsFolder, osPlatformConfig);

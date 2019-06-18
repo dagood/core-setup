@@ -30,7 +30,10 @@
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
 
-  <!-- Rewrite Arcade RunTests target to add TestRunnerEnvironmentVariable support-->
+  <!--
+    Rewrite Arcade RunTests target to add TestRunnerEnvironmentVariable support.
+    See https://github.com/dotnet/arcade/issues/3077
+  -->
   <!-- <OVERRIDE> https://github.com/dotnet/arcade/blob/dc538a29793fd56618d0fa3186e2388d47d00c19/src/Microsoft.DotNet.Arcade.Sdk/tools/XUnit/XUnit.targets#L25-L120 -->
   <!-- 
     Include '*' target to force running tests even if the input assemblies haven't changed and the outputs are present.

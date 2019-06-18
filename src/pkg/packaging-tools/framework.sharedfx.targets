@@ -164,7 +164,6 @@
           Condition="'$(GenerateRuntimeGraph)' == 'true'"
           AfterTargets="Publish">
     <PropertyGroup>
-      <SharedFrameworkAssetsFile>$(IntermediateOutputPath)/project.assets.json</SharedFrameworkAssetsFile>
       <SharedFrameworkDepsFile>$(PublishDir)$(ProjectDepsFileName)</SharedFrameworkDepsFile>
       <RuntimeGraphGeneratorRuntime Condition="'$(OSGroup)'=='Windows_NT'">win</RuntimeGraphGeneratorRuntime>
       <RuntimeGraphGeneratorRuntime Condition="'$(OSGroup)'=='OSX'">osx</RuntimeGraphGeneratorRuntime>
@@ -185,7 +184,7 @@
       <TrimPkgsFromDeps Include="microsoft.netcore.dotnethostresolver" />
     </ItemGroup>
 
-    <ProcessSharedFrameworkDeps AssetsFilePath="$(SharedFrameworkAssetsFile)"
+    <ProcessSharedFrameworkDeps AssetsFilePath="$(ProjectAssetsFile)"
                                 DepsFilePath="$(SharedFrameworkDepsFile)"
                                 PackagesToRemove="@(TrimPkgsFromDeps)"
                                 Runtime="$(RuntimeGraphGeneratorRuntime)"

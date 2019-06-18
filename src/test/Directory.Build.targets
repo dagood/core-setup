@@ -11,5 +11,22 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="SetupTextFixtureEnvironment"
+          DependsOnTargets="GetProductVersions"
+          BeforeTargets="Test">
+    <!-- Set properties used inside tests as environment variables. -->
+    <PropertyGroup>
+      <NUGET_PACKAGES>$(PackagesDir)</NUGET_PACKAGES>
+      <TEST_ARTIFACTS>$(ArtifactsTestResultsDir)</TEST_ARTIFACTS>
+      <TEST_TARGETRID>$(TestTargetRid)</TEST_TARGETRID>
+      <BUILDRID>$(OutputRid)</BUILDRID>
+      <BUILD_ARCHITECTURE>$(TargetArchitecture)</BUILD_ARCHITECTURE>
+      <BUILD_CONFIGURATION>$(ConfigurationGroup)</BUILD_CONFIGURATION>
+      <MNA_VERSION>$(ProductVersion)</MNA_VERSION>
+      <MNA_TFM>$(NETCoreAppFramework)</MNA_TFM>
+      <DOTNET_SDK_PATH>$(DotNetRoot)</DOTNET_SDK_PATH>
+    </PropertyGroup>
+  </Target>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
 </Project>

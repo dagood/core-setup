@@ -6,19 +6,6 @@
     <TestAssetsDir>$(TestDir)/Assets</TestAssetsDir>
   </PropertyGroup>
 
-  <!-- Set properties used inside tests as environment variables. -->
-  <PropertyGroup>
-    <NUGET_PACKAGES>$(PackagesDir)</NUGET_PACKAGES>
-    <TEST_ARTIFACTS>$(SystemPathTestsOutputDir)</TEST_ARTIFACTS>
-    <TEST_TARGETRID>$(TestTargetRid)</TEST_TARGETRID>
-    <BUILDRID>$(OutputRid)</BUILDRID>
-    <BUILD_ARCHITECTURE>$(TargetArchitecture)</BUILD_ARCHITECTURE>
-    <BUILD_CONFIGURATION>$(ConfigurationGroup)</BUILD_CONFIGURATION>
-    <MNA_VERSION>$(ProductVersion)</MNA_VERSION>
-    <MNA_TFM>$(NETCoreAppFramework)</MNA_TFM>
-    <DOTNET_SDK_PATH>$(DotnetCliPath)</DOTNET_SDK_PATH>
-  </PropertyGroup>
-
   <ItemGroup>
     <RestoreTestFallbackSource Include="$(CoreHostOutputDir.TrimEnd('/').TrimEnd('\'))" />
     <RestoreTestFallbackSource Include="$(ArtifactsShippingPackagesDir)" />

@@ -21,6 +21,8 @@
     <ChecksumContainerName>$(ContainerName)</ChecksumContainerName>
     <!-- Max version of NETCoreApp, used by test projects. -->
     <NETCoreAppMaximumVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppMaximumVersion>
+    <NETCoreAppFrameworkVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppFrameworkVersion>
+    <NETCoreAppFramework>netcoreapp$(NETCoreAppFrameworkVersion)</NETCoreAppFramework>
   </PropertyGroup>
   <PropertyGroup>
     <MicrosoftDotNetMaestroTasksVersion>1.0.0-beta.18619.4</MicrosoftDotNetMaestroTasksVersion>

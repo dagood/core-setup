@@ -188,7 +188,7 @@
                                 DepsFilePath="$(SharedFrameworkDepsFile)"
                                 PackagesToRemove="@(TrimPkgsFromDeps)"
                                 Runtime="$(RuntimeGraphGeneratorRuntime)"
-                                BuildToolsTaskDir="$(BuildToolsTaskDir)" />
+                                BuildTasksAssemblyPath="$(PackagingTaskDir)Microsoft.DotNet.Build.Tasks.Packaging.dll" />
   </Target>
 
   <Target Name="CleanPackages" BeforeTargets="Clean">

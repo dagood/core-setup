@@ -24,7 +24,9 @@
     <MSBuild
       Projects="@(TestAssetProjectToRestore)"
       Targets="Restore"
-      Properties="MNAVersion=$(ProductVersion)" />
+      Properties="
+        ArtifactsShippingPackagesDir=$(ArtifactsShippingPackagesDir)
+        MNAVersion=$(ProductVersion)" />
   </Target>
 
 </Project>

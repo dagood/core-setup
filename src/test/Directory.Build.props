@@ -7,9 +7,4 @@
     <TestRestorePackagesPath>$(ObjDir)TestPackageCache\</TestRestorePackagesPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <RestoreTestFallbackSource Include="$(ArtifactsShippingPackagesDir)" />
-    <RestoreTestSource Include="@(DotnetSourceList)" />
-    <RestoreTestSource Include="https://api.nuget.org/v3/index.json" />
-  </ItemGroup>
 </Project>

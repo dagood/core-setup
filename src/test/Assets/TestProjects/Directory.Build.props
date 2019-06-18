@@ -1,6 +1,12 @@
 <Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), TestProjects.props))\TestProjects.props" />
 
+  <ItemGroup>
+    <RestoreTestFallbackSource Include="$(ArtifactsShippingPackagesDir)" />
+    <RestoreTestSource Include="$(RestoreSources)" />
+    <RestoreTestSource Include="https://api.nuget.org/v3/index.json" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RestoreSources>@(RestoreTestSource);@(RestoreTestFallbackSource)</RestoreSources>
     <RestorePackagesPath>$(TestRestorePackagesPath)</RestorePackagesPath>

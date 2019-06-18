@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="RestoreTestAssetProjects">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Target Name="RestoreTestAssetProjects"
-          DependsOnTargets="GetProductVersions"
-          BeforeTargets="Test">
+          DependsOnTargets="GetProductVersions">
     <ItemGroup>
       <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
     </ItemGroup>

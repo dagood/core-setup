@@ -17,7 +17,6 @@
     <BuildRuntimePackages>false</BuildRuntimePackages>
 
     <GenerateSharedFramework>true</GenerateSharedFramework>
-    <GenerateRuntimeGraph>true</GenerateRuntimeGraph>
   </PropertyGroup>
 
   <ItemGroup>

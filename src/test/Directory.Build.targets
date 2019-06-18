@@ -11,18 +11,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="RestoreTestAssetProjects"
-          DependsOnTargets="GetProductVersions"
-          BeforeTargets="Test">
-    <ItemGroup>
-      <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
-    </ItemGroup>
-
-    <MSBuild
-      Projects="@(TestAssetProjectToRestore)"
-      Targets="Restore"
-      Properties="
-        MNAVersion=$(ProductVersion)" />
+  <Target Name="RestoreTestAssetProjects" BeforeTargets="Test">
+    <MSBuild Projects="$(TestDir)PrepareTestAssets\PrepareTestAssets.proj" />
   </Target>
 
   <Target Name="SetupTextFixtureEnvironment"

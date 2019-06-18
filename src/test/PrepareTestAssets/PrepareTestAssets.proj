@@ -7,6 +7,7 @@
 
     <PropertyGroup>
       <TempFolderRoot>$(IntermediateOutputPath)temp\</TempFolderRoot>
+      <TestTargetRid Condition="'$(TestTargetRid)' == ''">$(_HostRid)</TestTargetRid>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +27,7 @@
       Targets="Restore"
       Properties="
         ArtifactsShippingPackagesDir=$(ArtifactsShippingPackagesDir);
+        TestTargetRid=$(TestTargetRid);
         MNAVersion=$(ProductVersion)" />
   </Target>
 

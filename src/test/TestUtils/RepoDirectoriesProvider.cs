@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 
 namespace Microsoft.DotNet.CoreSetup.Test
@@ -42,6 +43,12 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
             if (!Directory.Exists(DotnetSDK))
             {
+                Console.WriteLine("GetEnvironmentVariables: ");
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+                {
+                    Console.WriteLine("  {0} = {1}", de.Key, de.Value);
+                }
+                var envVars = Environment.GetEnvironmentVariables();
                 throw new InvalidOperationException($"ERROR: Test SDK folder '{DotnetSDK}' not found.");
             }
 

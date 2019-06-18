@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <DirsToClean Include="$(TestDir)**\bin" />
-      <DirsToClean Include="$(TestDir)**\obj" />
+      <DirsToClean Include="$(TestRestorePackagesPath)" />
       <DirsToClean Include="$(TempFolderRoot)$(TargetArchitecture)" />
 
       <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
@@ -17,21 +16,12 @@
       <AllTestRestoreSources Include="@(RestoreTestFallbackSource)"/>
     </ItemGroup>
 
-    <PropertyGroup>
-      <AllTestRestoreSources>@(AllTestRestoreSources, '%3B')</AllTestRestoreSources>
-    </PropertyGroup>
-
     <RemoveDir Directories="@(DirsToClean)" />
-    <MakeDir Directories="$(TempFolderRoot)NuGetFallbackFolder" />
 
     <MSBuild
       Projects="@(TestAssetProjectToRestore)"
       Targets="Restore"
-      Properties="
-        RestoreSources=$(AllTestRestoreSources);
-        RestorePackagesPath=$(PackagesDir);
-        RestoreNoCache=true;
-        MNAVersion=$(ProductVersion)" />
+      Properties="MNAVersion=$(ProductVersion)" />
   </Target>
 
 </Project>

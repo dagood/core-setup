@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TestDir>$(ProjectDir)src\test\</TestDir>
     <TestAssetsDir>$(TestDir)Assets\</TestAssetsDir>
+    <TestRestorePackagesPath>$(ObjDir)TestPackageCache\</TestRestorePackagesPath>
   </PropertyGroup>
 
   <ItemGroup>

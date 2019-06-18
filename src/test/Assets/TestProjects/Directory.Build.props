@@ -1,4 +1,11 @@
 <Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.props))\Directory.Build.props" />
   <Import Project="$(MSBuildThisFileDirectory)MNADeprecationWorkaround.props" />
+
+  <PropertyGroup>
+    <RestoreSources>@(RestoreTestSource);@(RestoreTestFallbackSource)</RestoreSources>
+    <RestorePackagesPath>$(TestRestorePackagesPath)</RestorePackagesPath>
+    <RestoreNoCache>true</RestoreNoCache>
+  </PropertyGroup>
+
 </Project>

@@ -11,7 +11,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="RestoreTestAssetProjects" BeforeTargets="Test">
+  <Target Name="RestoreTestAssetProjects" BeforeTargets="RunTests">
     <MSBuild Projects="$(TestDir)PrepareTestAssets\PrepareTestAssets.proj" />
   </Target>
 

@@ -13,7 +13,7 @@
 
   <Target Name="SetupTextFixtureEnvironment"
           DependsOnTargets="GetProductVersions"
-          BeforeTargets="Test">
+          BeforeTargets="RunTests">
     <!-- Set properties used inside tests as environment variables. -->
     <PropertyGroup>
       <NUGET_PACKAGES>$(PackagesDir)</NUGET_PACKAGES>

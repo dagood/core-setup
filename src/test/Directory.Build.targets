@@ -12,7 +12,6 @@
   </Target>
 
   <Target Name="RestoreTestAssetProjects"
-          Condition="'$(RestoreTestAssetProjects)' == 'true'"
           DependsOnTargets="GetProductVersions"
           BeforeTargets="Test">
     <ItemGroup>

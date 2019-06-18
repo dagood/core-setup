@@ -11,10 +11,10 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="RunRestoreTestAssetProjects" BeforeTargets="RunTests">
+  <Target Name="RunRefreshTestAssets" BeforeTargets="RunTests">
     <MSBuild
       Projects="$(TestDir)PrepareTestAssets\PrepareTestAssets.proj"
-      Targets="RestoreTestAssetProjects" />
+      Targets="RefreshTestAssets" />
   </Target>
 
   <Target Name="SetupTextFixtureEnvironment"

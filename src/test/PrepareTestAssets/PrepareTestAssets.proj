@@ -1,17 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Target Name="RestoreTestAssetProjects"
+  <Target Name="RefreshTestAssets"
           DependsOnTargets="GetProductVersions">
+    <PropertyGroup>
+      <TempFolderRoot>$(IntermediateOutputPath)temp\</TempFolderRoot>
+    </PropertyGroup>
+
     <ItemGroup>
+      <DirsToClean Include="$(TestDir)**\bin" />
+      <DirsToClean Include="$(TestDir)**\obj" />
+      <DirsToClean Include="$(TempFolderRoot)$(TargetArchitecture)" />
+
       <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
+
+      <AllTestRestoreSources Include="@(RestoreTestSource)"/>
+      <AllTestRestoreSources Include="@(RestoreTestFallbackSource)"/>
     </ItemGroup>
+
+    <PropertyGroup>
+      <AllTestRestoreSources>@(AllTestRestoreSources, '%3B')</AllTestRestoreSources>
+    </PropertyGroup>
+
+    <RemoveDir Directories="@(DirsToClean)" />
+    <MakeDir Directories="$(TempFolderRoot)NuGetFallbackFolder" />
 
     <MSBuild
       Projects="@(TestAssetProjectToRestore)"
       Targets="Restore"
       Properties="
-        RestorePackagesPath=
-        RestoreNoCache=
+        RestoreSources=$(AllTestRestoreSources);
+        RestorePackagesPath=$(PackagesDir);
+        RestoreNoCache=true;
         MNAVersion=$(ProductVersion)" />
   </Target>
 

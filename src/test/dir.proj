@@ -103,7 +103,7 @@
             MNA_VERSION=$(ProductVersion);
             MNA_TFM=$(NETCoreAppFramework);
             DOTNET_SDK_PATH=$(DotnetCliPath)"
-          Condition="'$(TestProjectFilename)' != 'HostActivationTests' or '$(IsCrossArch)' != 'true'"
+          Condition="'$(TestProjectFilename)' != 'HostActivation.Tests' or '$(IsCrossArch)' != 'true'"
           ContinueOnError="true"
           IgnoreStandardErrorWarningFormat="true"
           IgnoreExitCode="true">

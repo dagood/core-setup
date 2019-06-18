@@ -20,10 +20,21 @@
   <Target Name="SetupTextFixtureEnvironment"
           DependsOnTargets="GetProductVersions"
           BeforeTargets="RunTests">
+    <PropertyGroup>
+      <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
+      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(BaseOutputPath)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
+
+      <!-- The tests use the TEST_ARTIFACTS env variable to determine the artifacts folder and then later compare that path to its expected path.
+           So, the TEST_ARTIFACTS variable has to have system specific path separators or the string compoarison will fail. -->
+      <DirectorySeparatorChar>$([System.IO.Path]::DirectorySeparatorChar)</DirectorySeparatorChar>
+      <SystemPathTestsOutputDir>$([System.String]::Copy('$(TestsOutputDir)').Replace('/', '$(DirectorySeparatorChar)'))</SystemPathTestsOutputDir>
+      <SystemPathTestsOutputDir>$([System.String]::Copy('$(SystemPathTestsOutputDir)').Replace('\', '$(DirectorySeparatorChar)'))</SystemPathTestsOutputDir>
+    </PropertyGroup>
+
     <!-- Set properties used inside tests as environment variables. -->
     <ItemGroup>
       <TestRunnerEnvironmentVariable Include="NUGET_PACKAGES=$(PackagesDir)" />
-      <TestRunnerEnvironmentVariable Include="TEST_ARTIFACTS=$(ArtifactsTestResultsDir)" />
+      <TestRunnerEnvironmentVariable Include="TEST_ARTIFACTS=$(SystemPathTestsOutputDir)" />
       <TestRunnerEnvironmentVariable Include="TEST_TARGETRID=$(TestTargetRid)" />
       <TestRunnerEnvironmentVariable Include="BUILDRID=$(OutputRid)" />
       <TestRunnerEnvironmentVariable Include="BUILD_ARCHITECTURE=$(TargetArchitecture)" />

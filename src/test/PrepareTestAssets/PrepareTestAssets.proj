@@ -2,6 +2,9 @@
 
   <Target Name="RefreshTestAssets"
           DependsOnTargets="GetProductVersions">
+    <!-- Ensure installers (and therefore shared framework projects) are built first. -->
+    <MSBuild Projects="$(SourceDir)pkg\packaging\installers.proj" Targets="Build" />
+
     <PropertyGroup>
       <TempFolderRoot>$(IntermediateOutputPath)temp\</TempFolderRoot>
     </PropertyGroup>

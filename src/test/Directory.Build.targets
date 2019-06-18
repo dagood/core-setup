@@ -11,7 +11,7 @@
           BeforeTargets="RunTests">
     <PropertyGroup>
       <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
-      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(BaseOutputPath)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
+      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(BinDir)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
 
       <!-- The tests use the TEST_ARTIFACTS env variable to determine the artifacts folder and then later compare that path to its expected path.
            So, the TEST_ARTIFACTS variable has to have system specific path separators or the string compoarison will fail. -->

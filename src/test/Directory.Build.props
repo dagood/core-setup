@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <RestoreTestFallbackSource Include="$(CoreHostOutputDir.TrimEnd('/').TrimEnd('\'))" />
     <RestoreTestFallbackSource Include="$(ArtifactsShippingPackagesDir)" />
     <RestoreTestSource Include="@(DotnetSourceList)" />
   </ItemGroup>

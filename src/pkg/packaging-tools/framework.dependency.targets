@@ -304,7 +304,8 @@
     <Exec
       Command="$(_crossGenPath) @$(_crossGenResponseFile)"
       WorkingDirectory="$(_clrDirectory)"
-      EnvironmentVariables="COMPlus_PartialNGen=$(_partialCrossgenFlag)" />
+      EnvironmentVariables="COMPlus_PartialNGen=$(_partialCrossgenFlag)"
+      IgnoreStandardErrorWarningFormat="true" />
   </Target>
 
   <Target Name="CreateCrossGenSymbols"

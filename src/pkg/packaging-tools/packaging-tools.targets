@@ -37,6 +37,11 @@
       <GenerateMSI>false</GenerateMSI>
     </PropertyGroup>
 
+    <!-- Non-framework pkgproj shouldn't build MSIs. -->
+    <PropertyGroup Condition="'$(FrameworkPackType)' == ''">
+      <GenerateMSI>false</GenerateMSI>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(GenerateSharedFramework)' == 'true'">
       <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
       <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>

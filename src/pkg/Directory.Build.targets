@@ -75,7 +75,23 @@
     </PropertyGroup>
   </Target>
 
+  <UsingTask TaskName="GenerateCurrentVersion" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+
   <Target Name="GenerateMsiVersionString">
+    <PropertyGroup>
+      <VersionPadding Condition="'$(VersionPadding)'==''">5</VersionPadding>
+      <VersionComparisonDate>2016-01-01</VersionComparisonDate>
+    </PropertyGroup>
+
+    <GenerateCurrentVersion
+      SeedDate="$([System.DateTime]::Now.ToString(yyyy-MM-dd))"
+      OfficialBuildId="$(OfficialBuildId)"
+      ComparisonDate="$(VersionComparisonDate)"
+      Padding="$(VersionPadding)">
+      <Output PropertyName="BuildNumberMajor" TaskParameter="GeneratedVersion" />
+      <Output PropertyName="BuildNumberMinor" TaskParameter="GeneratedRevision" />
+    </GenerateCurrentVersion>
+
     <GenerateMsiVersion
       Major="$(MajorVersion)"
       Minor="$(MinorVersion)"

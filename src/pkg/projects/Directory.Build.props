@@ -51,7 +51,7 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="$(PackageTargetRuntime.StartsWith('win'))">
+    <When Condition="$(PackageTargetRid.StartsWith('win'))">
       <PropertyGroup>
         <ApplicationFileExtension>.exe</ApplicationFileExtension>
         <LibraryFilePrefix></LibraryFilePrefix>
@@ -59,7 +59,7 @@
         <SymbolFileExtension>.pdb</SymbolFileExtension>
       </PropertyGroup>
     </When>
-    <When Condition="$(PackageTargetRuntime.StartsWith('osx'))">
+    <When Condition="$(PackageTargetRid.StartsWith('osx'))">
       <PropertyGroup>
         <ApplicationFileExtension></ApplicationFileExtension>
         <LibraryFilePrefix>lib</LibraryFilePrefix>

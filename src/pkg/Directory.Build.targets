@@ -5,8 +5,6 @@
     <RuntimeIdGraphDefinitionFile>$(PackagesDir)$(PlatformPackageId.ToLowerInvariant())\$(MicrosoftNETCorePlatformsPackageVersion)\runtime.json</RuntimeIdGraphDefinitionFile>
   </PropertyGroup>
 
-  <UsingTask TaskName="DownloadFilesFromUrl" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
-
   <!-- Create deb tool package and set up the project that consumes it as a CLI tool. -->
   <Target Name="InitializeDotnetDebTool">
     <!--
@@ -60,38 +58,16 @@
 
   <!--
     Acquire WiX tools, if not present.
-
-    Adapted from https://github.com/dotnet/core-sdk/blob/6aed0cd3614f9b740cfb3f21fdb795bab53ef7e9/src/redist/targets/GenerateMSIs.targets#L80-L102
   -->
   <Target Name="AcquireWix"
           DependsOnTargets="GetAcquireWixProperties"
-          Condition="'$(GenerateMSI)' == 'true'"
-          Inputs="$(WixDownloadSentinel)"
-          Outputs="$(WixDestinationPath)">
-    <!-- Setup sentinel to take advantage of incrementality -->
-    <MakeDir Directories="$(WixToolsDir)" />
-    <WriteLinesToFile
-      File="$(WixDownloadSentinel)"
-      Lines="$(WixVersion)"
-      Overwrite="true"
-      Encoding="Unicode" />
-
-    <ItemGroup>
-      <_wixToolDownload
-        Include="WixTool"
-        Url="$(WixDownloadUrl)"
-        DestinationDir="$(WixToolsDir)" />
-    </ItemGroup>
-
-    <DownloadFilesFromUrl Items="@(_wixToolDownload)" />
-
-    <Unzip
-      SourceFiles="$(WixDestinationPath)"
-      DestinationFolder="$(WixToolsDir)" />
+          Condition="'$(GenerateMSI)' == 'true'">
+    <MSBuild Projects="$(AcquireWixProjectFile)" Targets="AcquireWixCore" />
   </Target>
 
   <Target Name="GetAcquireWixProperties">
     <PropertyGroup>
+      <AcquireWixProjectFile>$(PackagingToolsDir)acquire-wix\acquire-wix.proj</AcquireWixProjectFile>
       <WixDownloadFilename>wix.$(WixVersion).zip</WixDownloadFilename>
       <WixDownloadUrl>https://dotnetcli.azureedge.net/build/wix/$(WixDownloadFilename)</WixDownloadUrl>
       <WixDestinationPath>$(WixToolsDir)$(WixDownloadFilename)</WixDestinationPath>

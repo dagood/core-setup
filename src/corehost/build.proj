@@ -68,10 +68,15 @@
       </HostFiles>
     </ItemGroup>
 
-    <MSBuild Projects="$(MSBuildProjectFullPath)"
-             Properties="GenerateNativeVersionInfo=true;FileDescription=%(HostFiles.FileDescription);NativeVersionFileDir=$(IntermediateOutputRootPath)hostResourceFiles\%(HostFiles.Identity);NativeVersionHeaderFile=$(IntermediateOutputRootPath)hostResourceFiles\%(HostFiles.Identity)\version_info.h"
-             Targets="GenerateVersionHeader"
-             Condition="'$(IncrementalNativeBuild)' != 'true'"/>
+    <MSBuild
+      Projects="$(MSBuildProjectFullPath)"
+      Properties="
+        GenerateNativeVersionInfo=true;
+        AssemblyName=%(HostFiles.FileDescription);
+        NativeVersionFile=$(IntermediateOutputRootPath)hostResourceFiles\%(HostFiles.Identity)\version_info.h"
+      Targets="GenerateNativeVersionFile"
+      Condition="'$(IncrementalNativeBuild)' != 'true'"/>
+
     <PropertyGroup>
       <BuildArgs>$(ConfigurationGroup) $(TargetArchitecture) apphostver $(AppHostVersion) hostver $(HostVersion) fxrver $(HostResolverVersion) policyver $(HostPolicyVersion) commit $(LatestCommit) rid $(OutputRid)</BuildArgs>
       <BuildArgs Condition="'$(PortableBuild)' == 'true'">$(BuildArgs) portable</BuildArgs>
@@ -82,4 +87,19 @@
     <Message Text="$(MSBuildProjectDirectory)\build.cmd $(BuildArgs)" Importance="High"/>
     <Exec Command="$(MSBuildProjectDirectory)\build.cmd $(BuildArgs)" />
   </Target>
+
+  <Target Name="PrependWindowsHeaderIncludeToVersionHeaderFile"
+          Condition="'$(OSGroup)' == 'Windows_NT'"
+          AfterTargets="GenerateNativeVersionFile">
+    <PropertyGroup>
+      <IncludeStatementLine>#include &lt;Windows.h&gt;</IncludeStatementLine>
+      <NativeVersionFileContents>$([System.IO.File]::ReadAllText('$(NativeVersionFile)'))</NativeVersionFileContents>
+    </PropertyGroup>
+
+    <WriteLinesToFile
+      File="$(NativeVersionFile)"
+      Lines="$(IncludeStatementLine);$(NativeVersionFileContents)"
+      Overwrite="true" />
+  </Target>
+
 </Project>

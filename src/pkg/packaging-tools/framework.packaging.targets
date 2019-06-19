@@ -5,6 +5,7 @@
 
   <UsingTask TaskName="BuildFPMToolPreReqs" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
   <UsingTask TaskName="GenerateJsonObjectString" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
+  <UsingTask TaskName="ZipFileCreateFromDirectory" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
   <UsingTask TaskName="ZipFileExtractToDirectory" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="ZipFileGetEntries" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   
@@ -156,8 +157,6 @@
           DependsOnTargets="
             GetInstallerProperties;
             GenerateZip"/>
-
-  <UsingTask TaskName="ZipFileCreateFromDirectory" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
 
   <Target Name="GenerateZip"
           Condition="'$(OSGroup)' == 'Windows_NT'">

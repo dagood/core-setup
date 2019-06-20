@@ -15,8 +15,6 @@
     <ExcludeLineupReference>true</ExcludeLineupReference>
 
     <BuildRuntimePackages>false</BuildRuntimePackages>
-
-    <GenerateSharedFramework>true</GenerateSharedFramework>
   </PropertyGroup>
 
   <ItemGroup>

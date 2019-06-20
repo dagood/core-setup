@@ -35,6 +35,8 @@
     <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <IncludeMainProjectInDepsFile>false</IncludeMainProjectInDepsFile>
+
+    <GenerateSharedFramework>true</GenerateSharedFramework>
   </PropertyGroup>
 
 </Project>

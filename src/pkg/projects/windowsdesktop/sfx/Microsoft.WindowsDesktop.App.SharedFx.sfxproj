@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <SfxIdentity>Microsoft.WindowsDesktop.App</SfxIdentity>
+
+    <GenerateCompressedArchive>true</GenerateCompressedArchive>
+    <GenerateNetCoreAppRuntimeConfig>true</GenerateNetCoreAppRuntimeConfig>
   </PropertyGroup>
 
   <ItemGroup>

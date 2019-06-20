@@ -6,6 +6,8 @@
     <AssemblyName>Microsoft.NET.HostModel.Bundle.Tests</AssemblyName>
     <PackageId>Microsoft.NET.HostModel.Bundle.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <!-- Reduce the length of the test output dir to make it more reliable on Windows. -->
+    <TestsOutputName>hmb</TestsOutputName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -15,6 +15,13 @@
     <Copy
       SourceFiles="@(SharedFrameworkPublishFiles)"
       DestinationFiles="@(SharedFrameworkPublishFiles->'$(TestsOutputDir)sharedFrameworkPublish/%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <!-- Create file with a name that describes what a test dir is. Useful if path abbreviated. -->
+    <WriteLinesToFile
+      File="$(TestsOutputRootDir)$(TestsOutputName)-is-$(MSBuildProjectName).txt"
+      Overwrite="true"
+      Lines="$(MSBuildProjectName) intermediates are located in '$(TestsOutputName)'. Abbreviated to work around path limits on Windows."
+      Condition="'$(TestsOutputName)' != '$(MSBuildProjectName)'" />
   </Target>
 
   <Target Name="DetermineTestOutputDirectory">
@@ -24,10 +31,9 @@
 
     <PropertyGroup>
       <TestTargetRid Condition="'$(TestTargetRid)' == ''">$(_HostRid)</TestTargetRid>
-      <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
       <TestsOutputName Condition="'$(TestsOutputName)' == ''">$(MSBuildProjectName)</TestsOutputName>
 
-      <TestsOutputRootDir Condition="'$(TestsOutputRootDir)' == ''">$(ArtifactsDir)tests/$(TestOSPlatformConfig)/</TestsOutputRootDir>
+      <TestsOutputRootDir Condition="'$(TestsOutputRootDir)' == ''">$(ArtifactsDir)tests/$(ConfigurationGroup)/</TestsOutputRootDir>
       <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(TestsOutputRootDir)$(TestsOutputName)/</TestsOutputDir>
     </PropertyGroup>
   </Target>

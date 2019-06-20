@@ -221,6 +221,7 @@
             BuildPkgProjectReferences;
             SetPublishDir;
             Restore;
-            Publish" />
+            Publish;
+            GenerateInstallers" />
 
 </Project>

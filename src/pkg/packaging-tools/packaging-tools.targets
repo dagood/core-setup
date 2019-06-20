@@ -40,7 +40,7 @@
     </PropertyGroup>
 
     <!-- Non-framework pkgproj shouldn't build MSIs. -->
-    <PropertyGroup Condition="'$(FrameworkPackType)' == ''">
+    <PropertyGroup Condition="'$(FrameworkPackType)' == '' and '$(MSBuildProjectExtension)' == '.pkgproj'">
       <GenerateMSI>false</GenerateMSI>
     </PropertyGroup>
 

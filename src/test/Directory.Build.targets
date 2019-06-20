@@ -1,9 +1,20 @@
 <Project>
 
-  <Target Name="RunRefreshTestAssets" BeforeTargets="RunTests">
+  <Target Name="RunRefreshTestAssets"
+          DependsOnTargets="DetermineTestOutputDirectory"
+          BeforeTargets="RunTests">
     <MSBuild
       Projects="$(TestDir)PrepareTestAssets\PrepareTestAssets.proj"
       Targets="RefreshTestAssets" />
+
+    <!-- Set up this test project's shared framework to use. -->
+    <ItemGroup>
+      <SharedFrameworkPublishFiles Include="$(SharedFrameworkPublishDir)**" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(SharedFrameworkPublishFiles)"
+      DestinationFiles="@(SharedFrameworkPublishFiles->'$(TestsOutputDir)sharedFrameworkPublish/%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="DetermineTestOutputDirectory">
@@ -14,7 +25,10 @@
     <PropertyGroup>
       <TestTargetRid Condition="'$(TestTargetRid)' == ''">$(_HostRid)</TestTargetRid>
       <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
-      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(ObjDir)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
+      <TestsOutputName Condition="'$(TestsOutputName)' == ''">$(MSBuildProjectName)</TestsOutputName>
+
+      <TestsOutputRootDir Condition="'$(TestsOutputRootDir)' == ''">$(ArtifactsDir)tests/$(TestOSPlatformConfig)/</TestsOutputRootDir>
+      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(TestsOutputRootDir)$(TestsOutputName)/</TestsOutputDir>
     </PropertyGroup>
   </Target>
 
@@ -24,9 +38,6 @@
             DetermineTestOutputDirectory"
           BeforeTargets="RunTests">
     <PropertyGroup>
-      <TestOSPlatformConfig>$(TestTargetRid).$(ConfigurationGroup)</TestOSPlatformConfig>
-      <TestsOutputDir Condition="'$(TestsOutputDir)' == ''">$(BinDir)tests/$(TestOSPlatformConfig)/</TestsOutputDir>
-
       <!-- The tests use the TEST_ARTIFACTS env variable to determine the artifacts folder and then later compare that path to its expected path.
            So, the TEST_ARTIFACTS variable has to have system specific path separators or the string compoarison will fail. -->
       <DirectorySeparatorChar>$([System.IO.Path]::DirectorySeparatorChar)</DirectorySeparatorChar>

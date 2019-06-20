@@ -18,8 +18,6 @@
       <DirsToClean Include="$(TestRestorePackagesPath)" />
       <DirsToClean Include="$(TempFolderRoot)$(TargetArchitecture)" />
 
-      <SharedFrameworkPublishFiles Include="$(SharedFrameworkPublishDir)**" />
-
       <TestAssetProjectToRestore Include="$(TestAssetsDir)**\*.csproj" />
 
       <AllTestRestoreSources Include="@(RestoreTestSource)"/>
@@ -28,9 +26,7 @@
 
     <RemoveDir Directories="@(DirsToClean)" />
 
-    <Copy
-      SourceFiles="@(SharedFrameworkPublishFiles)"
-      DestinationFiles="@(SharedFrameworkPublishFiles->'$(TestsOutputDir)sharedFrameworkPublish/%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Importance="High" Text="Running NuGet Restore for test asset projects..." />
 
     <MSBuild
       Projects="@(TestAssetProjectToRestore)"

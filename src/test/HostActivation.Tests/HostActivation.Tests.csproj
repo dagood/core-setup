@@ -8,6 +8,14 @@
     <DefineConstants Condition="'$(OSGroup)' == 'Windows_NT'">$(DefineConstants);WINDOWS</DefineConstants>
   </PropertyGroup>
 
+  <!--
+    A test project used in these tests has an extremely long-named file. Reduce the length of the
+    test output dir to make it more reliable on Windows.
+  -->
+  <PropertyGroup>
+    <TestsOutputName>hat</TestsOutputName>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>

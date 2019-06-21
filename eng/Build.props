@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RepoToolsDir>$(RepoRoot)tools-local\tasks\</RepoToolsDir>
+    <RepoTasksDir>$(RepoRoot)tools-local\tasks\</RepoTasksDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <RepoToolsSrc Include="$(RepoToolsDir)**\*.cs" />
-    <RepoToolsOutputFile Include="$(ArtifactsObjDir)core-setup.tasks\**\core-setup.tasks.dll" />
+    <RepoTasksSrc Include="$(RepoTasksDir)**\*.cs" />
+    <RepoTasksOutputFile Include="$(ArtifactsObjDir)core-setup.tasks\**\core-setup.tasks.dll" />
   </ItemGroup>
 
   <!--
@@ -40,12 +40,12 @@
     locking issues vs. the persistent nodes that loaded the task DLL for the previous build. It
     isn't particularly accurate, but better than nothing.
   -->
-  <Target Name="BuildRepoTools"
+  <Target Name="BuildRepoTasks"
           BeforeTargets="Execute"
-          Inputs="@(RepoToolsSrc)"
-          Outputs="@(RepoToolsOutputFile)">
+          Inputs="@(RepoTasksSrc)"
+          Outputs="@(RepoTasksOutputFile)">
     <MSBuild
-      Projects="$(RepoToolsDir)core-setup.tasks.csproj"
+      Projects="$(RepoTasksDir)core-setup.tasks.csproj"
       Properties="RepoRoot=$(RepoRoot)"
       Targets="
         Restore;

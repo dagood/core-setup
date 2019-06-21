@@ -2,15 +2,16 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <IsPackable>true</IsPackable>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <AssemblyFileVersion>$(VersionPrefix)</AssemblyFileVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IncludeSymbols>true</IncludeSymbols>
     <Serviceable>true</Serviceable>
-    <PackageLicenseUrl>https://github.com/dotnet/core-setup/blob/master/LICENSE.TXT</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
     <PackageProjectUrl>https://dot.net</PackageProjectUrl>
     <Authors>Microsoft</Authors>
-    <NugetLicenseFile>$(RepoRoot)LICENSE.TXT</NugetLicenseFile>
+    <NugetLicenseFile>$(RepoRoot)$(PackageLicenseFile)</NugetLicenseFile>
     <PackageThirdPartyNoticesFile>$(RepoRoot)THIRD-PARTY-NOTICES.TXT</PackageThirdPartyNoticesFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Managed API isn't completely documented yet. TODO: https://github.com/dotnet/core-setup/issues/5108 -->
@@ -45,14 +46,9 @@
 
   <!-- Add required legal files to packages -->
   <ItemGroup>
-    <Content Condition="Exists('$(NugetLicenseFile)')"
-             Include="$(NugetLicenseFile)">
-      <PackagePath />
-    </Content>
-    <Content Condition="Exists('$(PackageThirdPartyNoticesFile)')"
-             Include="$(PackageThirdPartyNoticesFile)">
-      <PackagePath />
-    </Content>
+    <LegalContent Include="$(NugetLicenseFile)" />
+    <LegalContent Include="$(PackageThirdPartyNoticesFile)" />
+    <None Include="@(LegalContent)" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

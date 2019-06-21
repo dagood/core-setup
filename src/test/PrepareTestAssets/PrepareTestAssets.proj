@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Target Name="RefreshTestAssets"
+  <Target Name="PrepareTestAssets"
           DependsOnTargets="
             GetProductVersions;
             DetermineTestOutputDirectory">

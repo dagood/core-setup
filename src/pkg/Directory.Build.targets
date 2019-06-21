@@ -13,7 +13,7 @@
     <PropertyGroup Condition="'$(PreReleaseVersionLabel)' != '' and $(PreReleaseVersionLabel.StartsWith('preview'))">
       <!-- Convert 'preview7' to 'Preview 7'. -->
       <ReleaseBrandSuffix>$(PreReleaseVersionLabel.Substring(0,1).ToUpperInvariant())</ReleaseBrandSuffix>
-      <ReleaseBrandSuffix>$(ReleaseBrandSuffix)$(PreReleaseVersionLabel.Substring(1,6).ToUpperInvariant())</ReleaseBrandSuffix>
+      <ReleaseBrandSuffix>$(ReleaseBrandSuffix)$(PreReleaseVersionLabel.Substring(1,6))</ReleaseBrandSuffix>
       <ReleaseBrandSuffix>$(ReleaseBrandSuffix) $(PreReleaseVersionLabel.Substring(7))</ReleaseBrandSuffix>
     </PropertyGroup>
 

@@ -301,6 +301,10 @@
     <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('%(_filesToCrossGen.CrossGenedPath)'))" />
     <WriteLinesToFile File="$(_crossGenResponseFile)" Lines="@(_crossGenArgs)" Overwrite="true" />
 
+    <!--
+      Use IgnoreStandardErrorWarningFormat because Arcade sets WarnAsError and in some cases
+      crossgen warnings need to be ignored, like https://github.com/dotnet/core-setup/issues/5940.
+    -->
     <Exec
       Command="$(_crossGenPath) @$(_crossGenResponseFile)"
       WorkingDirectory="$(_clrDirectory)"

@@ -2,21 +2,10 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.props))\Directory.Build.props" />
 
   <PropertyGroup>
-    <CoreHostLockedDir>$(CoreHostOutputDir)locked\</CoreHostLockedDir>
-    <IntermediateOutputForPackaging>$(IntermediateOutputRootPath)sign/forPackaging/</IntermediateOutputForPackaging>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <LibPrefix Condition="'$(OSGroup)' != 'Windows_NT'">lib</LibPrefix>
     <LibSuffix>.so</LibSuffix> 
     <LibSuffix Condition="'$(OSGroup)' == 'Windows_NT'">.dll</LibSuffix>
     <LibSuffix Condition="'$(OSGroup)' == 'OSX'">.dylib</LibSuffix>
-    <SymbolFileExtension>.dbg</SymbolFileExtension>
-    <SymbolFileExtension Condition="'$(OSGroup)' == 'OSX'">.dwarf</SymbolFileExtension>
-    <SymbolFileExtension Condition="'$(OSGroup)' == 'Windows_NT'">.pdb</SymbolFileExtension> 
-
-    <DotnetHostFxrBaseName>$(LibPrefix)hostfxr$(LibSuffix)</DotnetHostFxrBaseName>
-    <HostPolicyBaseName>$(LibPrefix)hostpolicy$(LibSuffix)</HostPolicyBaseName>      
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,4 +14,5 @@
     <!-- OSX doesn't have crossgen symbols, yet -->
     <CrossGenSymbolExtension Condition="'$(OSGroup)' == 'OSX'"></CrossGenSymbolExtension>
   </PropertyGroup>
+
 </Project>

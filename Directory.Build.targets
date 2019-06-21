@@ -4,8 +4,7 @@
   <Import Project="$(RepositoryEngineeringDir)/DisableSourceControlManagement.targets" Condition="'$(EnableSourceLink)' == 'false'" />
 
   <!-- Provide default targets which can be hooked onto or overridden as necessary -->
-  <Target Name="BuildAndTest" DependsOnTargets="Build;Test" />
-  <Target Name="RebuildAndTest" DependsOnTargets="Rebuild;Test" />
+  <Target Name="Pack" />
 
   <UsingTask TaskName="GenerateGuidFromName" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="GenerateMsiVersion" AssemblyFile="$(LocalBuildToolsTaskFile)" />
@@ -177,19 +176,6 @@
     <PropertyGroup Condition="'$(LatestCommitExitCode)'!='0'">
       <LatestCommit>N/A</LatestCommit>
     </PropertyGroup>
-  </Target>
-
-  <Target Name="GetCommitCount"
-          Condition="'$(CommitCount)' == ''">
-    <Exec Command="git rev-list --count HEAD"
-          StandardOutputImportance="Low"
-          IgnoreExitCode="true"
-          IgnoreStandardErrorWarningFormat="true"
-          ConsoleToMSBuild="true">
-     <Output TaskParameter="ConsoleOutput" PropertyName="CommitCount" />
-     <Output TaskParameter="ExitCode" PropertyName="CommitCountExitCode" />
-    </Exec>
-    <Error Condition="'$(CommitCount)' == ''" Text="Unable to determine the 'commit count'.  'Commit count' is used for generating an msi version.  If you are building outside of a git repo, you must pass the '/p:CommitCount=[value]' property" />
   </Target>
 
   <Target Name="GetBundleDisplayVersion">

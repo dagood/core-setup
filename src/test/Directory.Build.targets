@@ -1,13 +1,18 @@
 <Project>
 
-  <Target Name="RunRefreshTestAssets"
+  <Target Name="RefreshProjectTestAssets"
+          Condition="'$(UsesTestAssets)' == 'true'"
           DependsOnTargets="DetermineTestOutputDirectory"
           BeforeTargets="RunTests">
+    <!-- Build PrepareTestAssets once for all tests. -->
     <MSBuild
       Projects="$(TestDir)PrepareTestAssets\PrepareTestAssets.proj"
-      Targets="RefreshTestAssets" />
+      Targets="PrepareTestAssets" />
 
-    <!-- Set up this test project's shared framework to use. -->
+    <!--
+      Set up the shared framework copy this set of tests should use. There's no known reason to have
+      one per test project, but RepoDirectoriesProvider may need some tweaking to share.
+    -->
     <ItemGroup>
       <SharedFrameworkPublishFiles Include="$(SharedFrameworkPublishDir)**" />
     </ItemGroup>
@@ -68,8 +73,11 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
 
   <!--
-    Rewrite Arcade RunTests target to add TestRunnerEnvironmentVariable support.
-    See https://github.com/dotnet/arcade/issues/3077
+    Rewrite Arcade RunTests target to add TestRunnerEnvironmentVariable support. In the future we
+    should switch to a file to transfer this information, or derive the info from information on
+    disk. Env vars are not likely to be supported in upstream Arcade.
+
+    See https://github.com/dotnet/arcade/issues/3077.
   -->
   <!-- <OVERRIDE> https://github.com/dotnet/arcade/blob/dc538a29793fd56618d0fa3186e2388d47d00c19/src/Microsoft.DotNet.Arcade.Sdk/tools/XUnit/XUnit.targets#L25-L120 -->
   <!-- 

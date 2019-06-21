@@ -33,18 +33,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
     <!-- ProjectDir needs to be set for build-tools and legacy usages. New usages should use RepoRoot -->
     <ProjectDir>$(RepoRoot)</ProjectDir>
     <SourceDir>$(RepoRoot)src/</SourceDir>
 
     <!-- Output directories -->
     <BinDir Condition="'$(BinDir)'==''">$(ArtifactsBinDir)</BinDir>
-    <BaseOutputPath Condition="'$(BaseOutputPath)'==''">$(BinDir)</BaseOutputPath>
     <ObjDir Condition="'$(ObjDir)'==''">$(ArtifactsObjDir)</ObjDir>
 
     <!-- Input Directories -->
-    <PackagesDir>$(DotNetRestorePackagesPath)</PackagesDir>
     <PackagesDir Condition="'$(PackagesDir)' == ''">$(NuGetPackageRoot)</PackagesDir>
 
     <LocalBuildToolsDir>$(ObjDir)local-build-tasks\</LocalBuildToolsDir>
@@ -97,13 +94,6 @@
     <RunningOnUnix Condition="'$(OS)'!='Windows_NT'">true</RunningOnUnix>
 
     <RunningOnCore Condition="'$(MSBuildRuntimeType)' == 'core'">true</RunningOnCore>
-  </PropertyGroup>
-
-  <!-- Import Build tools common props file where repo-independent properties are found -->
-  <Import Condition="Exists('$(ToolsDir)Build.Common.props')" Project="$(ToolsDir)Build.Common.props" />
-
-  <PropertyGroup>
-    <CustomTaskProject>$(MSBuildThisFileDirectory)tools-local/tasks/core-setup.tasks.csproj</CustomTaskProject>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -222,20 +212,16 @@
   <PropertyGroup>
     <OSPlatformConfig>$(OutputRid).$(ConfigurationGroup)</OSPlatformConfig>
 
-    <BaseOutputPath Condition="'$(BaseOutputPath)'==''">$(BinDir)</BaseOutputPath>
-    <OutputPath Condition="'$(OutputPath)'==''">$(BaseOutputPath)$(OSPlatformConfig)\</OutputPath>
     <BaseOutputRootPath>$(BinDir)$(OSPlatformConfig)\</BaseOutputRootPath>
     <CrossGenRootPath>$(BaseOutputRootPath)crossgen\</CrossGenRootPath>
 
     <IntermediateOutputRootPath Condition="'$(IntermediateOutputRootPath)' == ''">$(ObjDir)$(OSPlatformConfig)\</IntermediateOutputRootPath>
 
-    <CoreHostOutputDir>$(BaseOutputRootPath)corehost\</CoreHostOutputDir>
-
     <PackagesBasePath Condition="'$(PackagesBasePath)'==''">$(BinDir)$(OSPlatformConfig)/</PackagesBasePath>
     <PackageSymbolsBinDir Condition="'$(PackageSymbolsBinDir)' == ''">$(PackagesBasePath)symbols/</PackageSymbolsBinDir>
 
     <AssetOutputPath Condition="'$(AssetOutputPath)'==''">$(ArtifactsShippingPackagesDir)</AssetOutputPath>
-    <SymbolPackageOutputPath Condition="'$(SymbolPackageOutputPath)'==''">$(ArtifactsNonShippingPackagesDir)</SymbolPackageOutputPath>
+    <SymbolPackageOutputPath Condition="'$(SymbolPackageOutputPath)'==''">$(ArtifactsShippingPackagesDir)</SymbolPackageOutputPath>
 
     <!-- Use '/' instead of '\': used directly by WiX which doesn't accept trailing '\'. -->
     <SharedFrameworkPublishDir>$(IntermediateOutputRootPath)sharedFrameworkPublish/</SharedFrameworkPublishDir>
@@ -417,17 +403,5 @@
     -->
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <!-- These properties should be passed through to new msbuild instances (like 'dotnet build')
-         in order to get the correct output directories in the child project.
-    -->
-    <MSBuildPassThroughPropertyList>/p:OSGroup=$(OSGroup) /p:PortableBuild=$(PortableBuild) /p:TargetArchitecture=$(TargetArchitecture) /p:ConfigurationGroup=$(ConfigurationGroup) /p:VersionSuffix=$(VersionSuffix)</MSBuildPassThroughPropertyList>
-    <MSBuildPassThroughPropertyList Condition="'$(OutputRid)' != ''">$(MSBuildPassThroughPropertyList) /p:OutputRid=$(OutputRid)</MSBuildPassThroughPropertyList>
-  </PropertyGroup>
-
-  <!-- Use Roslyn Compilers to build -->
-  <Import Project="$(RoslynPropsFile)" Condition="'$(RunningOnUnix)'!='true' and Exists('$(RoslynPropsFile)') and '$(UseRoslynCompilers)'!='false' and '$(RoslynIncompatibleMsbuildVersion)' != 'true'" />
-  <Import Project="$(RoslynPropsFile)" Condition="'$(RunningOnUnix)'=='true' and Exists('$(RoslynPropsFile)') and '$(RoslynIncompatibleMsbuildVersion)' != 'true'" />
 
 </Project>

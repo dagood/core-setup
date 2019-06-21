@@ -1,3 +1,2 @@
 @echo off
-powershell -ExecutionPolicy ByPass -NoProfile -File "%~dp0eng\common\build.ps1" %*
-exit /b %ERRORLEVEL%
+powershell -ExecutionPolicy ByPass -NoProfile -command "& """%~dp0eng\common\Build.ps1""" -restore -build -pack %*"

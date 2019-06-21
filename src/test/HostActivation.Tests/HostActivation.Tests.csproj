@@ -8,6 +8,7 @@
     <DefineConstants Condition="'$(OSGroup)' == 'Windows_NT'">$(DefineConstants);WINDOWS</DefineConstants>
     <!-- Reduce the length of the test output dir to make it more reliable on Windows. -->
     <TestsOutputName>ha</TestsOutputName>
+    <UsesTestAssets>true</UsesTestAssets>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
@@ -18,7 +19,6 @@
     <ProjectReference Include="..\TestUtils\TestUtils.csproj" />
     <!-- This project reference should be removed once SDK changes to bundle via publish are available -->
     <ProjectReference Include="..\..\managed\Microsoft.NET.HostModel\Microsoft.NET.HostModel.csproj" />
-    <ProjectReference Include="$(SourceDir)dir.proj" />
   </ItemGroup>
 
   <ItemGroup>

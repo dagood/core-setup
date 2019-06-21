@@ -9,11 +9,6 @@
   <!-- Fetches all the file items from the packages that we want to redist -->
   <Target Name="GetFilesFromPackages">
     <ItemGroup>
-      <__ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" />
-      <__Reference Include="@(Reference)" />
-    </ItemGroup>
-
-    <ItemGroup>
       <!-- RID-specific: include all runtime files. -->
       <RidSpecificFilesToPackage Include="@(ReferenceCopyLocalPaths)">
         <!-- ResolveNugetPackageAssets doesn't preserve the asset type (native),

@@ -17,16 +17,33 @@
     <ProjectToBuild Include="$(RepoRoot)src\test\Microsoft.Extensions.DependencyModel.Tests\Microsoft.Extensions.DependencyModel.Tests.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <RepoToolsDir>$(RepoRoot)tools-local\tasks\</RepoToolsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <RepoToolsSrc Include="$(RepoToolsDir)**\*.cs" />
+    <RepoToolsOutputFile Include="$(ArtifactsObjDir)core-setup.tasks\**\core-setup.tasks.dll" />
+  </ItemGroup>
+
   <!--
     Use this extensibility point to build custom tasks during Build.proj, before any restoring or
     building happens in the repo. These DLLs would ideally live in Arcade and be restored as tools,
     so the idea is building them here is somewhat equivalent.
 
     Also create the host RID props file so the main build can use it statically.
+
+    Use synthetic inputs/outputs to avoid building it all the time. This should let devs build with
+    MSBuild node reuse enabled (the Arcade default). If it were built every time, it would hit file
+    locking issues vs. the persistent nodes that loaded the task DLL for the previous build. It
+    isn't particularly accurate, but better than nothing.
   -->
-  <Target Name="BuildRepoTools" BeforeTargets="Execute">
+  <Target Name="BuildRepoTools"
+          BeforeTargets="Execute"
+          Inputs="@(RepoToolsSrc)"
+          Outputs="@(RepoToolsOutputFile)">
     <MSBuild
-      Projects="$(RepoRoot)tools-local\tasks\core-setup.tasks.csproj"
+      Projects="$(RepoToolsDir)core-setup.tasks.csproj"
       Properties="RepoRoot=$(RepoRoot)"
       Targets="
         Restore;

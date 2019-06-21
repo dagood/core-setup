@@ -1,5 +1,8 @@
 <Project>
   <PropertyGroup>
+    <ShortFrameworkName>windowsdesktop</ShortFrameworkName>
+    <ProductBrandPrefix>Microsoft Windows Desktop</ProductBrandPrefix>
+
     <RIDPropsFile>$(MSBuildThisFileDirectory)windowsdesktopRIDs.props</RIDPropsFile>
   </PropertyGroup>
 

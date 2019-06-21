@@ -10,7 +10,11 @@
           Condition="'$(BuildRpmPackage)'=='true'" />
   
   <Target Name="GenerateRuntimeRpms" 
-          DependsOnTargets="GenerateSharedHostRpm;GenerateHostFxrRpm;GenerateSharedFrameworkRpm"
+          DependsOnTargets="
+            GetInstallerBrandingNames;
+            GenerateSharedHostRpm;
+            GenerateHostFxrRpm;
+            GenerateSharedFrameworkRpm"
           Condition="'$(BuildRuntimeRpms)' == 'true'" />
 
   <Target Name="BuildRpms"

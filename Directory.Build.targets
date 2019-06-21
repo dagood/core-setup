@@ -119,6 +119,12 @@
       <SharedFrameworkInstallerFile>$(SharedFrameworkInstallerStart)$(ProductMoniker)$(InstallerExtension)</SharedFrameworkInstallerFile>
       <DotnetRuntimeDependenciesPackageInstallerFile>$(DotnetRuntimeDependenciesPackageInstallerStart)$(ProductMoniker)$(InstallerExtension)</DotnetRuntimeDependenciesPackageInstallerFile>
 
+      <CombinedCompressedFile>dotnet-runtime-$(ProductMoniker)$(CompressedFileExtension)</CombinedCompressedFile>
+      <HostFxrCompressedFile>dotnet-hostfxr-internal-$(PackageTargetRid).$(HostResolverVersion)$(CompressedFileExtension)</HostFxrCompressedFile>
+      <NetHostCompressedFile>dotnet-nethost-$(AppHostVersion)-$(PackageTargetRid)$(CompressedFileExtension)</NetHostCompressedFile>
+      <SharedFrameworkCompressedFile>dotnet-runtime-internal-$(ProductMoniker)$(CompressedFileExtension)</SharedFrameworkCompressedFile>
+      <SharedFrameworkSymbolsCompressedFile>dotnet-runtime-symbols-$(ProductMoniker)$(CompressedFileExtension)</SharedFrameworkSymbolsCompressedFile>
+
       <HostFxrDebPkgName>$(DotnetHostFxrString)$(ProductBandVersion)</HostFxrDebPkgName>
       <HostFxrDebPkgName>$(HostFxrDebPkgName.ToLower())</HostFxrDebPkgName>
       <SharedFxDebPkgName>$(DotnetRuntimeString)$(ProductBandVersion)</SharedFxDebPkgName>

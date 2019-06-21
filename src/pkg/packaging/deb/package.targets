@@ -14,7 +14,12 @@
           Condition="'$(BuildDebPackage)'=='true'" />
 
   <Target Name="GenerateRuntimeDebs" 
-          DependsOnTargets="GenerateSharedHostDeb;GenerateHostFxrDeb;GenerateSharedFrameworkDeb;GenerateRuntimeDependenciesDeb"
+          DependsOnTargets="
+            GetInstallerBrandingNames;
+            GenerateSharedHostDeb;
+            GenerateHostFxrDeb;
+            GenerateSharedFrameworkDeb;
+            GenerateRuntimeDependenciesDeb"
           Condition="'$(BuildRuntimeDebs)' == 'true'" />
 
   <Target Name="BuildDebs"

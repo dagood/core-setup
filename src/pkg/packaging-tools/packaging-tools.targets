@@ -19,7 +19,9 @@
     (Unlike properties set up in packaging-tools.props, which shouldn't.)
   -->
   <Target Name="GetInstallerProperties"
-          DependsOnTargets="GetProductVersions">
+          DependsOnTargets="
+            GetInstallerBrandingNames;
+            GetProductVersions">
     <!-- Detect framework pack suffix and apply defaults. -->
     <PropertyGroup Condition="'$(FrameworkPackType)' == 'targeting'">
       <InstallerName>$(ShortFrameworkName)-targeting-pack</InstallerName>

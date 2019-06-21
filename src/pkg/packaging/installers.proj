@@ -124,7 +124,13 @@
                       />
   </Target>
 
-  <Target Name="GenerateCompressedFiles" DependsOnTargets="InitPackage;GenerateZip;GenerateTarBall" Condition="'$(UsePrebuiltPortableBinariesForInstallers)' == 'false'"/>
+  <Target Name="GenerateCompressedFiles"
+          DependsOnTargets="
+            InitPackage;
+            GetInstallerLocations;
+            GenerateZip;
+            GenerateTarBall"
+          Condition="'$(UsePrebuiltPortableBinariesForInstallers)' == 'false'"/>
 
   <UsingTask TaskName="ZipFileCreateFromDirectory" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
   <Target Name="GenerateZip"

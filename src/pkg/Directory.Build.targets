@@ -5,6 +5,31 @@
     <RuntimeIdGraphDefinitionFile>$(PackagesDir)$(PlatformPackageId.ToLowerInvariant())\$(MicrosoftNETCorePlatformsPackageVersion)\runtime.json</RuntimeIdGraphDefinitionFile>
   </PropertyGroup>
 
+  <!--
+    Get branding names for the installers.
+  -->
+  <Target Name="GetInstallerBrandingNames"
+          DependsOnTargets="GetProductVersions">
+    <PropertyGroup Condition="'$(PreReleaseVersionLabel)' != '' and $(PreReleaseVersionLabel.StartsWith('preview'))">
+      <!-- Convert 'preview7' to 'Preview 7'. -->
+      <ReleaseBrandSuffix>$(PreReleaseVersionLabel.Substring(0,1).ToUpperInvariant())</ReleaseBrandSuffix>
+      <ReleaseBrandSuffix>$(ReleaseBrandSuffix)$(PreReleaseVersionLabel.Substring(1,6).ToUpperInvariant())</ReleaseBrandSuffix>
+      <ReleaseBrandSuffix>$(ReleaseBrandSuffix) $(PreReleaseVersionLabel.Substring(7))</ReleaseBrandSuffix>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <ProductBrandPrefix Condition="'$(ProductBrandPrefix)' == ''">Microsoft .NET Core</ProductBrandPrefix>
+      <ProductBrandSuffix>$(ProductionVersion)</ProductBrandSuffix>
+      <ProductBrandSuffix Condition="'$(ReleaseBrandSuffix)'!=''">$(ProductionVersion) $(ReleaseBrandSuffix)</ProductBrandSuffix>
+
+      <SharedHostBrandName>$(ProductBrandPrefix) Host - $(ProductBrandSuffix)</SharedHostBrandName>
+      <HostFxrBrandName>$(ProductBrandPrefix) Host FX Resolver - $(ProductBrandSuffix)</HostFxrBrandName>
+      <TargetingPackBrandName>$(ProductBrandPrefix) Targeting Pack - $(ProductBrandSuffix)</TargetingPackBrandName>
+      <AppHostPackBrandName>$(ProductBrandPrefix) AppHost Pack - $(ProductBrandSuffix)</AppHostPackBrandName>
+      <SharedFrameworkBrandName>$(ProductBrandPrefix) Runtime - $(ProductBrandSuffix)</SharedFrameworkBrandName>
+    </PropertyGroup>
+  </Target>
+
   <!-- Create deb tool package and set up the project that consumes it as a CLI tool. -->
   <Target Name="InitializeDotnetDebTool">
     <!--

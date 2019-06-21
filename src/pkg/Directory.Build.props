@@ -82,17 +82,6 @@
     <InstallerSourceOSPlatformConfig Condition="'$(InstallerSourceOSPlatformConfig)' == ''">$(OSPlatformConfig)</InstallerSourceOSPlatformConfig>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <ProductBrandPrefix Condition="'$(ProductBrandPrefix)' == ''">Microsoft .NET Core</ProductBrandPrefix>
-    <ProductBrandSuffix>$(ProductionVersion)</ProductBrandSuffix>
-    <ProductBrandSuffix Condition="'$(ReleaseBrandSuffix)'!=''">$(ProductionVersion) $(ReleaseBrandSuffix)</ProductBrandSuffix>
-    <SharedHostBrandName>$(ProductBrandPrefix) Host - $(ProductBrandSuffix)</SharedHostBrandName>
-    <HostFxrBrandName>$(ProductBrandPrefix) Host FX Resolver - $(ProductBrandSuffix)</HostFxrBrandName>
-    <TargetingPackBrandName>$(ProductBrandPrefix) Targeting Pack - $(ProductBrandSuffix)</TargetingPackBrandName>
-    <AppHostPackBrandName>$(ProductBrandPrefix) AppHost Pack - $(ProductBrandSuffix)</AppHostPackBrandName>
-    <SharedFrameworkBrandName>$(ProductBrandPrefix) Runtime - $(ProductBrandSuffix)</SharedFrameworkBrandName>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageIndex Include="$(PackageIndexFile)" />
   </ItemGroup>

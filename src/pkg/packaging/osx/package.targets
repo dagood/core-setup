@@ -12,7 +12,7 @@
 
   <Target Name="GeneratePkgs"
           Condition="'$(OSGroup)' == 'OSX'"
-          DependsOnTargets="InitPkg">
+          DependsOnTargets="GetInstallerBrandingNames;InitPkg">
     <ItemGroup>
         <OSXPackages Include="sharedframework">
             <Id>$(SharedFxComponentId)</Id>

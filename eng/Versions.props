@@ -12,9 +12,6 @@
     <SemanticVersioningV1 Condition="
       $(MajorVersion) &lt; 3 or
       '$(MajorVersion).$(MinorVersion).$(PatchVersion)' == '3.0.0'">true</SemanticVersioningV1>
-    <!-- Release branding. -->
-    <ReleaseSuffix>$(PreReleaseVersionLabel)</ReleaseSuffix>
-    <ReleaseBrandSuffix>Preview 7</ReleaseBrandSuffix>
     <!-- "Latest" channel to publish to. -->
     <Channel>master</Channel>
     <ContainerName>dotnet</ContainerName>

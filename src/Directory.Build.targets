@@ -8,4 +8,13 @@
   <Import Project="packaging.stubs.targets" Condition="'$(MSBuildProjectExtension)' != '.pkgproj'" />
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
+
+  <Target Name="ExcludefPackageXlfSources"
+          BeforeTargets="GetXlfSources">
+    <ItemGroup>
+      <EmbeddedResource
+        Condition="$([System.String]::new('%(Identity)').StartsWith('$(PackagesDir)'))"
+        XlfInput="false" />
+    </ItemGroup>
+  </Target>
 </Project>

@@ -69,7 +69,9 @@
         AssemblyName=%(HostFiles.FileDescription);
         NativeVersionFile=$(IntermediateOutputRootPath)hostResourceFiles\%(HostFiles.Identity)\version_info.h"
       Targets="GenerateNativeVersionFile"
-      Condition="'$(IncrementalNativeBuild)' != 'true'"/>
+      Condition="
+        '$(IncrementalNativeBuild)' != 'true' or
+        !Exists('$(IntermediateOutputRootPath)hostResourceFiles\%(HostFiles.Identity)\version_info.h')"/>
 
     <PropertyGroup>
       <BuildArgs>$(ConfigurationGroup) $(TargetArchitecture) apphostver $(AppHostVersion) hostver $(HostVersion) fxrver $(HostResolverVersion) policyver $(HostPolicyVersion) commit $(LatestCommit) rid $(OutputRid)</BuildArgs>

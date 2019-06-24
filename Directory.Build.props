@@ -99,6 +99,7 @@
   values for $(ConfigurationGroup) or $(OSGroup) or accept the defaults for them.
   -->
   <PropertyGroup>
+    <OSGroup Condition="'$(OS)'=='Unix' AND Exists('/Applications')">OSX</OSGroup>
     <OSGroup Condition="'$(OSGroup)' == ''">$(OS)</OSGroup>
   </PropertyGroup>
 

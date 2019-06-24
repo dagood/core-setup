@@ -56,7 +56,7 @@ namespace Microsoft.DotNet.CoreSetup.Test.HostActivation
             // Change *.dll to *.exe
             var appDll = fixture.TestProject.AppDll;
             var appExe = appDll.Replace(".dll", ".exe");
-            File.Copy(appDll, appExe);
+            File.Copy(appDll, appExe, true);
             File.Delete(appDll);
 
             dotnet.Exec("exec", appExe)

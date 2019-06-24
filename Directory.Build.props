@@ -75,15 +75,6 @@
     <NETCoreAppFrameworkBrandName>.NET Core $(NETCoreAppFrameworkVersion)</NETCoreAppFrameworkBrandName>
   </PropertyGroup>
 
-  <!--
-    $(OS) is set to Unix/Windows_NT. This comes from an environment variable on Windows and MSBuild on Unix.
-  -->
-  <PropertyGroup>
-    <!-- Temp change to make OS X build behave as a Linux build -->
-    <OsEnvironment Condition="'$(OsEnvironment)'=='' AND '$(OS)'=='OSX'">Unix</OsEnvironment>
-    <OsEnvironment Condition="'$(OsEnvironment)'==''">$(OS)</OsEnvironment>
-  </PropertyGroup>
-
   <!-- Platform detection -->
   <PropertyGroup>
     <RunningOnUnix Condition="'$(OS)'!='Windows_NT'">true</RunningOnUnix>
@@ -108,7 +99,7 @@
   values for $(ConfigurationGroup) or $(OSGroup) or accept the defaults for them.
   -->
   <PropertyGroup>
-    <OSGroup Condition="'$(OSGroup)' == ''">$(OsEnvironment)</OSGroup>
+    <OSGroup Condition="'$(OSGroup)' == ''">$(OS)</OSGroup>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'==''">

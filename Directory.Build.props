@@ -86,11 +86,6 @@
 
   <!-- Platform detection -->
   <PropertyGroup>
-    <DefaultOSGroup Condition="'$(OS)'=='Unix' AND Exists('/Applications')">OSX</DefaultOSGroup>
-    <DefaultOSGroup Condition="'$(DefaultOSGroup)'=='' AND '$(OS)'=='Unix' AND $([MSBuild]::IsOSPlatform('FREEBSD'))">FreeBSD</DefaultOSGroup>
-    <DefaultOSGroup Condition="'$(DefaultOSGroup)'=='' AND '$(OS)'=='Unix' AND $([MSBuild]::IsOSPlatform('NETBSD'))">NetBSD</DefaultOSGroup>
-    <DefaultOSGroup Condition="'$(DefaultOSGroup)'=='' AND '$(OS)'=='Unix'">Linux</DefaultOSGroup>
-    <DefaultOSGroup Condition="'$(DefaultOSGroup)'==''">$(OS)</DefaultOSGroup>
     <RunningOnUnix Condition="'$(OS)'!='Windows_NT'">true</RunningOnUnix>
 
     <RunningOnCore Condition="'$(MSBuildRuntimeType)' == 'core'">true</RunningOnCore>

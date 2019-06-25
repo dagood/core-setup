@@ -1,7 +1,7 @@
 <Project>
 
   <Target Name="RefreshProjectTestAssets"
-          Condition="'$(UsesTestAssets)' == 'true'"
+          Condition="'$(UsesTestAssets)' == 'true' and '$(SkipTests)' != 'true'"
           DependsOnTargets="DetermineTestOutputDirectory"
           BeforeTargets="RunTests">
     <!-- Build PrepareTestAssets once for all tests. -->
@@ -11,7 +11,7 @@
 
     <!--
       Set up the shared framework copy this set of tests should use. There's no known reason to have
-      one per test project, but RepoDirectoriesProvider may need some tweaking to share.
+      one per test project, but RepoDirectoriesProvider may need some tweaking to share.Running NuGet Restore for test asset projects
     -->
     <ItemGroup>
       <SharedFrameworkPublishFiles Include="$(SharedFrameworkPublishDir)**" />
@@ -44,6 +44,7 @@
   </Target>
 
   <Target Name="SetupTextFixtureEnvironment"
+          Condition="'$(SkipTests)' != 'true'"
           DependsOnTargets="
             GetProductVersions;
             DetermineTestOutputDirectory"

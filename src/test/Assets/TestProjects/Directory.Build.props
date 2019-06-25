@@ -11,6 +11,8 @@
     <RestoreSources>@(RestoreTestSource);@(RestoreTestFallbackSource)</RestoreSources>
     <RestorePackagesPath>$(TestRestorePackagesPath)</RestorePackagesPath>
     <RestoreNoCache>true</RestoreNoCache>
+
+    <AppHostRuntimeIdentifier>$(TestTargetRid)</AppHostRuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

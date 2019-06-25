@@ -34,7 +34,7 @@ jobs:
         # TODO, fix up artifacts:
         # /p:BuildFullPlatformManifest=${{ parameters.buildFullPlatformManifest }}
       CommonMSBuildArgs: >-
-        /p:ConfigurationGroup=$(_BuildConfig)
+        /p:Configuration=$(_BuildConfig)
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
         /p:PortableBuild=true
         /p:SkipTests=${{ parameters.skipTests }}

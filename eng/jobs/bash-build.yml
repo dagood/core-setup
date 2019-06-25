@@ -44,7 +44,7 @@ jobs:
         RunArguments: export DotNetBootstrapCliTarPath=/dotnet-sdk-freebsd-x64.tar &&
 
       CommonMSBuildArgs: >-
-        /p:ConfigurationGroup=$(_BuildConfig)
+        /p:Configuration=$(_BuildConfig)
         /p:OfficialBuildId=$(OfficialBuildId)
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
 

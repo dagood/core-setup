@@ -29,8 +29,12 @@
       <BuildArgs Condition="'$(StripSymbols)' == 'true'">$(BuildArgs) --stripsymbols</BuildArgs>
     </PropertyGroup>
 
+    <!--
+      Use IgnoreStandardErrorWarningFormat because Arcade sets WarnAsError and there's an existing
+      warning in the macOS build when dsymutil tries to strip symbols.
+    -->
     <Message Text="$(MSBuildProjectDirectory)\build.sh $(BuildArgs)" Importance="High"/>
-    <Exec Command="$(MSBuildProjectDirectory)\build.sh $(BuildArgs)" />
+    <Exec Command="$(MSBuildProjectDirectory)\build.sh $(BuildArgs)" IgnoreStandardErrorWarningFormat="true"/>
   </Target>
 
   <Target Name="BuildCoreHostWindows"

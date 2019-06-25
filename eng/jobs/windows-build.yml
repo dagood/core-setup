@@ -35,6 +35,7 @@ jobs:
         # /p:BuildFullPlatformManifest=${{ parameters.buildFullPlatformManifest }}
       CommonMSBuildArgs: >-
         /p:Configuration=$(_BuildConfig)
+        /p:OfficialBuildId=$(OfficialBuildId)
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
         /p:PortableBuild=true
         /p:SkipTests=${{ parameters.skipTests }}
@@ -60,10 +61,9 @@ jobs:
       displayName: Clear NuGet http cache (if exists)
 
     - script: >-
-        build.cmd -ci
+        build.cmd -ci -test
         $(CommonMSBuildArgs)
         $(MsbuildSigningArguments)
-        /bl:$(Build.SourcesDirectory)\msbuild.binlog
       displayName: Build
 
     # Publish all build assets

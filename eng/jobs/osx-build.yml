@@ -22,12 +22,10 @@ jobs:
       /p:SkipTests=${{ parameters.skipTests }}
   steps:
   - script: >-
-      $(Build.SourcesDirectory)/build.sh
-      --ci --test
+      $(Build.SourcesDirectory)/build.sh --ci --test
       /p:OfficialBuildId=$(OfficialBuildId)
       /p:StripSymbols=true
       $(CommonMSBuildArgs)
-      /bl:$(Build.SourcesDirectory)/build.binlog
     displayName: Build 
     condition: succeeded()
 

@@ -49,13 +49,12 @@ jobs:
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
 
       BuildArguments: >-
-        --test --ci
+        --ci --test
         /p:CrossBuild=${{ parameters.crossBuild }}
         /p:DisableCrossgen=${{ parameters.disableCrossgen }}
         /p:PortableBuild=${{ parameters.portableBuild }}
         /p:StripSymbols=true
         /p:SkipTests=${{ parameters.skipTests }}
-        /bl:msbuild.binlog
         $(CommonMSBuildArgs)
         ${{ parameters.additionalMSBuildArgs }}
 

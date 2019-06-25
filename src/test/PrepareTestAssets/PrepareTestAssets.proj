@@ -5,10 +5,7 @@
             GetProductVersions;
             DetermineTestOutputDirectory">
     <!-- Ensure installers (and therefore shared framework projects) are built first. -->
-    <MSBuild
-      Condition="$(BuildGroup.Contains('Installers'))"
-      Projects="$(SourceDir)pkg\packaging\installers.proj"
-      Targets="Build" />
+    <MSBuild Projects="$(SourceDir)pkg\packaging\installers.proj" Targets="Build" />
 
     <PropertyGroup>
       <TempFolderRoot>$(IntermediateOutputPath)temp\</TempFolderRoot>

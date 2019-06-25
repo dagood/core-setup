@@ -12,17 +12,6 @@
   <UsingTask TaskName="RegenerateReadmeTable" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <!--
-    Determine which types of dependencies should have Build run on them based on the current
-    BuildGroup setting. See eng/Build.props for info on BuildGroup.
-  -->
-  <Target Name="GetBuildGroupDependencyStatus">
-    <PropertyGroup>
-      <RunBinariesDependencies Condition="$(BuildGroup.Contains('Binaries'))">true</RunBinariesDependencies>
-      <RunBinariesDependencies Condition="$(BuildGroup.Contains('Installers'))">true</RunBinariesDependencies>
-    </PropertyGroup>
-  </Target>
-
-  <!--
     Arcade SDK versioning is defined by static properties in a targets file: work around this by
     moving properties based on versioning into a target.
   -->

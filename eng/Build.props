@@ -1,36 +1,18 @@
 <Project>
 
-  <!--
-    Allow the caller to specify '/p:BuildGroup' to run only part of the build. This causes a subset
-    of the projects to be built. Additional code elsewhere shortcuts project dependencies so
-    building a later stage doesn't rebuild the earlier ones. If multiple stages are specified, they
-    all run.
-
-    The Installers group also handles '/p:InstallersPhaseTarget' to give the official build enough
-    control to run extra steps between specific targets.
-  -->
-  <PropertyGroup>
-    <BuildGroup Condition="'$(BuildGroup)' == ''">Binaries-Installers-Tests</BuildGroup>
-  </PropertyGroup>
-
-  <ItemGroup Condition="$(BuildGroup.Contains('Binaries'))">
+  <ItemGroup>
     <ProjectToBuild Include="$(RepoRoot)src\corehost\build.proj" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
     <ProjectToBuild Include="$(RepoRoot)src\managed\**\*.csproj" />
 
     <!--
       Build pkgproj/depproj but not sfxproj. sfxproj requires pkgprojs to build their nupkgs first,
-      before Restore, which doesn't seem supported by Arcade. The sfxproj projects run as
-      dependencies of installers.proj, and are considered part of the Installers BuildGroup.
+      before Restore, which doesn't seem supported by Arcade.
     -->
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" />
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" />
-  </ItemGroup>
 
-  <ItemGroup Condition="$(BuildGroup.Contains('Installers'))">
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(BuildGroup.Contains('Tests'))">
+    <!-- Test projects. -->
     <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\AppHost.Bundle.Tests\AppHost.Bundle.Tests.csproj" />
     <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\Microsoft.NET.HostModel.Bundle.Tests\Microsoft.NET.HostModel.Bundle.Tests.csproj" />
     <ProjectToBuild Include="$(RepoRoot)src\test\HostActivation.Tests\HostActivation.Tests.csproj" />
@@ -69,7 +51,7 @@
         Restore;
         Build;
         CreateHostMachineInfoFile"/>
-
+    
     <WriteLinesToFile
       File="$(RepoTasksOutputFile)"
       Lines="$(RepoTasksOutputFile)"

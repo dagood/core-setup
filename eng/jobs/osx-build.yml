@@ -43,10 +43,11 @@ jobs:
   - task: PublishTestResults@2
     displayName: Publish Test Results
     inputs:
-      testResultsFormat: VSTest
-      testResultsFiles: 'bin/tests/**/*.trx'
-      mergeTestResults: true
+      testResultsFormat: 'xUnit'
+      testResultsFiles: '*.xml'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults/$(_BuildConfig)'
       testRunTitle: ${{ parameters.displayName }}
+    continueOnError: true
     condition: always()
 
   - task: CopyFiles@2

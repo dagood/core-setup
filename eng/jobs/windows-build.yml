@@ -83,8 +83,9 @@ jobs:
       displayName: Publish Test Results
       inputs:
         testResultsFormat: 'xUnit'
-        testResultsFiles: '*.xml' 
+        testResultsFiles: '*.xml'
         searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults/$(_BuildConfig)'
+        testRunTitle: ${{ parameters.displayName }}
       continueOnError: true
       condition: always()
 

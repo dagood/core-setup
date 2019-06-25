@@ -64,7 +64,7 @@ jobs:
     displayName: Publish Artifact BuildLogs
     inputs:
       PathtoPublish: '$(Build.StagingDirectory)/BuildLogs'
-      ArtifactName: ${{ parameters.displayName }}-$(_BuildConfig)
+      ArtifactName: Build_OSX-$(_BuildConfig)
     continueOnError: true
     condition: succeededOrFailed()
   

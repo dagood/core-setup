@@ -53,7 +53,6 @@ jobs:
         /p:OfficialPublish=true 
         /p:PublishType=nopublishtype 
         /p:SignType=$(SignType) 
-        /p:StabilizePackageVersion=$(IsStable) 
         /p:TargetArchitecture=x64
         $(_BlobFeedArgs) 
         $(_CommonPublishArgs) 

@@ -38,7 +38,6 @@ jobs:
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
         /p:PortableBuild=true
         /p:SkipTests=${{ parameters.skipTests }}
-        /p:StabilizePackageVersion=$(IsStable)
       MsbuildSigningArguments: >-
         /p:CertificateId=400
         /p:DotNetSignType=$(SignType)

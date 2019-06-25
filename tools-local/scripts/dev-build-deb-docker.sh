@@ -34,7 +34,9 @@ done
 containerized() {
     image=$1
     shift
-    docker run -it --rm \
+    # Do not use '-it': an interactive shell makes fakeroot hang! https://github.com/moby/moby/issues/27195
+    docker run \
+        --rm \
         -u="$(id -u):$(id -g)" \
         -e HOME=/work/.container-home \
         -v "$(pwd):/work:z" \
@@ -53,28 +55,28 @@ package() {
     queryCommand=$1
     shift
 
-    containerized "$image" \
+    # Also try sleeping to work around https://github.com/moby/moby/issues/27195
+    containerized "$image" bash -c "
+        sleep 1;
         eng/common/msbuild.sh \
-        tools-local/tasks/core-setup.tasks.csproj \
-        /t:Restore /t:Build /t:CreateHostMachineInfoFile \
-        /p:Configuration=Release \
-        /p:OSGroup=Linux \
-        /p:PortableBuild=false \
-        /p:TargetArchitecture=x64 \
-        "/bl:artifacts/msbuild.$name.traversaldependencies.binlog"
-
-    containerized "$image" \
+            tools-local/tasks/core-setup.tasks.csproj \
+            /t:Restore /t:Build /t:CreateHostMachineInfoFile \
+            /p:Configuration=Release \
+            /p:OSGroup=Linux \
+            /p:PortableBuild=false \
+            /p:TargetArchitecture=x64 \
+            /bl:artifacts/msbuild.$name.traversaldependencies.binlog;
         eng/common/msbuild.sh \
-        src/pkg/packaging/installers.proj \
-        /p:UsePrebuiltPortableBinariesForInstallers=true \
-        /p:SharedFrameworkPublishDir=/work/artifacts/obj/linux-x64.Release/sharedFrameworkPublish/ \
-        /p:InstallerSourceOSPlatformConfig=linux-x64.Release \
-        /p:GenerateProjectInstallers=true \
-        /p:Configuration=Release \
-        /p:OSGroup=Linux \
-        /p:PortableBuild=false \
-        /p:TargetArchitecture=x64 \
-        "/bl:artifacts/msbuild.$name.installers.binlog"
+            src/pkg/packaging/installers.proj \
+            /p:UsePrebuiltPortableBinariesForInstallers=true \
+            /p:SharedFrameworkPublishDir=/work/artifacts/obj/linux-x64.Release/sharedFrameworkPublish/ \
+            /p:InstallerSourceOSPlatformConfig=linux-x64.Release \
+            /p:GenerateProjectInstallers=true \
+            /p:Configuration=Release \
+            /p:OSGroup=Linux \
+            /p:PortableBuild=false \
+            /p:TargetArchitecture=x64 \
+            /bl:artifacts/msbuild.$name.installers.binlog"
 
     containerized "$image" \
         find artifacts/packages/Release/ \

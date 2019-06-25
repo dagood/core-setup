@@ -54,7 +54,8 @@
     <!-- Run deb tool in the directory of the consumer project. -->
     <Exec
       Command="$(DotNetTool) $(DebtoolAssemblyFile) $(DebToolArgs)"
-      WorkingDirectory="$(DebtoolConsumerDeployDir)" />
+      WorkingDirectory="$(DebtoolConsumerDeployDir)"
+      IgnoreStandardErrorWarningFormat="true" />
 
     <!-- Copy package to output. -->
     <ItemGroup>

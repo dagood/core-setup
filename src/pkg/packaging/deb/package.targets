@@ -81,7 +81,8 @@
                          ReplacementItems="@(SharedHostTokenValue)" />
 
     <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
-          WorkingDirectory="$(DebtoolConsumerDeployDir)" />
+          WorkingDirectory="$(DebtoolConsumerDeployDir)"
+          IgnoreStandardErrorWarningFormat="true" />
 
     <!-- Copy package to output -->
     <ItemGroup>
@@ -160,7 +161,8 @@
                          ReplacementItems="@(HostFxrTokenValue)" />
 
     <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
-          WorkingDirectory="$(DebtoolConsumerDeployDir)" />
+          WorkingDirectory="$(DebtoolConsumerDeployDir)"
+          IgnoreStandardErrorWarningFormat="true" />
 
     <!-- Copy package to output -->
     <ItemGroup>
@@ -253,7 +255,8 @@
                          ReplacementItems="@(SharedFrameworkTokenValue)" />
 
     <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
-          WorkingDirectory="$(DebtoolConsumerDeployDir)" />
+          WorkingDirectory="$(DebtoolConsumerDeployDir)"
+          IgnoreStandardErrorWarningFormat="true" />
 
     <!-- Copy package to output -->
     <ItemGroup>
@@ -334,7 +337,8 @@
                          ReplacementItems="@(SharedFrameworkTokenValue)" />
 
     <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
-          WorkingDirectory="$(DebtoolConsumerDeployDir)" />
+          WorkingDirectory="$(DebtoolConsumerDeployDir)"
+          IgnoreStandardErrorWarningFormat="true" />
 
     <!-- Copy package to output -->
     <ItemGroup>

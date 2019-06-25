@@ -16,28 +16,27 @@ jobs:
   workspace:
     clean: all
   steps:
-  - script: $(Build.SourcesDirectory)/build.sh
-      -OfficialBuildId=$(OfficialBuildId)
-      -ConfigurationGroup=$(_BuildConfig)
-      -PortableBuild=true
-      -strip-symbols
-      -SkipTests=$(SkipTests)
-      -- /p:StabilizePackageVersion=$(IsStable)
-      /bl:$(Build.SourcesDirectory)\build.binlog
+  - script: >-
+      $(Build.SourcesDirectory)/build.sh
+      --ci --test
+      /p:OfficialBuildId=$(OfficialBuildId)
+      /p:ConfigurationGroup=$(_BuildConfig)
+      /p:PortableBuild=true
+      /p:StripSymbols=true
+      /p:SkipTests=$(SkipTests)
+      /bl:$(Build.SourcesDirectory)/build.binlog
     displayName: Build 
     condition: succeeded()
 
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-    - script: $(Build.SourcesDirectory)/Tools/msbuild.sh
+    - script: >-
+        $(Build.SourcesDirectory)/eng/common/msbuild.sh
         $(Build.SourcesDirectory)/publish/publish.proj
         $(_CommonPublishArgs)
         /p:PublishType=$(_PublishType)
-        /p:TargetArchitecture=x64
         /p:ConfigurationGroup=$(_BuildConfig)
         /p:PortableBuild=true
-        /p:OSGroup=OSX
-        /p:StabilizePackageVersion=$(IsStable)
-        /bl:$(Build.SourcesDirectory)\publish.binlog
+        /bl:$(Build.SourcesDirectory)/publish.binlog
       displayName: Publish 
       condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
@@ -49,21 +48,23 @@ jobs:
       mergeTestResults: true
       testRunTitle: ${{ parameters.displayName }}
     condition: always()
+
   - task: CopyFiles@2
-    displayName: Copy Files to $(Build.StagingDirectory)\BuildLogs
+    displayName: Copy logs to stage
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)'
       Contents: |
         *.log
         *.binlog
-      TargetFolder: '$(Build.StagingDirectory)\BuildLogs'
+      TargetFolder: '$(Build.StagingDirectory)/BuildLogs'
     continueOnError: true
     condition: succeededOrFailed()
+
   - task: PublishBuildArtifacts@1
     displayName: Publish Artifact BuildLogs
     inputs:
-      PathtoPublish: '$(Build.StagingDirectory)\BuildLogs'
-      ArtifactName: $(Agent.Os)_$(Agent.JobName)
+      PathtoPublish: '$(Build.StagingDirectory)/BuildLogs'
+      ArtifactName: ${{ parameters.displayName }}-$(_BuildConfig)
     continueOnError: true
     condition: succeededOrFailed()
   

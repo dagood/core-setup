@@ -17,9 +17,6 @@ variables:
   # Skip Running CI tests
   - name: SkipTests
     value: false
-  # Set build as stable to remove build number from package names, used for milestone builds
-  - name: IsStable
-    value: false
   # Set Official Build Id
   - name: OfficialBuildId
     value: $(Build.BuildNumber)
@@ -66,7 +63,8 @@ variables:
 
     # ******** Official values *****
     - name: _CommonPublishArgs
-      value: /p:AzureAccountName=dotnetcli
+      value: >-
+        /p:AzureAccountName=dotnetcli
         /p:ContainerName=dotnet
         /p:AzureAccessToken=$(dotnetcli-storage-key)
         /p:ChecksumAzureAccountName=dotnetclichecksums

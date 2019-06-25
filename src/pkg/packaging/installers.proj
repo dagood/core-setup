@@ -44,7 +44,8 @@
     To build installers, we need shared fx layouts to be built first. Call MSBuild on the
     requirements so that parallel MSBuild does the ordering work.
   -->
-  <Target Name="BuildDependencies">
+  <Target Name="BuildDependencies"
+          Condition="'$(UsePrebuiltPortableBinariesForInstallers)' != 'true'">
     <ItemGroup>
       <SharedFrameworkProject Include="$(SourceDir)pkg\projects\**\*.sfxproj" />
     </ItemGroup>

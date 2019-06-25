@@ -31,18 +31,18 @@ jobs:
     workspace:
       clean: all
     variables: 
-      CommonMSBuildArgs: "/p:ConfigurationGroup=$(_BuildConfig) 
-                          /p:TargetArchitecture=${{ parameters.targetArchitecture }} 
-                          /p:PortableBuild=true
-                          /p:SkipTests=${{ parameters.skipTests }}
-                          /p:StabilizePackageVersion=$(IsStable)
-                          /nr:false"
-      MsbuildSigningArguments: /p:CertificateId=400 /v:detailed /p:SignType=$(SignType)
+      CommonMSBuildArgs: >-
+        /p:ConfigurationGroup=$(_BuildConfig)
+        /p:TargetArchitecture=${{ parameters.targetArchitecture }}
+        /p:PortableBuild=true
+        /p:SkipTests=${{ parameters.skipTests }}
+        /p:StabilizePackageVersion=$(IsStable)
+        /p:BuildFullPlatformManifest=${{ parameters.buildFullPlatformManifest }}
+      MsbuildSigningArguments: >-
+        /p:CertificateId=400
+        /v:detailed
+        /p:SignType=$(SignType)
 
-      # Disable MSBuild node reuse in case this build is running on a persistent agent.
-      # Use environment variable rather than /nr:false to make sure internal Execs that run MSBuild
-      # commands also disable node reuse.
-      MSBUILDDISABLENODEREUSE: 1
     steps:
 
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
@@ -60,22 +60,12 @@ jobs:
     - powershell: Remove-Item -Recurse -ErrorAction Ignore "$env:LocalAppData\NuGet\v3-cache"
       displayName: Clear NuGet http cache (if exists)
 
-    # Initialize building
-    - script: $(Build.SourcesDirectory)\build.cmd
-        -- $(CommonMSBuildArgs)
-        '/t:BuildTraversalBuildDependencies 
-        /bl:$(Build.SourcesDirectory)\init.binlog'
-      displayName: Build traversal build dependencies
-      condition: succeeded()
-
-    # Build binaries
-    - script: build.cmd
-        --src-builds
-        -- $(CommonMSBuildArgs)
-        /p:BuildAppx=false
+    - script: >-
+        build.cmd -ci
+        /p:BuildPhase=Binaries
+        $(CommonMSBuildArgs)
         /bl:$(Build.SourcesDirectory)\binaries.binlog
       displayName: Build binaries
-      condition: succeeded()
 
     # Sign Binaries, signing requires VS MSBuild
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
@@ -85,40 +75,20 @@ jobs:
           solution: '$(Build.SourcesDirectory)\signing\sign.proj'
           msbuildVersion: 15.0
           msbuildArchitecture: x64
-          msbuildArguments: '/t:SignBinaries  
+          msbuildArguments: >-
+            /t:SignBinaries
             $(CommonMSBuildArgs)
             $(MsbuildSigningArguments)
-            /bl:$(Build.SourcesDirectory)\sign.binaries.binlog'
+            /bl:$(Build.SourcesDirectory)\sign.binaries.binlog
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
-    # Build Nuget package
-    - script: build.cmd -pkg
-       -- '$(CommonMSBuildArgs)
-        /p:BuildFullPlatformManifest=${{ parameters.buildFullPlatformManifest }}
-        /bl:$(Build.SourcesDirectory)\pkg.binlog'
-      displayName: Build Nuget package
-      condition: succeeded()
-
-    # Build Shared Frameworks
-    - script: build.cmd -sharedfx
-        -- '$(CommonMSBuildArgs)
-        /bl:$(Build.SourcesDirectory)\sharedfx.binlog'
-      displayName: Build sharedframework layouts (new infrastructure)
-      condition: succeeded()
-
     - ${{ if ne(parameters.skipTests, 'true') }}:
-      - script: build.cmd
-          -test
-          -- '$(CommonMSBuildArgs)
-          /bl:$(Build.SourcesDirectory)\test.binlog'
+      - script: >-
+          build.cmd -ci -test
+          /p:BuildPhase=Tests
+          $(CommonMSBuildArgs)
+          /bl:$(Build.SourcesDirectory)\test.binlog
         displayName: Test
-
-    - ${{ if and(ne(parameters.displayName,'Build_Windows_x86'), ne(parameters.displayName,'Build_Windows_x64')) }}:
-      - script: build.cmd -packaging
-            -- '$(CommonMSBuildArgs)
-            /bl:$(Build.SourcesDirectory)\packaging.binlog'
-        displayName: Create Package
-        condition: succeeded()
 
     # Following steps followed in sequence only for Windows x86 and Windows x64
     #       Create installers
@@ -128,13 +98,22 @@ jobs:
     #       Sign Engine
     #       Re-attach Bundle
     #       Sign Bundle
-    - ${{ if or(eq(parameters.displayName,'Build_Windows_x86'), eq(parameters.displayName,'Build_Windows_x64')) }}:
-      - script: build.cmd -packaging
-          -- '/t:BuildInstallers
-            $(CommonMSBuildArgs)
-            /bl:$(Build.SourcesDirectory)\packaging.binlog'
+
+    - ${{ if and(ne(parameters.displayName,'Build_Windows_x86'), ne(parameters.displayName,'Build_Windows_x64')) }}:
+      - script: >-
+          build.cmd -ci
+          /p:BuildPhase=Installers
+          $(CommonMSBuildArgs)
+          /bl:$(Build.SourcesDirectory)\installers.binlog'
         displayName: Create installers
-        condition: succeeded()
+    - ${{ if or(eq(parameters.displayName,'Build_Windows_x86'), eq(parameters.displayName,'Build_Windows_x64')) }}:
+      - script: >-
+          build.cmd -ci
+          /p:BuildPhase=Installers
+          /p:InstallersPhaseTarget=BuildInstallers
+          $(CommonMSBuildArgs)
+          /bl:$(Build.SourcesDirectory)\Installers.BuildInstallers.binlog
+        displayName: Create installers (BuildInstallers)
 
       - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
         - task: MSBuild@1
@@ -148,19 +127,21 @@ jobs:
               $(MsbuildSigningArguments)'
           condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
-      - script: build.cmd -packaging
-          -- '/t:BuildCombinedInstallers
+      - script: >-
+          build.cmd -ci
+          /p:BuildPhase=Installers
+          /p:InstallersPhaseTarget=BuildCombinedInstallers
           $(CommonMSBuildArgs)
-          /bl:$(Build.SourcesDirectory)\packaging.createbundles.binlog'
-        displayName: Create bundles
-        condition: succeeded()
+          /bl:$(Build.SourcesDirectory)\Installers.BuildCombinedInstallers.binlog
+        displayName: Create bundles (BuildCombinedInstallers)
 
-      - script: build.cmd -packaging
-          -- '/t:ExtractEngineBundle
+      - script: >-
+          build.cmd -ci
+          /p:BuildPhase=Installers
+          /p:InstallersPhaseTarget=ExtractEngineBundle
           $(CommonMSBuildArgs)
-          /bl:$(Build.SourcesDirectory)\packaging.extractengine.binlog'
-        displayName: Extract Engine from Bundle
-        condition: succeeded()
+          /bl:$(Build.SourcesDirectory)\Installers.ExtractEngineBundle.binlog
+        displayName: Extract Engine from Bundle (ExtractEngineBundle)
 
       - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
         - task: MSBuild@1
@@ -175,12 +156,13 @@ jobs:
               /bl:$(Build.SourcesDirectory)\sign.engine.binlog'
           condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
-      - script: build.cmd -packaging
-          -- '/t:ReattachEngineToBundle
+      - script: >-
+          build.cmd -ci
+          /p:BuildPhase=Installers
+          /p:InstallersPhaseTarget=ReattachEngineToBundle
           $(CommonMSBuildArgs)
-          /bl:$(Build.SourcesDirectory)\packaging.reattachengine.binlog'
-        displayName: Re-attach Engine
-        condition: succeeded()
+          /bl:$(Build.SourcesDirectory)\Installers.ReattachEngineToBundle.binlog
+        displayName: Re-attach Engine (ReattachEngineToBundle)
 
       - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
         - task: MSBuild@1
@@ -196,24 +178,26 @@ jobs:
           condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
     # Publish all build assets
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-      - script: build.cmd -publishing
-          -- '$(CommonMSBuildArgs)
+      - script: >-
+          $(Build.SourcesDirectory)\eng\common\msbuild.ps1
+          $(Build.SourcesDirectory)\publish\publish.proj
           $(_CommonPublishArgs)
+          $(CommonMSBuildArgs)
           /p:PublishType=$(_PublishType)
           /p:PublishRidAgnosticPackages=${{ parameters.publishRidAgnosticPackages }}
-          /p:BuildFullPlatformManifest=${{ parameters.buildFullPlatformManifest }}
-          /bl:$(Build.SourcesDirectory)\publish.binlog'
+          /bl:$(Build.SourcesDirectory)\publish.binlog
         displayName: Publish build assets
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
     - task: PublishTestResults@2
       displayName: Publish Test Results
       inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: 'bin/tests/**/*.trx'
-        mergeTestResults: true
-        testRunTitle: ${{ parameters.displayName }}
+        testResultsFormat: 'xUnit'
+        testResultsFiles: '*.xml' 
+        searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults/$(_BuildConfig)'
+      continueOnError: true
       condition: always()
+
     - task: CopyFiles@2
       displayName: Copy Files to $(Build.StagingDirectory)\BuildLogs
       inputs:
@@ -225,6 +209,7 @@ jobs:
         CleanTargetFolder: true
       continueOnError: true
       condition: succeededOrFailed()
+
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact BuildLogs
       inputs:

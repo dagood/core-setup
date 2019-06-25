@@ -35,9 +35,9 @@ containerized() {
     image=$1
     shift
     # Do not use '-it': an interactive shell makes fakeroot hang! https://github.com/moby/moby/issues/27195
+    # It seems like -u also causes this? Run as root.
     docker run \
         --rm \
-        -u="$(id -u):$(id -g)" \
         -e HOME=/work/.container-home \
         -v "$(pwd):/work:z" \
         -w "/work" \

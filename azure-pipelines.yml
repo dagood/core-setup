@@ -70,17 +70,6 @@ variables:
         /p:ChecksumAzureAccountName=dotnetclichecksums
         /p:ChecksumContainerName=dotnet
         /p:ChecksumAzureAccessToken=$(dotnetclichecksums-storage-key)
-    # Used for publishing to dotnet myget account
-    - name: MyGetApiKey
-      value: $(dotnet-myget-org-api-key)
-    - name: MyGetFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/api/v2/package
-    - name: MyGetSymbolsFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/symbols/api/v2/package
-    - name: _NugetFeedArgs
-      value: /p:NuGetFeedUrl=$(MyGetFeedUrl)
-        /p:NuGetSymbolsFeedUrl=$(MyGetSymbolsFeedUrl)
-        /p:NuGetApiKey=$(MyGetApiKey)
 
 jobs:
   ################################################################################
@@ -207,7 +196,6 @@ jobs:
 - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
   ################################################################################
   # Finalize build publish
-  # publish nuget packages to blobfeed, symbolserver, and myget
   ################################################################################
   - template: /eng/jobs/finalize-publish.yml
     parameters:

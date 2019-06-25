@@ -114,7 +114,7 @@
 
     <!-- Copy nethost -->
     <PropertyGroup>
-      <_NetHostOutputDir>$(BaseOutputRootPath)corehost\</_NetHostOutputDir>
+      <_NetHostOutputDir>$(BinDir)$(InstallerSourceOSPlatformConfig)\corehost\</_NetHostOutputDir>
     </PropertyGroup>
     <ItemGroup>
       <NetHostFiles Include="$(_NetHostOutputDir)nethost.h" />

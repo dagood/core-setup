@@ -226,6 +226,8 @@
 
   <Target Name="FixLayoutPermissions"
           Condition="'$(OSGroup)' != 'Windows_NT'">
+    <Error Text="Layout '$(PackLayoutDir)' does not exist." Condition="!Exists('$(PackLayoutDir)')" />
+
     <!-- Fix file permissions in the layout dir. -->
     <!-- Reset everything to user readable/writeable and group and world readable. -->
     <Exec Command='find "$(PackLayoutDir)" -type f -name "*" -exec chmod 644 {} \;' />

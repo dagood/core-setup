@@ -45,7 +45,7 @@ jobs:
       testResultsFormat: 'xUnit'
       testResultsFiles: '*.xml'
       searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults/$(_BuildConfig)'
-      testRunTitle: ${{ parameters.displayName }}
+      testRunTitle: ${{ parameters.displayName }}-$(_BuildConfig)
     continueOnError: true
     condition: always()
 

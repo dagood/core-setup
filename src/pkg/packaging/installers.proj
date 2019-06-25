@@ -33,6 +33,7 @@
           Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
 
   <Target Name="SignCombinedInstallers"
+          Condition="'$(OSGroup)' == 'Windows_NT'"
           DependsOnTargets="
             ExtractEngineBundle;
             EnsureSignedEngineFiles;
@@ -55,19 +56,19 @@
       Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedBinaries">
+  <Target Name="EnsureSignedBinaries" Condition="'$(OSGroup)' == 'Windows_NT'" >
     <MSBuild Projects="$(RepoRoot)signing\stages\SignBinaries.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedMsiAndCabFiles">
+  <Target Name="EnsureSignedMsiAndCabFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
     <MSBuild Projects="$(RepoRoot)signing\stages\SignMsiAndCabFiles.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedEngineFiles">
+  <Target Name="EnsureSignedEngineFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
     <MSBuild Projects="$(RepoRoot)signing\stages\SignEngineFiles.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedBundleFiles">
+  <Target Name="EnsureSignedBundleFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
     <MSBuild Projects="$(RepoRoot)signing\stages\SignBundleFiles.proj" Targets="Build" />
   </Target>
 

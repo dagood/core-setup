@@ -201,7 +201,10 @@
     seem to handle pkgproj nicely for Publish. For now we're using its nupkg directly.
   -->
   <Target Name="BuildPkgProjectReferences">
-    <MSBuild Projects="@(PkgProjectReference)" Targets="Build" />
+    <MSBuild
+      Condition="$(BuildGroup.Contains('Binaries'))"
+      Projects="@(PkgProjectReference)"
+      Targets="Build" />
   </Target>
 
   <Target Name="SetPublishDir"

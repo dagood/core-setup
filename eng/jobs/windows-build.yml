@@ -79,6 +79,8 @@ jobs:
         displayName: Publish build assets
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
+    - template: steps/check-space-powershell.yml
+
     - task: PublishTestResults@2
       displayName: Publish Test Results
       inputs:

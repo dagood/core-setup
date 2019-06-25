@@ -54,30 +54,30 @@ package() {
     shift
 
     containerized "$image" \
-        Tools/msbuild.sh \
-        build.proj \
-        /t:BuildTraversalBuildDependencies \
-        /p:ConfigurationGroup=Release \
+        eng/common/msbuild.sh \
+        tools-local/tasks/core-setup.tasks.csproj \
+        /t:Restore /t:Build /t:CreateHostMachineInfoFile \
+        /p:Configuration=Release \
         /p:OSGroup=Linux \
         /p:PortableBuild=false \
         /p:TargetArchitecture=x64 \
-        "/bl:bin/msbuild.$name.traversaldependencies.binlog"
+        "/bl:artifacts/msbuild.$name.traversaldependencies.binlog"
 
     containerized "$image" \
-        Tools/msbuild.sh \
-        src/pkg/packaging/dir.proj \
+        eng/common/msbuild.sh \
+        src/pkg/packaging/installers.proj \
         /p:UsePrebuiltPortableBinariesForInstallers=true \
-        /p:SharedFrameworkPublishDir=/work/bin/obj/linux-x64.Release/sharedFrameworkPublish/ \
+        /p:SharedFrameworkPublishDir=/work/artifacts/obj/linux-x64.Release/sharedFrameworkPublish/ \
         /p:InstallerSourceOSPlatformConfig=linux-x64.Release \
         /p:GenerateProjectInstallers=true \
-        /p:ConfigurationGroup=Release \
+        /p:Configuration=Release \
         /p:OSGroup=Linux \
         /p:PortableBuild=false \
         /p:TargetArchitecture=x64 \
-        "/bl:bin/msbuild.$name.installers.binlog"
+        "/bl:artifacts/msbuild.$name.installers.binlog"
 
     containerized "$image" \
-        find bin/*Release/ \
+        find artifacts/packages/Release/ \
         -iname "*.$type" \
         -exec printf "\n{}\n========\n" \; \
         -exec $queryCommand '{}' \; \
@@ -86,13 +86,11 @@ package() {
 
 [ "$skipPortable" ] || containerized microsoft/dotnet-buildtools-prereqs:centos-7-b46d863-20180719033416 \
     ./build.sh \
-    -skiptests=true \
-    -ConfigurationGroup=Release \
-    -PortableBuild=true \
-    -strip-symbols \
-    -TargetArchitecture=x64 \
-    -- \
-    /bl:bin/msbuild.portable.binlog
+    -c Release \
+    /p:PortableBuild=true \
+    /p:StripSymbols=true \
+    /p:TargetArchitecture=x64 \
+    /bl:artifacts/msbuild.portable.binlog
 
 ubuntu=microsoft/dotnet-buildtools-prereqs:ubuntu-14.04-debpkg-e5cf912-20175003025046
 rhel=microsoft/dotnet-buildtools-prereqs:rhel-7-rpmpkg-c982313-20174116044113

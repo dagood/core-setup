@@ -5,7 +5,6 @@ parameters:
   disableCrossgen: false
   displayName: null
   dockerImage: null
-  osGroup: Linux
   packageDistroList: null
   skipTests: $(SkipTests)
   strategy:
@@ -34,48 +33,42 @@ jobs:
     variables:
 
       ${{ if ne(parameters.displayName, 'Build_FreeBSD_x64')}}:
-          RunArguments: docker run --privileged --rm
-            -v "$(Build.SourcesDirectory):/root/coresetup"
-            -w="/root/coresetup"
-            ${{ parameters.additionalRunArgs }}
-            ${{ parameters.dockerImage }}
+        RunArguments: >-
+          docker run --privileged --rm
+          -v "$(Build.SourcesDirectory):/root/coresetup"
+          -w="/root/coresetup"
+          ${{ parameters.additionalRunArgs }}
+          ${{ parameters.dockerImage }}
       
       ${{ if eq(parameters.displayName, 'Build_FreeBSD_x64')}}:
-          RunArguments: export DotNetBootstrapCliTarPath=/dotnet-sdk-freebsd-x64.tar &&
+        RunArguments: export DotNetBootstrapCliTarPath=/dotnet-sdk-freebsd-x64.tar &&
 
-      BuildArguments: -OfficialBuildId=$(OfficialBuildId)
-        -ConfigurationGroup=$(_BuildConfig)
-        -CrossBuild=${{ parameters.crossBuild }}
-        -DisableCrossgen=${{ parameters.disableCrossgen }}
-        -PortableBuild=${{ parameters.portableBuild }}
-        -strip-symbols
-        -SkipTests=${{ parameters.skipTests }}
-        -TargetArchitecture=${{ parameters.targetArchitecture }}
-        -- /p:StabilizePackageVersion=$(IsStable)
-        /nr:false
+      CommonMSBuildArgs: >-
+        /p:ConfigurationGroup=$(_BuildConfig)
+        /p:OfficialBuildId=$(OfficialBuildId)
+        /p:TargetArchitecture=${{ parameters.targetArchitecture }}
+
+      BuildArguments: >-
+        --test --ci
+        /p:CrossBuild=${{ parameters.crossBuild }}
+        /p:DisableCrossgen=${{ parameters.disableCrossgen }}
+        /p:PortableBuild=${{ parameters.portableBuild }}
+        /p:StripSymbols=true
+        /p:SkipTests=${{ parameters.skipTests }}
         /bl:msbuild.binlog
+        $(CommonMSBuildArgs)
         ${{ parameters.additionalMSBuildArgs }}
 
-      PublishArguments: /p:PublishType=$(_PublishType)
-        /p:ConfigurationGroup=$(_BuildConfig)
-        /p:OSGroup=${{ parameters.osGroup }}
+      PublishArguments: >-
+        /p:PublishType=$(_PublishType)
         /p:PortableBuild=${{ parameters.portableBuild }}
-        /p:StabilizePackageVersion=$(IsStable)
-        /p:TargetArchitecture=${{ parameters.targetArchitecture }}
-        /nr:false
         /bl:msbuild.publish.binlog
+        $(CommonMSBuildArgs)
          ${{ parameters.additionalMSBuildArgs }}
-
-      CommonMSBuildArgs: /p:ConfigurationGroup=$(_BuildConfig)
-        /p:OfficialBuildId=$(OfficialBuildId)
-        /p:OSGroup=${{ parameters.osGroup }}
-        /p:PortableBuild=false
-        /p:StabilizePackageVersion=$(IsStable)
-        /p:TargetArchitecture=${{ parameters.targetArchitecture }}
-        /nr:false
 
       # Tell the build to package up the bits from the portable build.
       PackagePortableBitsArgs: >-
+        /p:PortableBuild=false
         /p:SharedFrameworkPublishDir=/root/sharedFrameworkPublish/
         /p:InstallerSourceOSPlatformConfig=linux-x64.$(_BuildConfig)
 
@@ -86,10 +79,6 @@ jobs:
         -v $(Build.StagingDirectory)/sharedFrameworkPublish/:/root/sharedFrameworkPublish/
         -w=/root/coresetup
 
-      # Disable MSBuild node reuse in case this build is running on a persistent agent.
-      # Use environment variable rather than /nr:false to make sure internal Execs that run MSBuild
-      # commands also disable node reuse.
-      MSBUILDDISABLENODEREUSE: 1
     steps:
 
     # Builds don't set user ID, so files might be owned by root and unable to be cleaned up by AzDO.

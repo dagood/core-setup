@@ -138,8 +138,8 @@ jobs:
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)'
         Contents: |
-          *.log
-          *.binlog
+          **/*.log
+          **/*.binlog
         TargetFolder: '$(Build.StagingDirectory)\BuildLogs'
       continueOnError: true
       condition: succeededOrFailed()

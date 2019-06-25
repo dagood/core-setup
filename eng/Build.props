@@ -1,16 +1,18 @@
 <Project>
 
   <ItemGroup>
-    <ProjectToBuild Include="$(RepoRoot)src\corehost\build.proj" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
-    <ProjectToBuild Include="$(RepoRoot)src\managed\**\*.csproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\corehost\build.proj" SignPhase="Binaries" />
+    <ProjectToBuild Include="$(RepoRoot)src\managed\**\*.csproj" SignPhase="Binaries" />
 
     <!--
       Build pkgproj/depproj but not sfxproj. sfxproj requires pkgprojs to build their nupkgs first,
       before Restore, which doesn't seem supported by Arcade.
     -->
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" SignPhase="Binaries" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" SignPhase="MsiAndCabFiles" />
+
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\pack-managed.proj" />
 
     <!-- Test projects. -->
     <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\AppHost.Bundle.Tests\AppHost.Bundle.Tests.csproj" />

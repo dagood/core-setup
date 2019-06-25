@@ -1,0 +1,13 @@
+<Project>
+
+  <Target Name="Build">
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignBinaries.proj" Targets="Build" />
+
+    <ItemGroup>
+      <ManagedProject Include="$(RepoRoot)src\managed\**\*.csproj" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(ManagedProject)" Targets="Pack" />
+  </Target>
+
+</Project>

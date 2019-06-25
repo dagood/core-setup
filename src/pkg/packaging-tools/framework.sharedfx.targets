@@ -197,10 +197,12 @@
   </Target>
 
   <!--
-    Ensure the pkgproj is already built. This isn't a real ProjectReference because the SDK doesn't
-    seem to handle pkgproj nicely for Publish. For now we're using its nupkg directly.
+    Ensure the pkgproj is already built and binaries signed (if necessary). This isn't a real
+    ProjectReference because the SDK doesn't seem to handle pkgproj nicely for Publish. For now
+    we're using its nupkg directly.
   -->
   <Target Name="BuildPkgProjectReferences">
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignBinaries.proj" Targets="Build" />
     <MSBuild Projects="@(PkgProjectReference)" Targets="Build" />
   </Target>
 

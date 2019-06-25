@@ -1,0 +1,23 @@
+<Project>
+
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
+
+  <Target Name="Build"
+          Condition="'$(EnableSigning)' == 'true'">
+    <!-- Ensure all projects in this stage have built. -->
+    <MSBuild
+      Projects="@(StageProject)"
+      Targets="Build" />
+
+    <MSBuild
+      Projects="$(ArcadeSdkSignProject)"
+      Targets="Sign"
+      Properties="
+        $(MSBuildProjectName)=true;
+        BaseOutputRootPath=$(BaseOutputRootPath);
+        CrossGenRootPath=$(CrossGenRootPath);
+        ArtifactsBinDir=$(ArtifactsBinDir);
+        ArtifactsPackagesDir=$(ArtifactsPackagesDir)" />
+  </Target>
+
+</Project>

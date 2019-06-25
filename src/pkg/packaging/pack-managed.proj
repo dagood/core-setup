@@ -10,4 +10,6 @@
     <MSBuild Projects="@(ManagedProject)" Targets="Pack" />
   </Target>
 
+  <Target Name="Test" />
+
 </Project>

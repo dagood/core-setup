@@ -71,7 +71,7 @@ jobs:
         /p:SharedFrameworkPublishDir=/root/sharedFrameworkPublish/
         /p:InstallerSourceOSPlatformConfig=linux-x64.$(_BuildConfig)
 
-      MSBuildScript: /root/coresetup/Tools/msbuild.sh
+      MSBuildScript: /root/coresetup/eng/common/msbuild.sh
       DockerRunMSBuild: >-
         docker run
         -v $(Build.SourcesDirectory):/root/coresetup
@@ -108,7 +108,7 @@ jobs:
           set -x
           df -h
           $(RunArguments) \
-            ./Tools/msbuild.sh \
+            ./eng/common/msbuild.sh \
             ./publish/publish.proj \
             $(PublishArguments) \
             $(_CommonPublishArgs)
@@ -120,7 +120,7 @@ jobs:
       - task: CopyFiles@2
         displayName: 'Copy built Portable linux-x64 binaries to staging directory'
         inputs:
-          SourceFolder: '$(Build.SourcesDirectory)/bin/obj/linux-x64.$(_BuildConfig)/sharedFrameworkPublish'
+          SourceFolder: '$(Build.SourcesDirectory)/artifacts/obj/linux-x64.$(_BuildConfig)/sharedFrameworkPublish'
           TargetFolder: '$(Build.StagingDirectory)/sharedFrameworkPublish'
 
       - ${{ each packageBuild in parameters.packageDistroList }}:

@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <DotnetCliToolTargetFramework>$(TargetFramework)</DotnetCliToolTargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-deb-tool" Version="3.0.0-*" />
-  </ItemGroup>
-</Project>

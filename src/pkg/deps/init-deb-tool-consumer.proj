@@ -17,23 +17,7 @@
           Outputs="$(InitSemaphore)">
     <MSBuild
       Projects="$(DotnetDebToolSourceDir)dotnet-deb-tool.csproj"
-      Targets="Restore;Pack"
-      Properties="
-        PackageOutputPath=$(PackageOutputPath);
-        VersionSuffix=$(VersionSuffix)"/>
-
-    <RemoveDir
-      Condition="Exists('$(DebtoolConsumerDeployDir)')"
-      Directories="$(DebtoolConsumerDeployDir)" />
-
-    <Copy
-      SourceFiles="$(DebtoolConsumerProjectFile)"
-      DestinationFolder="$(DebtoolConsumerDeployDir)" />
-
-    <MSBuild
-      Projects="$(DebtoolConsumerDeployDir)dotnet-deb-tool-consumer.csproj"
-      Targets="Restore"
-      Properties="RestoreSources=$(PackageOutputPath)" />
+      Targets="Restore;Build" />
 
     <Touch Files="$(InitSemaphore)" AlwaysCreate="true" />
   </Target>

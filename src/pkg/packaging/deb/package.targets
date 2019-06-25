@@ -80,7 +80,7 @@
                          DestinationFile="$(debLayoutDirectory)$(DebianConfigJsonName)"
                          ReplacementItems="@(SharedHostTokenValue)" />
 
-    <Exec Command="$(DotNetTool) deb-tool -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
+    <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
           WorkingDirectory="$(DebtoolConsumerDeployDir)" />
 
     <!-- Copy package to output -->
@@ -159,7 +159,7 @@
                          DestinationFile="$(debLayoutDirectory)$(DebianConfigJsonName)"
                          ReplacementItems="@(HostFxrTokenValue)" />
 
-    <Exec Command="$(DotNetTool) deb-tool -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
+    <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
           WorkingDirectory="$(DebtoolConsumerDeployDir)" />
 
     <!-- Copy package to output -->
@@ -252,7 +252,7 @@
                          DestinationFile="$(debLayoutDirectory)$(DebianConfigJsonName)"
                          ReplacementItems="@(SharedFrameworkTokenValue)" />
 
-    <Exec Command="$(DotNetTool) deb-tool -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
+    <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
           WorkingDirectory="$(DebtoolConsumerDeployDir)" />
 
     <!-- Copy package to output -->
@@ -333,7 +333,7 @@
                          DestinationFile="$(debLayoutDirectory)$(DebianConfigJsonName)"
                          ReplacementItems="@(SharedFrameworkTokenValue)" />
 
-    <Exec Command="$(DotNetTool) deb-tool -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
+    <Exec Command="$(DotNetTool) $(DebtoolAssemblyFile) -i $(debLayoutDirectory) -o $(debIntermediatesDir) -n $(DebPackageName) -v $(DebPackageVersion)"
           WorkingDirectory="$(DebtoolConsumerDeployDir)" />
 
     <!-- Copy package to output -->

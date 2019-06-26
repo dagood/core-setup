@@ -69,6 +69,8 @@
           OverwriteReadOnlyFiles="True"
           SkipUnchangedFiles="False"
           UseHardlinksIfPossible="False" />
+
+    <Message Text="$(MSBuildProjectName) -> $(InstallerFile)" Importance="high" />
   </Target>
 
   <Target Name="GetDebInstallerJsonProperties"
@@ -132,6 +134,8 @@
           OverwriteReadOnlyFiles="True"
           SkipUnchangedFiles="False"
           UseHardlinksIfPossible="False" />
+
+    <Message Text="$(MSBuildProjectName) -> $(InstallerFile)" Importance="high" />
   </Target>
 
   <Target Name="GetRpmInstallerJsonProperties"
@@ -150,7 +154,7 @@
           DependsOnTargets="
             GetInstallerProperties;
             RunLightLinker">
-    <Message Text="Created '$(InstallerFile)'" Importance="High" />
+    <Message Text="$(MSBuildProjectName) -> $(InstallerFile)" Importance="high" />
   </Target>
 
   <Target Name="CreateCompressedArchive"
@@ -164,6 +168,8 @@
       SourceDirectory="$(SharedFrameworkArchiveSourceDir)"
       DestinationArchive="$(CompressedArchiveFile)"
       OverwriteDestination="true" />
+
+    <Message Text="$(MSBuildProjectName) -> $(CompressedArchiveFile)" Importance="high" />
   </Target>
 
   <!--
@@ -183,6 +189,8 @@
     </PropertyGroup>
 
     <Exec Command="pkgbuild $(_pkgArgs)" />
+
+    <Message Text="$(MSBuildProjectName) -> $(InstallerFile)" Importance="high" />
   </Target>
 
   <!--

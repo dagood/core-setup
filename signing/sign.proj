@@ -63,11 +63,11 @@
     <Error Condition="'@(FilesToSign)' == ''" Text="There are no files to sign. FilesToSign group is empty."/>
   </Target>
 
-  <Target Name="SignMsiAndCab" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignMsiAndCabFiles">
+  <Target Name="SignMsiAndCab" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignMsiFiles">
     <CallTarget Targets="SignFiles" />
   </Target>
 
-  <Target Name="GetSignMsiAndCabFiles">
+  <Target Name="GetSignMsiFiles">
     <ItemGroup>
       <FilesToSign Include="$(OutDir)packages/**/*.msi">
         <Authenticode>$(CertificateId)</Authenticode>
@@ -79,11 +79,11 @@
     <Error Condition="'@(FilesToSign)' == ''" Text="There are no files to sign. FilesToSign group is empty."/>
   </Target>
 
-  <Target Name="SignEngine" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignEngineFiles">
+  <Target Name="SignEngine" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignBurnEngineFiles">
     <CallTarget Targets="SignFiles" />
   </Target>
 
-  <Target Name="GetSignEngineFiles">
+  <Target Name="GetSignBurnEngineFiles">
     <ItemGroup>
       <FilesToSign Include="$(OutDir)packages/**/*engine.exe">
         <Authenticode>$(CertificateId)</Authenticode>
@@ -92,11 +92,11 @@
     <Error Condition="'@(FilesToSign)' == ''" Text="There are no files to sign. FilesToSign group is empty."/>
   </Target>
 
-  <Target Name="SignBundle" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignBundleFiles">
+  <Target Name="SignBundle" Condition="'$(SignType)' == 'real'" DependsOnTargets="GetSignBurnBundleFiles">
     <CallTarget Targets="SignFiles" />
   </Target>
 
-  <Target Name="GetSignBundleFiles">
+  <Target Name="GetSignBurnBundleFiles">
     <ItemGroup>
       <FilesToSign Include="$(OutDir)packages/**/*.exe">
         <Authenticode>$(CertificateId)</Authenticode>

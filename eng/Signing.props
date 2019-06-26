@@ -23,16 +23,16 @@
     <ItemsToSign Include="$(ArtifactsBinDir)Microsoft.NET.HostModel/**/*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SignMsiAndCabFiles)' == 'true'">
+  <ItemGroup Condition="'$(SignMsiFiles)' == 'true'">
     <ItemsToSign Include="$(ArtifactsPackagesDir)**/*.msi" />
     <ItemsToSign Include="$(ArtifactsPackagesDir)**/*.cab" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SignEngineFiles)' == 'true'">
+  <ItemGroup Condition="'$(SignBurnEngineFiles)' == 'true'">
     <ItemsToSign Include="$(ArtifactsPackagesDir)**/*engine.exe" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SignBundleFiles)' == 'true'">
+  <ItemGroup Condition="'$(SignBurnBundleFiles)' == 'true'">
     <ItemsToSign Include="$(ArtifactsPackagesDir)**/*.exe" />
   </ItemGroup>
 

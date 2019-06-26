@@ -18,7 +18,7 @@
       before Restore, which doesn't seem supported by Arcade.
     -->
     <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" SignPhase="Binaries" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" SignPhase="MsiAndCabFiles" />
+    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" SignPhase="MsiFiles" />
 
     <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
     <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\pack-managed.proj" />

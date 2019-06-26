@@ -30,7 +30,7 @@
 
   <Target Name="BuildCombinedInstallers"
           DependsOnTargets="
-            EnsureSignedMsiAndCabFiles;
+            EnsureSignedMsiFiles;
             GenerateCombinedInstallers"
           Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
 
@@ -40,9 +40,9 @@
             '$(SkipSigning)' != 'true'"
           DependsOnTargets="
             ExtractEngineBundle;
-            EnsureSignedEngineFiles;
+            EnsureSignedBurnEngineFiles;
             ReattachEngineToBundle;
-            EnsureSignedBundleFiles" />
+            EnsureSignedBurnBundleFiles" />
 
   <!--
     To build installers, we need shared fx layouts to be built first. Call MSBuild on the
@@ -65,16 +65,16 @@
     <MSBuild Projects="$(RepoRoot)signing\stages\SignBinaries.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedMsiAndCabFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
-    <MSBuild Projects="$(RepoRoot)signing\stages\SignMsiAndCabFiles.proj" Targets="Build" />
+  <Target Name="EnsureSignedMsiFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignMsiFiles.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedEngineFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
-    <MSBuild Projects="$(RepoRoot)signing\stages\SignEngineFiles.proj" Targets="Build" />
+  <Target Name="EnsureSignedBurnEngineFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignBurnEngineFiles.proj" Targets="Build" />
   </Target>
 
-  <Target Name="EnsureSignedBundleFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
-    <MSBuild Projects="$(RepoRoot)signing\stages\SignBundleFiles.proj" Targets="Build" />
+  <Target Name="EnsureSignedBurnBundleFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignBurnBundleFiles.proj" Targets="Build" />
   </Target>
 
   <Target Name="GenerateProjectInstallers" Condition="'$(GenerateProjectInstallers)' == 'true'">

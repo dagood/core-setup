@@ -157,6 +157,7 @@ namespace Microsoft.DotNet.CoreSetup.Test
                 buildArgs.Add(framework);
             }
 
+            buildArgs.Add($"/p:TestTargetRid={RepoDirProvider.TargetRID}");
             buildArgs.Add($"/p:MNAVersion={RepoDirProvider.MicrosoftNETCoreAppVersion}");
 
             if (outputDirectory != null)
@@ -290,6 +291,7 @@ namespace Microsoft.DotNet.CoreSetup.Test
                 publishArgs.Add(outputDirectory);
             }
 
+            publishArgs.Add($"/p:TestTargetRid={RepoDirProvider.TargetRID}");
             publishArgs.Add($"/p:MNAVersion={RepoDirProvider.MicrosoftNETCoreAppVersion}");
 
             dotnet.Publish(publishArgs.ToArray())

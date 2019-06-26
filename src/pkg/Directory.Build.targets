@@ -45,7 +45,10 @@
   -->
   <Target Name="TestDebuild">
     <!-- run Debuild -->
-    <Exec Command="/usr/bin/env debuild -h" ContinueOnError="true">
+    <Exec
+      Command="/usr/bin/env debuild -h"
+      ContinueOnError="true"
+      IgnoreStandardErrorWarningFormat="true">
       <Output TaskParameter="ExitCode" PropertyName="DebuildExitCode" />
     </Exec>
 
@@ -66,7 +69,10 @@
   -->
   <Target Name="TestFPMTool">
     <!-- run FPM  -->
-    <Exec Command="/usr/bin/env fpm -h" ContinueOnError="true">
+    <Exec
+      Command="/usr/bin/env fpm -h"
+      ContinueOnError="true"
+      IgnoreStandardErrorWarningFormat="true">
       <Output TaskParameter="ExitCode" PropertyName="FPMExitCode" />
     </Exec>
 

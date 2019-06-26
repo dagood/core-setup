@@ -141,7 +141,8 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
             var buildArgs = new List<string>
             {
-                "--no-restore"
+                "--no-restore",
+                "/bl:BuildProject.binlog"
             };
 
             if (runtime != null)
@@ -260,7 +261,8 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
             var publishArgs = new List<string>
             {
-                "--no-restore"
+                "--no-restore",
+                "/bl:PublishProject.binlog"
             };
 
             if (runtime != null)

@@ -9,7 +9,7 @@
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
 
-  <Target Name="ExcludefPackageXlfSources"
+  <Target Name="ExcludePackageXlfSources"
           BeforeTargets="GetXlfSources">
     <ItemGroup>
       <EmbeddedResource

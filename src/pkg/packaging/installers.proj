@@ -80,9 +80,7 @@
       <InstallerProject Include="$(SourceDir)pkg\projects\**\*.sfxproj" />
     </ItemGroup>
 
-    <MSBuild
-      Projects="..\projects\installer.builds"
-      Targets="GenerateInstallers" />
+    <MSBuild Projects="@(InstallerProject)" Targets="GenerateInstallers" />
   </Target>
 
   <Target Name="InitPackage">

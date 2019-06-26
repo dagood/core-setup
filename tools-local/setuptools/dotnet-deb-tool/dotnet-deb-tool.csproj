@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>dotnet-deb-tool</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>dotnet-deb-tool</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

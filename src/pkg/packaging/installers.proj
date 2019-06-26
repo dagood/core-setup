@@ -9,6 +9,7 @@
       GenerateVersionBadge;
       GenerateCompressedFiles;
       GenerateInstallers;
+      GenerateProjectInstallers;
     </PackageTargets>
   </PropertyGroup>
 
@@ -71,6 +72,17 @@
 
   <Target Name="EnsureSignedBundleFiles" Condition="'$(OSGroup)' == 'Windows_NT'" >
     <MSBuild Projects="$(RepoRoot)signing\stages\SignBundleFiles.proj" Targets="Build" />
+  </Target>
+
+  <Target Name="GenerateProjectInstallers" Condition="'$(GenerateProjectInstallers)' == 'true'">
+    <ItemGroup>
+      <InstallerProject Include="$(SourceDir)pkg\projects\**\*.pkgproj" />
+      <InstallerProject Include="$(SourceDir)pkg\projects\**\*.sfxproj" />
+    </ItemGroup>
+
+    <MSBuild
+      Projects="..\projects\installer.builds"
+      Targets="GenerateInstallers" />
   </Target>
 
   <Target Name="InitPackage">

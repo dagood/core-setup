@@ -81,6 +81,9 @@
       for multiple Debian-based distros.
     -->
     <InstallerSourceOSPlatformConfig Condition="'$(InstallerSourceOSPlatformConfig)' == ''">$(OSPlatformConfig)</InstallerSourceOSPlatformConfig>
+
+    <!-- Package prebuilt binaries -->
+    <UsePrebuiltPortableBinariesForInstallers>false</UsePrebuiltPortableBinariesForInstallers>
   </PropertyGroup>
 
   <ItemGroup>

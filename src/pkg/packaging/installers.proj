@@ -186,7 +186,7 @@
             GetInstallerLocations;
             GenerateZip;
             GenerateTarBall"
-          Condition="'$(UsePrebuiltPortableBinariesForInstallers)' == 'false'"/>
+          Condition="'$(UsePrebuiltPortableBinariesForInstallers)' != 'true'"/>
 
   <UsingTask TaskName="ZipFileCreateFromDirectory" AssemblyFile="$(LocalBuildToolsTaskFile)"/>
   <Target Name="GenerateZip"

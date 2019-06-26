@@ -87,6 +87,7 @@ jobs:
         testResultsFormat: 'xUnit'
         testResultsFiles: '*.xml'
         searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults/$(_BuildConfig)'
+        mergeTestResults: true
         testRunTitle: ${{ parameters.displayName }}-$(_BuildConfig)
       continueOnError: true
       condition: always()

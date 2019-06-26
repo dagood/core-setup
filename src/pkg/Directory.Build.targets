@@ -46,7 +46,7 @@
   <Target Name="TestDebuild">
     <!-- run Debuild -->
     <Exec
-      Command="/usr/bin/env debuild -h"
+      Command="/usr/bin/env debuild -h > /dev/null 2>&amp;1"
       ContinueOnError="true"
       IgnoreExitCode="true"
       IgnoreStandardErrorWarningFormat="true">
@@ -71,7 +71,7 @@
   <Target Name="TestFPMTool">
     <!-- run FPM  -->
     <Exec
-      Command="/usr/bin/env fpm -h"
+      Command="/usr/bin/env fpm -h > /dev/null 2>&amp;1"
       ContinueOnError="true"
       IgnoreExitCode="true"
       IgnoreStandardErrorWarningFormat="true">

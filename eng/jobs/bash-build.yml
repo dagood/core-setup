@@ -108,7 +108,7 @@ jobs:
           set -x
           df -h
           $(RunArguments) \
-            ./Tools/msbuild.sh \
+            ./eng/common/msbuild.sh \
             ./publish/publish.proj \
             $(PublishArguments) \
             $(_CommonPublishArgs)

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.props))\Directory.Build.props" />
-  <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll" />
-  <UsingTask TaskName="ExecWithRetriesForNuGetPush" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
-  <UsingTask TaskName="FinalizeBuild" AssemblyFile="$(LocalBuildToolsTaskDir)core-setup.tasks.dll" />
-  <UsingTask TaskName="ListAzureBlobs" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll" />
-  <UsingTask TaskName="UploadToAzure" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll" />
+
+  <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="FinalizeBuild" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="ListAzureBlobs" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="UploadToAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <Import Project="$(PackagesDir)/$(FeedTasksPackage.ToLower())/$(FeedTasksPackageVersion)/build/$(FeedTasksPackage).targets" />
   <Import Project="$(PackagesDir)/$(PublishSymbolsPackage.ToLower())/$(PublishSymbolsPackageVersion)/build/PublishSymbols.targets" />
@@ -193,9 +193,7 @@
 
   <Target Name="PublishCoreHostPackages"
           DependsOnTargets="CheckIfAllBuildsHavePublished;DownloadCoreHostPackages;SignPackages;DoPushCoreHostPackagesToAzure"
-          Condition="'@(_MissingBlobNames)' == '' AND '$(NuGetFeedUrl)' != ''">
-    <Error Condition="'$(NuGetFeedUrl)' ==''" Text="Missing required property NuGetFeedUrl" />
-    <Error Condition="'$(NuGetApiKey)' == ''" Text="Missing required property NuGetApiKey" />
+          Condition="'@(_MissingBlobNames)' == ''">
     <Error Condition="'$(AzureAccessToken)' == ''" Text="Missing required property 'AzureAccessToken'" />
     <Error Condition="'$(AzureAccountName)' == ''" Text="Missing required property 'AzureAccountName'" />
     <Error Condition="'$(ContainerName)' == ''" Text="Missing required property 'ContainerName'" />
@@ -286,24 +284,6 @@
     </ItemGroup>
 
     <Message Importance="High" Text="Publishing symbol packages to '$(SymbolServerPath)': @(SymbolPackagesToPublish)"/>
-  </Target>
-
-  <Target Name="DoPushCoreHostPackagesToFeed">
-    <Error Condition="'@(_DownloadedSymbolsPackages)' != '' and '$(NuGetSymbolsFeedUrl)' == ''" Text="Missing required property NuGetSymbolsFeedUrl" />
-
-    <Message Text="Pushing CoreHost packages to $(NuGetFeedUrl)" />
-    <PropertyGroup>
-      <NuGetPushCommand>$(DotnetToolCommand) nuget push --source $(NuGetFeedUrl) --api-key $(NuGetApiKey) --timeout $(NuGetPushTimeoutSeconds)</NuGetPushCommand>
-      <NuGetPushSymbolsCommand>$(DotnetToolCommand) nuget push --source $(NuGetSymbolsFeedUrl) --api-key $(NuGetApiKey) --timeout $(NuGetPushTimeoutSeconds)</NuGetPushSymbolsCommand>
-    </PropertyGroup>
-
-    <ExecWithRetriesForNuGetPush Command="$(NuGetPushCommand) %(_DownloadedStandardPackages.Identity)"
-                                 IgnoredErrorMessagesWithConditional="@(IgnorableErrorMessages)" />
-
-    <Message Condition="'@(_DownloadedSymbolsPackages)' != ''" Text="Pushing CoreHost symbols packages to $(NuGetSymbolsFeedUrl)" />
-    <ExecWithRetriesForNuGetPush Condition="'@(_DownloadedSymbolsPackages)' != ''"
-                                 Command="$(NuGetPushSymbolsCommand) %(_DownloadedSymbolsPackages.Identity)"
-                                 IgnoredErrorMessagesWithConditional="@(IgnorableErrorMessages)" />
   </Target>
 
   <Target Name="DoPushCoreHostPackagesToAzure"

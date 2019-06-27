@@ -29,16 +29,13 @@ jobs:
     condition: succeeded()
 
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-    - script: $(Build.SourcesDirectory)/Tools/msbuild.sh
+    - script: >-
+        $(Build.SourcesDirectory)/eng/common/msbuild.sh
         $(Build.SourcesDirectory)/publish/publish.proj
-        $(_CommonPublishArgs)
         /p:PublishType=$(_PublishType)
-        /p:TargetArchitecture=x64
-        /p:ConfigurationGroup=$(_BuildConfig)
-        /p:PortableBuild=true
-        /p:OSGroup=OSX
-        /p:StabilizePackageVersion=$(IsStable)
-        /bl:$(Build.SourcesDirectory)\publish.binlog
+        $(CommonMSBuildArgs)
+        $(_CommonPublishArgs)
+        /bl:$(Build.SourcesDirectory)/publish.binlog
       displayName: Publish 
       condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 

@@ -18,72 +18,52 @@ variables:
   # Skip Running CI tests
   - name: SkipTests
     value: false
-  # Set build as stable to remove build number from package names, used for milestone builds
-  - name: IsStable
-    value: false
   # Set Official Build Id
   - name: OfficialBuildId
     value: $(Build.BuildNumber)
-  # Produce Test build for PR and Public builds
+
+  # Produce test-signed build for PR and Public builds
   - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
       value: test
-  # Set variables only for Official build from internal
+
+  # Set publish variables only for non-PR build from internal
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
       value: real
-  # Variable groups
-    - group: DotNet-Blob-Feed
-    - group: DotNet-Symbol-Server-Pats
-    # Used for publishing individual leg assets to azure blobstorage
-    - group: DotNet-DotNetCli-Storage
-    # Used for publishing to myget
-    - group: DotNet-MyGet-Publish
-    # Used for dotnet/versions update
-    - group: DotNet-Versions-Publish
+    # Allow a dev build definition to disable official secrets without any doubt.
+    - ${{ if ne(variables['SkipSecretVariableGroups'], 'true') }}:
+      # # Variable groups containing official build publish info.
+      # - group: DotNet-Blob-Feed
+      - group: DotNet-Symbol-Server-Pats
+      # # Used for publishing individual leg assets to azure blob storage
+      # - group: DotNet-DotNetCli-Storage
+      # Used for dotnet/versions update
+      # - group: DotNet-Versions-Publish
 
-    # BlobFeed update
-    - name: _PublishBlobFeedUrl
-      value: https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
-    - name: _BlobFeedArgs
-      value: /p:PackagesUrl=$(_PublishBlobFeedUrl)
-        /p:SymbolPackagesUrl=$(_PublishBlobFeedUrl)
-        /p:TransportFeedAccessToken=$(dotnetfeed-storage-access-key-1)
+  # Inter-job publish variables.
+  # Custom values override official if provided.
+  - name: _AzureAccountName
+    value: ${{ coalesce(variables.AzureAccountName, 'dotnetcli') }}
+  - name: _ContainerName
+    value: ${{ coalesce(variables.ContainerName, 'dotnet') }}
+  - name: _AzureAccessToken
+    value: ${{ coalesce(variables.AzureAccessToken, '$(dotnetcli-storage-key)') }}
+  - name: _ChecksumAzureAccountName
+    value: ${{ coalesce(variables.ChecksumAzureAccountName, 'dotnetclichecksums') }}
+  - name: _ChecksumContainerName
+    value: ${{ coalesce(variables.ChecksumContainerName, 'dotnet') }}
+  - name: _ChecksumAzureAccessToken
+    value: ${{ coalesce(variables.ChecksumAzureAccessToken, '$(dotnetclichecksums-storage-key)') }}
 
-    - name: _DotNetVersionsArgs
-      value: >-
-        /p:GitHubUser=dotnet-build-bot
-        /p:GitHubEmail=dotnet-build-bot@microsoft.com
-        /p:GitHubAuthToken=$(AccessToken-dotnet-build-bot-public-repo)
-        /p:VersionsRepoOwner=dotnet
-        /p:VersionsRepo=versions
-        /p:VersionsRepoPath=build-info/dotnet/core-setup/$(FullBranchName)
-
-    # Symbol Server update
-    - name: _SymbolServerArgs
-      value: >-
-        /p:MicrosoftSymbolServerPat=$(microsoft-symbol-server-pat)
-        /p:SymwebSymbolServerPat=$(symweb-symbol-server-pat)
-
-    # ******** Official values *****
-    - name: _CommonPublishArgs
-      value: /p:AzureAccountName=dotnetcli
-        /p:ContainerName=dotnet
-        /p:AzureAccessToken=$(dotnetcli-storage-key)
-        /p:ChecksumAzureAccountName=dotnetclichecksums
-        /p:ChecksumContainerName=dotnet
-        /p:ChecksumAzureAccessToken=$(dotnetclichecksums-storage-key)
-    # Used for publishing to dotnet myget account
-    - name: MyGetApiKey
-      value: $(dotnet-myget-org-api-key)
-    - name: MyGetFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/api/v2/package
-    - name: MyGetSymbolsFeedUrl
-      value: https://dotnet.myget.org/F/dotnet-core/symbols/api/v2/package
-    - name: _NugetFeedArgs
-      value: /p:NuGetFeedUrl=$(MyGetFeedUrl)
-        /p:NuGetSymbolsFeedUrl=$(MyGetSymbolsFeedUrl)
-        /p:NuGetApiKey=$(MyGetApiKey)
+  - name: _CommonPublishArgs
+    value: >-
+      /p:AzureAccountName=$(_AzureAccountName)
+      /p:ContainerName=$(_ContainerName)
+      /p:AzureAccessToken=$(_AzureAccessToken)
+      /p:ChecksumAzureAccountName=$(_ChecksumAzureAccountName)
+      /p:ChecksumContainerName=$(_ChecksumContainerName)
+      /p:ChecksumAzureAccessToken=$(_ChecksumAzureAccessToken)
 
 jobs:
   ################################################################################
@@ -210,7 +190,6 @@ jobs:
 - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
   ################################################################################
   # Finalize build publish
-  # publish nuget packages to blobfeed, symbolserver, and myget
   ################################################################################
   - template: /eng/jobs/finalize-publish.yml
     parameters:

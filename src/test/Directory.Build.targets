@@ -59,7 +59,7 @@
 
     <!-- Set properties used inside tests as environment variables. -->
     <ItemGroup>
-      <TestRunnerEnvironmentVariable Include="NUGET_PACKAGES=$(PackagesDir)" />
+      <TestRunnerEnvironmentVariable Include="NUGET_PACKAGES=$(TestRestorePackagesPath)" />
       <TestRunnerEnvironmentVariable Include="TEST_ARTIFACTS=$(SystemPathTestsOutputDir)" />
       <TestRunnerEnvironmentVariable Include="TEST_TARGETRID=$(TestTargetRid)" />
       <TestRunnerEnvironmentVariable Include="BUILDRID=$(OutputRid)" />

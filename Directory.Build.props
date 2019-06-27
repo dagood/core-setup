@@ -149,6 +149,18 @@
     <RepositoryUrl>https://github.com/dotnet/core-setup</RepositoryUrl>
   </PropertyGroup>
 
+  <!--
+    TODO: (arcade) Enable Windows PDB conversion, or decide to leave it to symbol publish.
+    Always disable SymStore for now, attempts to convert nuspecs based on TargetPath:
+    SymStore.targets(61,5): error MSB3073: The command
+      ""...\Pdb2Pdb.exe" "...\specs/Microsoft.NETCore.DotNetHostResolver.nuspec"
+      /out "...\netcoreapp3.0\Microsoft.NETCore.DotNetHostResolver.pdb" /verbose /srcsvrvar SRC_INDEX=public"
+      exited with code 2.
+  -->
+  <PropertyGroup>
+    <PublishWindowsPdb>false</PublishWindowsPdb>
+  </PropertyGroup>
+
   <!-- Set up Default symbol and optimization for Configuration -->
   <Choose>
     <When Condition="'$(ConfigurationGroup)'=='Debug'">

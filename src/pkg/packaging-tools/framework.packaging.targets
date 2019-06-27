@@ -185,9 +185,7 @@
       depproj's crossgen) runs first. The global properties mean we can't let the inner build handle
       this itself because it would miss the cache of finished builds.
     -->
-    <MSBuild
-      Projects="@(ProjectReference)"
-      Targets="Build" />
+    <MSBuild Projects="@(ProjectReference);@(OrderProjectReference)" Targets="Build" />
 
     <MSBuild
       Condition="

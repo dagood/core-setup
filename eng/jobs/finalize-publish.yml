@@ -23,9 +23,9 @@ jobs:
 
   # Blob feed publish
   - name: _PublishBlobFeedUrl
-    value: ${{ coalesce(variables.PublishBlobFeedUrl, 'https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json') }}
+    value: $[ coalesce(variables.PublishBlobFeedUrl, 'https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json') ]
   - name: _TransportFeedAccessToken
-    value: ${{ coalesce(variables.TransportFeedAccessToken, '$(dotnetfeed-storage-access-key-1)') }}
+    value: $[ coalesce(variables.TransportFeedAccessToken, '$(dotnetfeed-storage-access-key-1)') ]
   - name: _BlobFeedArgs
     value: >-
       /p:PackagesUrl=$(_PublishBlobFeedUrl)
@@ -34,9 +34,9 @@ jobs:
 
   # Symbol Server update
   - name: _MicrosoftSymbolServerPat
-    value: ${{ coalesce(variables.MicrosoftSymbolServerPat, '$(microsoft-symbol-server-pat)') }}
+    value: $[ coalesce(variables.MicrosoftSymbolServerPat, '$(microsoft-symbol-server-pat)') ]
   - name: _SymwebSymbolServerPat
-    value: ${{ coalesce(variables.SymwebSymbolServerPat, '$(symweb-symbol-server-pat)') }}
+    value: $[ coalesce(variables.SymwebSymbolServerPat, '$(symweb-symbol-server-pat)') ]
   - name: _SymbolServerArgs
     value: >-
       /p:MicrosoftSymbolServerPat=$(_MicrosoftSymbolServerPat)

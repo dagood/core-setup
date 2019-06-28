@@ -217,10 +217,10 @@ jobs:
       - Finalize_Publish
 
   # Publish to Build Asset Registry
-  - template: /eng/common/templates/job/publish-build-assets.yml
-    parameters:
-      pool:
-        name: NetCoreInternal-Int-Pool
-        queue: buildpool.windows.10.amd64.vs2017
-      dependsOn:
-        - Finalize_Publish
+  # - template: /eng/common/templates/job/publish-build-assets.yml
+  #   parameters:
+  #     pool:
+  #       name: NetCoreInternal-Int-Pool
+  #       queue: buildpool.windows.10.amd64.vs2017
+  #     dependsOn:
+  #       - Finalize_Publish

@@ -9,9 +9,9 @@ parameters:
   skipTests: $(SkipTests)
   strategy:
     matrix: 
-      debug:
-        _BuildConfig: Debug
-        _PublishType: none
+      # debug:
+      #   _BuildConfig: Debug
+      #   _PublishType: none
       release:
         _BuildConfig: Release
         _PublishType: blob

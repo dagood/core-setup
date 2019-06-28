@@ -1,5 +1,13 @@
 <Project>
 
+  <PropertyGroup>
+    <!--
+      Windows arm/arm64 jobs don't have MSIs to sign. Keep it simple: allow not finding any matches
+      here and rely on overall signing validation.
+    -->
+    <AllowEmptySignList>true</AllowEmptySignList>
+  </PropertyGroup>
+
   <!--
     Replace the default items to sign with the specific set we want. This allows the build to call
     Arcade's Sign.proj multiple times for different sets of files as the build progresses.

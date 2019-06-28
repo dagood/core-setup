@@ -38,6 +38,10 @@
     <!-- Validation exception: wixstdba is internal to the engine bundle and does not get signed. -->
   </ItemGroup>
 
+  <ItemGroup Condition="'$(SignFinalPackages)' == 'true'">
+    <ItemsToSign Include="$(ArtifactsPackagesDir)**\*.nupkg" />
+  </ItemGroup>
+
   <ItemGroup>
     <!-- External files -->
     <ItemsToSign Remove="@(ItemsToSign->WithMetadataValue('Filename', 'Newtonsoft.Json'))" />

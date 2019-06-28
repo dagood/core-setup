@@ -32,19 +32,10 @@
   <Target Name="PublishFinalOutput"
           Condition="'$(Finalize)' == 'true'"
           DependsOnTargets="PublishCoreHostPackages;RunPublishSymbols;FinalizeBuildInAzure" />
-    
-  <Target Name="GetPackagesToSign" DependsOnTargets="GatherShippingPackages">
-    <ItemGroup>
-      <FilesToSign Include="@(ShippedNugetPackage)">
-        <Authenticode>NuGet</Authenticode>
-      </FilesToSign>
-    </ItemGroup>
-    <Message Importance="High" Text="Attempting to sign package '%(FilesToSign.Identity)'" />
-  </Target>
-  
+
   <Target Name="SignPackages"
-          Condition="'$(SkipSigning)' != 'true' and '$(SignType)' != 'public'"
-          DependsOnTargets="GetPackagesToSign;SignFiles">
+          Condition="'$(SkipSigning)' != 'true' and '$(SignType)' != 'public'">
+    <MSBuild Projects="$(RepoRoot)signing\stages\SignFinalPackages.proj" Targets="Build" />
   </Target>
 
   <!--

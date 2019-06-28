@@ -36,6 +36,10 @@
       <InstallerFile Include="$(AssetOutputPath)**/*$(CombinedInstallerExtension)" Condition="'$(CombinedInstallerExtension)' != ''">
         <RelativeBlobPath>$(InstallersRelativePath)</RelativeBlobPath>
       </InstallerFile>
+
+      <OutputVersionBadgeFile
+        Include="$(AssetOutputPath)**/sharedfx_*_version_badge.svg"
+        RelativeBlobPath="$(InstallersRelativePath)" />
     </ItemGroup>
   </Target>
 
@@ -45,9 +49,10 @@
       <PublishFile Include="@(CompressedFile)" />
       <PublishFile Include="@(RuntimePackageFile)" />
       <PublishFile Condition="'$(PublishRidAgnosticPackages)' == 'true'" Include="@(RidAgnosticPackageFile)" />
+      <PublishFile Include="@(OutputVersionBadgeFile)" />
       <Project Include="publish.proj">
         <PublishTarget>UploadToAzure</PublishTarget>
-        <AdditionalProperties>%(Project.AdditionalProperties);ItemsToPublish=@(PublishFile);$(OutputVersionBadge);RelativeBlobPath=$(BinariesRelativePath)</AdditionalProperties>
+        <AdditionalProperties>%(Project.AdditionalProperties);ItemsToPublish=@(PublishFile);RelativeBlobPath=$(BinariesRelativePath)</AdditionalProperties>
       </Project>
     </ItemGroup>
   </Target>

@@ -66,8 +66,8 @@ jobs:
     # Publish all build assets
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
       - script: >-
-          $(Build.SourcesDirectory)\eng\common\msbuild.ps1
-          $(Build.SourcesDirectory)\publish\publish.proj
+          build.cmd -ci
+          -projects $(Build.SourcesDirectory)\publish\publish.proj
           $(_CommonPublishArgs)
           $(CommonMSBuildArgs)
           /p:PublishType=$(_PublishType)

@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.props))\Directory.Build.props" />
+<Project>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
-  <Import Project="$(PackagesDir)/$(FeedTasksPackage.ToLower())/$(FeedTasksPackageVersion)/build/$(FeedTasksPackage).targets" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
     <BuildDependsOn>
@@ -46,7 +45,8 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="DownloadFilesFromContainer">
+  <Target Name="DownloadFilesFromContainer"
+          DependsOnTargets="GetProductVersions">
     <!-- TODO: We should also think about pulling down the checksums or recomputing them -->
     <PropertyGroup>
       <DownloadDirectory Condition="'$(DownloadDirectory)' == ''">$(BinDir)PackageDownload/</DownloadDirectory>
@@ -103,6 +103,4 @@
           Condition="'$(GitHubAuthToken)' != ''"
           DependsOnTargets="UpdatePublishedVersions" />
 
-  <Import Project="$(ToolsDir)VersionTools.targets" Condition="Exists('$(ToolsDir)VersionTools.targets')" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.targets))\Directory.Build.targets" />
 </Project>

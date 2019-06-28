@@ -1,34 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.props))\Directory.Build.props" />
+<Project>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="FinalizeBuild" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="ListAzureBlobs" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="UploadToAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
-  <Import Project="$(PackagesDir)/$(FeedTasksPackage.ToLower())/$(FeedTasksPackageVersion)/build/$(FeedTasksPackage).targets" />
-  <Import Project="$(PackagesDir)/$(PublishSymbolsPackage.ToLower())/$(PublishSymbolsPackageVersion)/build/PublishSymbols.targets" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
-  <PropertyGroup>
-    <!-- Always push the build assets to azure for final publish -->
-    <BuildDependsOn Condition="'$(PublishType)' == 'blob'">
-      PublishToAzure;
-    </BuildDependsOn>
+  <Target Name="Build"
+          DependsOnTargets="
+            PublishBlob;
+            PublishNoPublishType" />
 
-    <!--
-      If we are not setting a publish type (i.e. nopublishtype) then do
-      the old style publishing otherwise ignore these steps because we are
-      running an orchestrated publish.
-    -->
-    <BuildDependsOn Condition="$(PublishType.Contains('nopublishtype'))">
-      $(BuildDependsOn);
-      PublishDebFilesToDebianRepo;
-      PublishFinalOutput;
-    </BuildDependsOn>
-  </PropertyGroup>
+  <!-- Always push the build assets to azure for final publish -->
+  <Target Name="PublishBlob"
+          Condition="'$(PublishType)' == 'blob'"
+          DependsOnTargets="PublishToAzure" />
 
-  <Target Name="Build" DependsOnTargets="$(BuildDependsOn)" />
+  <!--
+    If we are not setting a publish type (i.e. nopublishtype) then do
+    the old style publishing otherwise ignore these steps because we are
+    running an orchestrated publish.
+  -->
+  <Target Name="PublishNoPublishType"
+          Condition="'$(PublishType)' == 'blob'"
+          DependsOnTargets="
+            PublishDebFilesToDebianRepo;
+            PublishFinalOutput;" />
 
   <Target Name="PublishFinalOutput"
           Condition="'$(Finalize)' == 'true'"
@@ -314,36 +313,34 @@
                     AssetManifestPath="$(AssetManifestFilePath)"
                     />
   </Target>
-  
-  <Target Name="PublishFilesToAzureBlobFeed">
-  <Error Condition="'$(PackagesUrl)'==''" Text="Missing property PackagesUrl" />
-  <Error Condition="'$(TransportFeedAccessToken)'==''" Text="Missing property TransportFeedAccessToken" />
-  <PropertyGroup>
-    <ExpectedFeedUrl>$(PackagesUrl)</ExpectedFeedUrl>
-    <AssetManifestFilePath>$(BUILD_SOURCESDIRECTORY)/artifacts/log/AssetManifest/Manifest_Installers.xml</AssetManifestFilePath>
-  </PropertyGroup>
-  <ItemGroup>
-    <ItemsToPush Remove="@(ItemsToPush)" />
-    <ItemsToPush Include="@(_DownloadedAssets)"
-                 Exclude="@(_DownloadedPackages)" />
-    <ItemsToPush>
-        <RelativeBlobPath>assets/core-setup/$(InstallersRelativePath)%(Filename)%(Extension)</RelativeBlobPath>
-    </ItemsToPush>
-  </ItemGroup>
-  <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
-                  AccountKey="$(TransportFeedAccessToken)"
-                  ItemsToPush="@(ItemsToPush)"
-                  PublishFlatContainer="true"
-                  Overwrite="$(OverwriteOnPublish)" 
-                  ManifestBuildData="Location=$(ExpectedFeedUrl)"
-                  ManifestRepoUri="$(BUILD_REPOSITORY_URI)"
-                  ManifestBranch="$(BUILD_SOURCEBRANCH)"
-                  ManifestBuildId="$(BUILD_BUILDNUMBER)"
-                  ManifestCommit="$(BUILD_SOURCEVERSION)" 
-                  AssetManifestPath="$(AssetManifestFilePath)"
-                  />
-</Target>
 
-  <Import Project="$(ToolsDir)VersionTools.targets" Condition="Exists('$(ToolsDir)VersionTools.targets')" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Directory.Build.targets))\Directory.Build.targets" />
+  <Target Name="PublishFilesToAzureBlobFeed">
+    <Error Condition="'$(PackagesUrl)'==''" Text="Missing property PackagesUrl" />
+    <Error Condition="'$(TransportFeedAccessToken)'==''" Text="Missing property TransportFeedAccessToken" />
+    <PropertyGroup>
+      <ExpectedFeedUrl>$(PackagesUrl)</ExpectedFeedUrl>
+      <AssetManifestFilePath>$(BUILD_SOURCESDIRECTORY)/artifacts/log/AssetManifest/Manifest_Installers.xml</AssetManifestFilePath>
+    </PropertyGroup>
+    <ItemGroup>
+      <ItemsToPush Remove="@(ItemsToPush)" />
+      <ItemsToPush Include="@(_DownloadedAssets)"
+                  Exclude="@(_DownloadedPackages)" />
+      <ItemsToPush>
+          <RelativeBlobPath>assets/core-setup/$(InstallersRelativePath)%(Filename)%(Extension)</RelativeBlobPath>
+      </ItemsToPush>
+    </ItemGroup>
+    <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
+                    AccountKey="$(TransportFeedAccessToken)"
+                    ItemsToPush="@(ItemsToPush)"
+                    PublishFlatContainer="true"
+                    Overwrite="$(OverwriteOnPublish)" 
+                    ManifestBuildData="Location=$(ExpectedFeedUrl)"
+                    ManifestRepoUri="$(BUILD_REPOSITORY_URI)"
+                    ManifestBranch="$(BUILD_SOURCEBRANCH)"
+                    ManifestBuildId="$(BUILD_BUILDNUMBER)"
+                    ManifestCommit="$(BUILD_SOURCEVERSION)" 
+                    AssetManifestPath="$(AssetManifestFilePath)"
+                    />
+  </Target>
+
 </Project>

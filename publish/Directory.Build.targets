@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
   <UsingTask TaskName="GenerateDebRepoUploadJsonFile" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="GenerateChecksums" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
-  <Target Name="GatherPublishToAzureBinaries">
+  <!-- Required by Common.Targets but not used by publishing projects. -->
+  <Target Name="CreateManifestResourceNames" />
+  <Target Name="CoreCompile" />
+
+  <Target Name="GatherFileItems"
+          DependsOnTargets="GetProductVersions">
+    <ItemGroup>
+      <CompressedFile Include="$(AssetOutputPath)**/*$(CompressedFileExtension)">
+        <RelativeBlobPath>$(BinariesRelativePath)</RelativeBlobPath>
+      </CompressedFile>
+
+      <RuntimePackageFile
+        Include="
+          $(PackageOutputPath)**/runtime.*.nupkg;
+          $(PackageOutputPath)**/*.Runtime.*.nupkg;
+          $(PackageOutputPath)**/*.App.Host.*.nupkg;
+          $(PackageOutputPath)**/VS.Redist.Common.*.nupkg"
+        RelativeBlobPath="$(BinariesRelativePath)"/>
+
+      <RidAgnosticPackageFile Include="$(PackageOutputPath)**/*.nupkg" Exclude="@(RuntimePackageFile)" >
+        <RelativeBlobPath>$(BinariesRelativePath)</RelativeBlobPath>
+      </RidAgnosticPackageFile>
+      <InstallerFile Include="$(AssetOutputPath)**/*$(InstallerExtension)" Condition="'$(InstallerExtension)' != ''" >
+        <RelativeBlobPath>$(InstallersRelativePath)</RelativeBlobPath>
+      </InstallerFile>
+      <InstallerFile Include="$(AssetOutputPath)**/*$(CombinedInstallerExtension)" Condition="'$(CombinedInstallerExtension)' != ''">
+        <RelativeBlobPath>$(InstallersRelativePath)</RelativeBlobPath>
+      </InstallerFile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GatherPublishToAzureBinaries"
+          DependsOnTargets="GatherFileItems">
     <ItemGroup>
       <PublishFile Include="@(CompressedFile)" />
       <PublishFile Include="@(RuntimePackageFile)" />
@@ -15,7 +48,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GatherPublishToAzureInstallers">
+  <Target Name="GatherPublishToAzureInstallers"
+          DependsOnTargets="GatherFileItems">
     <ItemGroup>
       <Project Include="publish.proj">
         <PublishTarget>UploadToAzure</PublishTarget>
@@ -24,7 +58,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GatherPublishToAzureChecksums" DependsOnTargets="CreateChecksums" >
+  <Target Name="GatherPublishToAzureChecksums"
+          DependsOnTargets="GatherFileItems;CreateChecksums">
     <ItemGroup>
       <ChecksumItems Include="$(AssetOutputPath)**/*$(ChecksumExtension)" />
       <Project Include="publish.proj">
@@ -34,7 +69,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CreateChecksums">
+  <Target Name="CreateChecksums"
+          DependsOnTargets="GatherFileItems">
     <ItemGroup>
       <ItemsToChecksum Include="@(CompressedFile)" />
       <ItemsToChecksum Include="@(InstallerFile)" />

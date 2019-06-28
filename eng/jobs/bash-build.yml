@@ -107,9 +107,8 @@ jobs:
       - script: |
           set -x
           df -h
-          $(RunArguments) \
-            ./eng/common/msbuild.sh \
-            ./publish/publish.proj \
+          $(RunArguments) ./build.sh --ci \
+            --projects $(Build.SourcesDirectory)\publish\publish.proj \
             $(PublishArguments) \
             $(_CommonPublishArgs)
         displayName: Publish

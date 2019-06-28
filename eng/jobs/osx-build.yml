@@ -30,11 +30,11 @@ jobs:
 
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - script: >-
-        $(Build.SourcesDirectory)/eng/common/msbuild.sh
-        $(Build.SourcesDirectory)/publish/publish.proj
-        /p:PublishType=$(_PublishType)
-        $(CommonMSBuildArgs)
+        $(Build.SourcesDirectory)/build.sh --ci
+        --projects $(Build.SourcesDirectory)\publish\publish.proj
         $(_CommonPublishArgs)
+        $(CommonMSBuildArgs)
+        /p:PublishType=$(_PublishType)
         /bl:$(Build.SourcesDirectory)/publish.binlog
       displayName: Publish 
       condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))

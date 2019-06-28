@@ -36,8 +36,8 @@ steps:
   - script: |
       set -x
       df -h
-      $(DockerRunMSBuild) ${{ parameters.image }} $(MSBuildScript) \
-        /root/coresetup/publish/publish.proj \
+      $(DockerRunMSBuild) ${{ parameters.image }} ./build.sh --ci \
+        --projects $(Build.SourcesDirectory)\publish\publish.proj \
         /p:PublishType=$(_PublishType) \
         $(PackagePortableBitsArgs) \
         $(CommonMSBuildArgs) \

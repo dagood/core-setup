@@ -24,7 +24,7 @@
     running an orchestrated publish.
   -->
   <Target Name="PublishNoPublishType"
-          Condition="'$(PublishType)' == 'blob'"
+          Condition="'$(PublishType)' == 'nopublishtype'"
           DependsOnTargets="
             PublishDebFilesToDebianRepo;
             PublishFinalOutput;" />

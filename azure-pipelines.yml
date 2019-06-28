@@ -66,9 +66,10 @@ variables:
       /p:ChecksumAzureAccessToken=$(_ChecksumAzureAccessToken)
 
 jobs:
-  ################################################################################
-  # Build Bash legs (Linux and FreeBSD)
-  ################################################################################
+################################################################################
+# Build Bash legs (Linux and FreeBSD)
+################################################################################
+
 - template: /eng/jobs/bash-build.yml
   parameters:
     crossBuild: true
@@ -149,14 +150,15 @@ jobs:
     portableBuild: false
     targetArchitecture: x64
 
-  ################################################################################
-  # Build Build_OSX leg
-  ################################################################################
+################################################################################
+# Build Build_OSX leg
+################################################################################
+
 - template: /eng/jobs/osx-build.yml
 
-  ################################################################################
-  # Build Windows legs
-  ################################################################################
+################################################################################
+# Build Windows legs
+################################################################################
 
 # Windows Arm
 - template: /eng/jobs/windows-build.yml
@@ -187,10 +189,11 @@ jobs:
     displayName: Build_Windows_x86
     targetArchitecture: x86
 
+################################################################################
+# Publish official build
+################################################################################
 - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-  ################################################################################
   # Finalize build publish
-  ################################################################################
   - template: /eng/jobs/finalize-publish.yml
     parameters:
       DependsOn:
@@ -206,10 +209,14 @@ jobs:
       - Build_Windows_x64
       - Build_Windows_x86
       _PublishType: nopublishtype
+  
+  # Publish to dotnet/versions
+  - template: /eng/jobs/finalize-publish-versions.yml
+    parameters:
+      DependsOn:
+      - Finalize_Publish
 
-  ################################################################################
-  # Publish to B.A.R
-  ################################################################################
+  # Publish to Build Asset Registry
   - template: /eng/common/templates/job/publish-build-assets.yml
     parameters:
       pool:

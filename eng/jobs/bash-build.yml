@@ -48,22 +48,25 @@ jobs:
         /p:OfficialBuildId=$(OfficialBuildId)
         /p:TargetArchitecture=${{ parameters.targetArchitecture }}
 
+      # Don't put additionalMSBuildArgs as the last line. It may or may not have extra args. If the
+      # parameter is empty, AzDO replaces it with empty space without chomping the extra newline.
+      # This causes a newline in the arg string that causes failure.
       BuildArguments: >-
         --ci --test
         /p:CrossBuild=${{ parameters.crossBuild }}
         /p:DisableCrossgen=${{ parameters.disableCrossgen }}
         /p:PortableBuild=${{ parameters.portableBuild }}
-        /p:StripSymbols=true
         /p:SkipTests=${{ parameters.skipTests }}
         $(CommonMSBuildArgs)
         ${{ parameters.additionalMSBuildArgs }}
+        /p:StripSymbols=true
 
       PublishArguments: >-
         /p:PublishType=$(_PublishType)
         /p:PortableBuild=${{ parameters.portableBuild }}
-        /bl:msbuild.publish.binlog
         $(CommonMSBuildArgs)
-         ${{ parameters.additionalMSBuildArgs }}
+        ${{ parameters.additionalMSBuildArgs }}
+        /bl:msbuild.publish.binlog
 
       # Tell the build to package up the bits from the portable build.
       PackagePortableBitsArgs: >-
@@ -108,7 +111,7 @@ jobs:
           set -x
           df -h
           $(RunArguments) ./build.sh --ci \
-            --projects $(Build.SourcesDirectory)\publish\publish.proj \
+            --projects $(Build.SourcesDirectory)/publish/publish.proj \
             $(PublishArguments) \
             $(_CommonPublishArgs)
         displayName: Publish

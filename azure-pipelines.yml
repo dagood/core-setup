@@ -31,8 +31,8 @@ variables:
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
       value: $[ coalesce(variables.OfficialSignType, 'real') ]
-    # Allow a dev build definition to disable official secrets without any doubt.
-    - $[ if ne(variables['SkipSecretVariableGroups'], 'true') ]:
+    # Only get the secret variable groups if the def has the official name. Allows dev build defs.
+    - ${{ if eq(variables['Build.DefinitionName'], 'dotnet-core-setup') }}:
       # # Variable groups containing official build publish info.
       # - group: DotNet-Blob-Feed
       - group: DotNet-Symbol-Server-Pats

@@ -30,9 +30,9 @@ variables:
   # Set publish variables only for non-PR build from internal
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
-      value: real
+      value: $[ coalesce(variables.OfficialSignType, 'real') ]
     # Allow a dev build definition to disable official secrets without any doubt.
-    - ${{ if ne(variables['SkipSecretVariableGroups'], 'true') }}:
+    - $[ if ne(variables['SkipSecretVariableGroups'], 'true') ]:
       # # Variable groups containing official build publish info.
       # - group: DotNet-Blob-Feed
       - group: DotNet-Symbol-Server-Pats
@@ -44,17 +44,17 @@ variables:
   # Inter-job publish variables.
   # Custom values override official if provided.
   - name: _AzureAccountName
-    value: ${{ coalesce(variables.AzureAccountName, 'dotnetcli') }}
+    value: $[ coalesce(variables.AzureAccountName, 'dotnetcli') ]
   - name: _ContainerName
-    value: ${{ coalesce(variables.ContainerName, 'dotnet') }}
+    value: $[ coalesce(variables.ContainerName, 'dotnet') ]
   - name: _AzureAccessToken
-    value: ${{ coalesce(variables.AzureAccessToken, '$(dotnetcli-storage-key)') }}
+    value: $[ coalesce(variables.AzureAccessToken, '$(dotnetcli-storage-key)') ]
   - name: _ChecksumAzureAccountName
-    value: ${{ coalesce(variables.ChecksumAzureAccountName, 'dotnetclichecksums') }}
+    value: $[ coalesce(variables.ChecksumAzureAccountName, 'dotnetclichecksums') ]
   - name: _ChecksumContainerName
-    value: ${{ coalesce(variables.ChecksumContainerName, 'dotnet') }}
+    value: $[ coalesce(variables.ChecksumContainerName, 'dotnet') ]
   - name: _ChecksumAzureAccessToken
-    value: ${{ coalesce(variables.ChecksumAzureAccessToken, '$(dotnetclichecksums-storage-key)') }}
+    value: $[ coalesce(variables.ChecksumAzureAccessToken, '$(dotnetclichecksums-storage-key)') ]
 
   - name: _CommonPublishArgs
     value: >-

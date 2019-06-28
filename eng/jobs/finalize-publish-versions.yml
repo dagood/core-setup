@@ -10,15 +10,15 @@ jobs:
     name: Hosted VS2017
   variables:
   - name: _GitHubUser
-    value: ${{ coalesce(variables.GitHubUser, 'dotnet-build-bot') }}
+    value: $[ coalesce(variables.GitHubUser, 'dotnet-build-bot') ]
   - name: _GitHubEmail
-    value: ${{ coalesce(variables.GitHubEmail, 'dotnet-build-bot@microsoft.com') }}
+    value: $[ coalesce(variables.GitHubEmail, 'dotnet-build-bot@microsoft.com') ]
   - name: _GitHubAuthToken
-    value: ${{ coalesce(variables.GitHubAuthToken, '$(AccessToken-dotnet-build-bot-public-repo)') }}
+    value: $[ coalesce(variables.GitHubAuthToken, '$(AccessToken-dotnet-build-bot-public-repo)') ]
   - name: _VersionsRepoOwner
-    value: ${{ coalesce(variables.VersionsRepoOwner, 'dotnet') }}
+    value: $[ coalesce(variables.VersionsRepoOwner, 'dotnet') ]
   - name: _VersionsRepo
-    value: ${{ coalesce(variables.VersionsRepo, 'versions') }}
+    value: $[ coalesce(variables.VersionsRepo, 'versions') ]
 
   - name: _DotNetVersionsArgs
     value: >-

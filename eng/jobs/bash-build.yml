@@ -111,7 +111,7 @@ jobs:
           set -x
           df -h
           $(RunArguments) ./build.sh --ci \
-            --projects $(Build.SourcesDirectory)/publish/publish.proj \
+            --projects /root/coresetup/publish/publish.proj \
             $(PublishArguments) \
             $(_CommonPublishArgs)
         displayName: Publish

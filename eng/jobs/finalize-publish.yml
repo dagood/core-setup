@@ -54,24 +54,19 @@ jobs:
     continueOnError: false
     condition: and(succeeded(), in(variables['SignType'], 'real', 'test'))
 
-  - task: MSBuild@1
-    displayName: Publish (no PublishType)
-    inputs: 
-      solution: $(Build.SourcesDirectory)\publish\publish.proj
-      platform: x64
-      configuration: Release
-      msbuildVersion: 15.0
-      msbuildArchitecture: x64
-      msbuildArguments: '/p:Finalize=true 
-      /p:OfficialPublish=true 
-      /p:PublishType=nopublishtype 
-      /p:SignType=$(SignType) 
+  - script: >-
+      build.cmd -ci
+      -projects $(Build.SourcesDirectory)\publish\publish.proj
+      /p:Finalize=true
+      /p:OfficialPublish=true
+      /p:PublishType=nopublishtype
+      /p:SignType=$(SignType)
       /p:TargetArchitecture=x64
-      $(_BlobFeedArgs) 
-      $(_CommonPublishArgs) 
-      $(_SymbolServerArgs) 
+      $(_BlobFeedArgs)
+      $(_CommonPublishArgs)
+      $(_SymbolServerArgs)
       /bl:$(Build.SourcesDirectory)\finalizepublish.binlog
-      /nr:false'
+    displayName: Publish (no PublishType)
     condition: and(succeeded(), eq(variables._PublishType, 'nopublishtype'))
 
   - task: CopyFiles@2

@@ -46,19 +46,14 @@ jobs:
       Write-Host "##vso[task.setvariable variable=FullBranchName;]$branchName"
     displayName: Find true SourceBranchName
 
-  - task: MSBuild@1
+  - script: >-
+      build.cmd -ci
+      -projects $(Build.SourcesDirectory)\publish\publish-type.proj
+      /p:PublishType=versions
+      $(_DotNetVersionsArgs)
+      $(_CommonPublishArgs)
+      /bl:$(Build.SourcesDirectory)\publishversions.binlog
     displayName: Publish (versions)
-    inputs: 
-      solution: $(Build.SourcesDirectory)\publish\publish-type.proj
-      platform: x64
-      configuration: Release
-      msbuildVersion: 15.0
-      msbuildArchitecture: x64
-      msbuildArguments: >-
-        /p:PublishType=versions
-        $(_DotNetVersionsArgs)
-        $(_CommonPublishArgs)
-        /bl:$(Build.SourcesDirectory)\publishversions.binlog
 
   - task: CopyFiles@2
     displayName: Copy Files to $(Build.StagingDirectory)\BuildLogs

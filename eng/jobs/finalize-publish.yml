@@ -6,7 +6,6 @@ jobs:
 - job: Finalize_Publish
   displayName: Finalize_Publish
   # Run after all dependent legs are executed
-  dependsOn: ${{ parameters.DependsOn }}
   pool:
     # Use a hosted pool when possible.
     ${{ if eq(variables['System.TeamProject'], 'public') }}:

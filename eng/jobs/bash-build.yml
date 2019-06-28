@@ -105,18 +105,6 @@ jobs:
         $(RunArguments) ./build.sh $(BuildArguments)
       displayName: Build
 
-    # Publish only if internal and not PR 
-    - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-      - script: |
-          set -x
-          df -h
-          $(RunArguments) ./build.sh --ci \
-            --projects /root/coresetup/publish/publish.proj \
-            $(PublishArguments) \
-            $(_CommonPublishArgs)
-        displayName: Publish
-        condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
-
     # Only for glibc leg, here we produce RPMs and Debs
     - ${{ if eq(parameters.displayName, 'Build_Linux_x64_glibc')}}:
       - task: CopyFiles@2
@@ -145,6 +133,18 @@ jobs:
               outputRidArg: /p:OutputRid=${{ rid }}-${{ parameters.targetArchitecture }}
               packageStepDescription: Runtime Deps installers
               packagingArgs: /p:BuildDistroIndependentInstallers=false
+
+    # Publish only if internal and not PR
+    - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+      - script: |
+          set -x
+          df -h
+          $(RunArguments) ./build.sh --ci \
+            --projects /root/coresetup/publish/publish.proj \
+            $(PublishArguments) \
+            $(_CommonPublishArgs)
+        displayName: Publish
+        condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
     # Files may be owned by root because builds don't set user ID. The next AzDO step runs 'find' in
     # the source tree, which fails due to permissions in the 'NetCore*-Int-Pool' queues. This step

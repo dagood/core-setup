@@ -46,6 +46,7 @@ jobs:
   - script: >-
       build.cmd -ci
       -projects $(Build.SourcesDirectory)\publish\publish-type.proj
+      /p:Configuration=Release
       /p:PublishType=versions
       $(_DotNetVersionsArgs)
       $(_CommonPublishArgs)

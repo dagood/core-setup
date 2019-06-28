@@ -14,8 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="$(FeedTasksPackage)" Version="$(FeedTasksPackageVersion)" />
-    <PackageReference Include="$(PublishSymbolsPackage)" Version="$(PublishSymbolsPackageVersion)" />
+    <PackageReference Include="$(MicrosoftDotNetBuildTasksFeedPackage)" Version="$(MicrosoftDotNetBuildTasksFeedPackageVersion)" />
+    <PackageReference Include="$(MicrosoftSymbolUploaderBuildTaskPackage)" Version="$(MicrosoftSymbolUploaderBuildTaskVersion)" />
   </ItemGroup>
 
   <ItemGroup>

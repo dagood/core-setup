@@ -9,7 +9,6 @@
   <PropertyGroup>
     <BaseUrl Condition="'$(BaseUrl)' == ''">https://dotnetcli.blob.core.windows.net/</BaseUrl>
 
-    <ChecksumsRelativePath>Runtime/$(ProductVersion)</ChecksumsRelativePath>
     <ChecksumExtension>.sha512</ChecksumExtension>
   </PropertyGroup>
 

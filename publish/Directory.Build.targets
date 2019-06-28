@@ -10,6 +10,10 @@
 
   <Target Name="GatherFileItems"
           DependsOnTargets="GetProductVersions">
+    <PropertyGroup>
+      <ChecksumsRelativePath>Runtime/$(ProductVersion)</ChecksumsRelativePath>
+    </PropertyGroup>
+
     <ItemGroup>
       <CompressedFile Include="$(AssetOutputPath)**/*$(CompressedFileExtension)">
         <RelativeBlobPath>$(BinariesRelativePath)</RelativeBlobPath>

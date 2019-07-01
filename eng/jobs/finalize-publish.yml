@@ -61,6 +61,7 @@ jobs:
       /p:OfficialPublish=true
       /p:PublishType=nopublishtype
       /p:SignType=$(SignType)
+      /p:DotNetSignType=$(SignType)
       /p:EnableSigning=true
       /p:TargetArchitecture=x64
       $(_BlobFeedArgs)

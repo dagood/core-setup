@@ -8,12 +8,15 @@
     <AllowEmptySignList>true</AllowEmptySignList>
   </PropertyGroup>
 
-  <!--
-    Replace the default items to sign with the specific set we want. This allows the build to call
-    Arcade's Sign.proj multiple times for different sets of files as the build progresses.
-  -->
   <ItemGroup>
+    <!--
+      Replace the default items to sign with the specific set we want. This allows the build to call
+      Arcade's Sign.proj multiple times for different sets of files as the build progresses.
+    -->
     <ItemsToSign Remove="@(ItemsToSign)" />
+
+    <FileExtensionSignInfo Include=".pkg" CertificateName="8003" />
+    <FileExtensionSignInfo Include=".deb;.rpm" CertificateName="LinuxSign" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(SignBinaries)' == 'true'">

@@ -186,6 +186,7 @@ jobs:
       - Build_Windows_Arm64
       - Build_Windows_x64
       - Build_Windows_x86
+      PublishRidAgnosticPackagesFromJobName: Build_Windows_x64
       _PublishType: nopublishtype
 
   # Publish to Build Asset Registry

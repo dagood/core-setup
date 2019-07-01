@@ -1,5 +1,6 @@
 parameters:
   DependsOn: []
+  PublishRidAgnosticPackagesFromJobName: ''
   _PublishType: {}
 jobs:
 
@@ -89,7 +90,7 @@ jobs:
       -warnAsError 0
       /p:Configuration=Release
       /p:Finalize=true
-      /p:OfficialPublish=true
+      /p:PublishRidAgnosticPackagesFromJobName=${{ parameters.PublishRidAgnosticPackagesFromJobName }}
       /p:PublishType=nopublishtype
       /p:SignType=$(SignType)
       /p:DotNetSignType=$(SignType)

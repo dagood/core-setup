@@ -18,21 +18,4 @@
     <PackageReference Include="Microsoft.DotNet.VersionTools.Tasks" Version="$(MicrosoftDotNetVersionToolsTasksPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PublishRid Include="ubuntu.14.04-x64" />
-    <PublishRid Include="linux-x64" />
-    <PublishRid Include="win-x86" />
-    <PublishRid Include="win-x64" />
-    <PublishRid Include="osx-x64" />
-    <PublishRid Include="win-arm" />
-    <PublishRid Include="win-arm64" />
-    <PublishRid Include="linux-arm" />
-    <PublishRid Include="linux-musl-arm64" />
-    <PublishRid Include="rhel.7-x64" />
-    <PublishRid Include="opensuse.42-x64" />
-    <PublishRid Include="centos.7-x64" />
-    <PublishRid Include="fedora.27-x64" />
-    <PublishRid Include="oraclelinux.7-x64" />
-    <PublishRid Include="sles.12-x64" />
-  </ItemGroup>
 </Project>

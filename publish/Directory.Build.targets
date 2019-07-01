@@ -2,93 +2,10 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <UsingTask TaskName="GenerateDebRepoUploadJsonFile" AssemblyFile="$(LocalBuildToolsTaskFile)" />
-  <UsingTask TaskName="GenerateChecksums" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <!-- Required by Common.Targets but not used by publishing projects. -->
   <Target Name="CreateManifestResourceNames" />
   <Target Name="CoreCompile" />
-
-  <Target Name="GatherFileItems"
-          DependsOnTargets="GetProductVersions">
-    <PropertyGroup>
-      <ChecksumsRelativePath>Runtime/$(ProductVersion)</ChecksumsRelativePath>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <CompressedFile Include="$(AssetOutputPath)**/*$(CompressedFileExtension)">
-        <RelativeBlobPath>$(BinariesRelativePath)</RelativeBlobPath>
-      </CompressedFile>
-
-      <RuntimePackageFile
-        Include="
-          $(PackageOutputPath)**/runtime.*.nupkg;
-          $(PackageOutputPath)**/*.Runtime.*.nupkg;
-          $(PackageOutputPath)**/*.App.Host.*.nupkg;
-          $(PackageOutputPath)**/VS.Redist.Common.*.nupkg"
-        RelativeBlobPath="$(BinariesRelativePath)"/>
-
-      <RidAgnosticPackageFile Include="$(PackageOutputPath)**/*.nupkg" Exclude="@(RuntimePackageFile)" >
-        <RelativeBlobPath>$(BinariesRelativePath)</RelativeBlobPath>
-      </RidAgnosticPackageFile>
-      <InstallerFile Include="$(AssetOutputPath)**/*$(InstallerExtension)" Condition="'$(InstallerExtension)' != ''" >
-        <RelativeBlobPath>$(InstallersRelativePath)</RelativeBlobPath>
-      </InstallerFile>
-      <InstallerFile Include="$(AssetOutputPath)**/*$(CombinedInstallerExtension)" Condition="'$(CombinedInstallerExtension)' != ''">
-        <RelativeBlobPath>$(InstallersRelativePath)</RelativeBlobPath>
-      </InstallerFile>
-
-      <OutputVersionBadgeFile
-        Include="$(AssetOutputPath)**/sharedfx_*_version_badge.svg"
-        RelativeBlobPath="$(InstallersRelativePath)" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="GatherPublishToAzureBinaries"
-          DependsOnTargets="GatherFileItems">
-    <ItemGroup>
-      <PublishFile Include="@(CompressedFile)" />
-      <PublishFile Include="@(RuntimePackageFile)" />
-      <PublishFile Condition="'$(PublishRidAgnosticPackages)' == 'true'" Include="@(RidAgnosticPackageFile)" />
-      <PublishFile Include="@(OutputVersionBadgeFile)" />
-      <Project Include="publish.proj">
-        <PublishTarget>UploadToAzure</PublishTarget>
-        <AdditionalProperties>%(Project.AdditionalProperties);ItemsToPublish=@(PublishFile);RelativeBlobPath=$(BinariesRelativePath)</AdditionalProperties>
-      </Project>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="GatherPublishToAzureInstallers"
-          DependsOnTargets="GatherFileItems">
-    <ItemGroup>
-      <Project Include="publish.proj">
-        <PublishTarget>UploadToAzure</PublishTarget>
-        <AdditionalProperties>%(Project.AdditionalProperties);ItemsToPublish=@(InstallerFile);RelativeBlobPath=$(InstallersRelativePath)</AdditionalProperties>
-      </Project>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="GatherPublishToAzureChecksums"
-          DependsOnTargets="GatherFileItems;CreateChecksums">
-    <ItemGroup>
-      <ChecksumItems Include="$(AssetOutputPath)**/*$(ChecksumExtension)" />
-      <Project Include="publish.proj">
-        <PublishTarget>UploadChecksumsToAzure</PublishTarget>
-        <AdditionalProperties>%(Project.AdditionalProperties);ItemsToPublish=@(ChecksumItems);RelativeBlobPath=$(ChecksumsRelativePath)</AdditionalProperties>
-      </Project>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="CreateChecksums"
-          DependsOnTargets="GatherFileItems">
-    <ItemGroup>
-      <ItemsToChecksum Include="@(CompressedFile)" />
-      <ItemsToChecksum Include="@(InstallerFile)" />
-      <ArtifactsForGeneratingChecksums Include="@(ItemsToChecksum)">
-        <DestinationPath>%(ItemsToChecksum.FullPath)$(ChecksumExtension)</DestinationPath>
-      </ArtifactsForGeneratingChecksums>
-    </ItemGroup>
-    <GenerateChecksums Items="@(ArtifactsForGeneratingChecksums)" />
-  </Target>
 
   <Target Name="GenerateDebRepoFiles"
           Condition="('$(TargetsUbuntu)' == 'true' or '$(TargetsDebian)' == 'true') and '$(TargetArchitecture)' == 'x64'">
@@ -141,23 +58,6 @@
                                    PackageName="%(DebInstallerFile.PackageName)"
                                    PackageVersion="$(SharedFrameworkNugetVersion)"
                                    UploadUrl="$(BaseUrl)$(ContainerName)/$(BinariesRelativePath)%(DebInstallerFile.Filename)%(DebInstallerFile.Extension)" />
-  </Target>
-
-  <Target Name="CheckIfAllBuildsHavePublished"
-          DependsOnTargets="GetProductVersions">
-    <ListAzureBlobs AccountName="$(AzureAccountName)"
-                      AccountKey="$(AzureAccessToken)"
-                      ContainerName="$(ContainerName)"
-                      FilterBlobNames="$(BinariesRelativePath)">
-      <Output TaskParameter="BlobNames" ItemName="_BlobNames" />
-    </ListAzureBlobs>
-    <ItemGroup>
-      <_FoundBlobNames Include="%(_BlobNames.FileName)%(_BlobNames.Extension)" Condition="'%(_BlobNames.Extension)' == '.svg'" />
-      <_MissingBlobNames Include="@(PublishRid->'sharedfx_%(Identity)_$(ConfigurationGroup)_version_badge.svg')"
-                         Exclude="@(_FoundBlobNames)" />
-    </ItemGroup>
-    <Error Text="Missing publish output from all legs of the build. Missing blobs are '@(_MissingBlobNames)'"
-           Condition="'@(_MissingBlobNames)' != ''" />
   </Target>
 
   <Import Project="..\Directory.Build.targets" />

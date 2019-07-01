@@ -47,7 +47,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(SignFinalPackages)' == 'true'">
-    <ItemsToSign Include="$(ArtifactsPackagesDir)**\*.nupkg" />
+    <ItemsToSign Include="$(DownloadDirectory)**\*.nupkg" />
+    <ItemsToSign Include="$(DownloadDirectory)**\*.pkg" />
+    <ItemsToSign Include="$(DownloadDirectory)**\*.deb" />
+    <ItemsToSign Include="$(DownloadDirectory)**\*.rpm" />
   </ItemGroup>
 
   <ItemGroup>

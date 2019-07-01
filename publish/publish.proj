@@ -35,7 +35,10 @@
 
   <Target Name="SignPackages"
           Condition="'$(SkipSigning)' != 'true' and '$(SignType)' != 'public'">
-    <MSBuild Projects="$(RepoRoot)signing\stages\SignFinalPackages.proj" Targets="Build" />
+    <MSBuild
+      Projects="$(RepoRoot)signing\stages\SignFinalPackages.proj"
+      Targets="Build"
+      Properties="DownloadDirectory=$(DownloadDirectory)" />
   </Target>
 
   <!--
@@ -140,8 +143,10 @@
   </Target>
 
   <Target Name="FinalizeBuildInAzure"
-          DependsOnTargets="CheckIfAllBuildsHavePublished;
-                            GetLatestCommitHash">
+          DependsOnTargets="
+            GetProductVersions;
+            CheckIfAllBuildsHavePublished;
+            GetLatestCommitHash">
     <Error Condition="'$(AzureAccessToken)' == ''" Text="Missing required property 'AzureAccessToken'" />
     <Error Condition="'$(AzureAccountName)' == ''" Text="Missing required property 'AzureAccountName'" />
     <Error Condition="'$(ContainerName)' == ''" Text="Missing required property 'ContainerName'" />
@@ -190,7 +195,8 @@
     <Message Condition="'$(WindowsSdkDir)' == ''" Text="Windows SDK not found.  Symbols packages will not be signed." />
   </Target>
 
-  <Target Name="DownloadCoreHostPackages">
+  <Target Name="DownloadCoreHostPackages"
+          DependsOnTargets="GetProductVersions">
     <ListAzureBlobs AccountName="$(AzureAccountName)"
                       AccountKey="$(AzureAccessToken)"
                       ContainerName="$(ContainerName)"

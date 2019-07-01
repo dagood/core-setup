@@ -10,6 +10,7 @@
     <BaseUrl Condition="'$(BaseUrl)' == ''">https://dotnetcli.blob.core.windows.net/</BaseUrl>
 
     <ChecksumExtension>.sha512</ChecksumExtension>
+    <DownloadDirectory>$(BinDir)PackageDownload/</DownloadDirectory>
   </PropertyGroup>
 
   <ItemGroup>

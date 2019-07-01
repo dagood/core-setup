@@ -22,11 +22,11 @@ jobs:
 
   - name: _DotNetVersionsArgs
     value: >-
-      /p:GitHubUser=dotnet-build-bot
-      /p:GitHubEmail=dotnet-build-bot@microsoft.com
-      /p:GitHubAuthToken=$(AccessToken-dotnet-build-bot-public-repo)
-      /p:VersionsRepoOwner=dotnet
-      /p:VersionsRepo=versions
+      /p:GitHubUser=$(_GitHubUser)
+      /p:GitHubEmail=$(_GitHubEmail)
+      /p:GitHubAuthToken=$(_GitHubAuthToken)
+      /p:VersionsRepoOwner=$(_VersionsRepoOwner)
+      /p:VersionsRepo=$(_VersionsRepo)
       /p:VersionsRepoPath=build-info/dotnet/core-setup/$(FullBranchName)
 
   steps:

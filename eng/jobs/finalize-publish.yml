@@ -1,5 +1,5 @@
 parameters:
-  DependsOn: {}
+  DependsOn: []
   _PublishType: {}
 jobs:
 
@@ -21,6 +21,28 @@ jobs:
   variables:
   - name: _PublishType
     value: ${{ parameters._PublishType}}
+
+  # Blob storage publish (installers and checksums)
+  - name: _AzureAccountName
+    value: $[ coalesce(variables.AzureAccountName, 'dotnetcli') ]
+  - name: _ContainerName
+    value: $[ coalesce(variables.ContainerName, 'dotnet') ]
+  - name: _AzureAccessToken
+    value: $[ coalesce(variables.AzureAccessToken, '$(dotnetcli-storage-key)') ]
+  - name: _ChecksumAzureAccountName
+    value: $[ coalesce(variables.ChecksumAzureAccountName, 'dotnetclichecksums') ]
+  - name: _ChecksumContainerName
+    value: $[ coalesce(variables.ChecksumContainerName, 'dotnet') ]
+  - name: _ChecksumAzureAccessToken
+    value: $[ coalesce(variables.ChecksumAzureAccessToken, '$(dotnetclichecksums-storage-key)') ]
+  - name: _CommonPublishArgs
+    value: >-
+      /p:AzureAccountName=$(_AzureAccountName)
+      /p:ContainerName=$(_ContainerName)
+      /p:AzureAccessToken=$(_AzureAccessToken)
+      /p:ChecksumAzureAccountName=$(_ChecksumAzureAccountName)
+      /p:ChecksumContainerName=$(_ChecksumContainerName)
+      /p:ChecksumAzureAccessToken=$(_ChecksumAzureAccessToken)
 
   # Blob feed publish
   - name: _PublishBlobFeedUrl
@@ -53,6 +75,13 @@ jobs:
       feedSource: https://dnceng.pkgs.visualstudio.com/_packaging/MicroBuildToolset/nuget/v3/index.json
     continueOnError: false
     condition: and(succeeded(), in(variables['SignType'], 'real', 'test'))
+
+  - ${{ each job in parameters.DependsOn }}:
+    - task: DownloadBuildArtifacts@0
+      displayName: Download Artifacts - ${{ job }}
+      inputs:
+        artifactName: Artifacts-${{ job }}
+        downloadPath: $(Build.SourcesDirectory)\artifacts\PackageDownload\${{ job }}
 
   - script: >-
       build.cmd -ci
@@ -96,7 +125,7 @@ jobs:
     displayName: Publish Artifact BuildLogs
     inputs:
       PathtoPublish: '$(Build.StagingDirectory)\BuildLogs'
-      ArtifactName: Finalize_Publish
+      ArtifactName: Logs-Finalize_Publish
     condition: succeededOrFailed()
 
   - task: PublishBuildArtifacts@1

@@ -41,30 +41,6 @@ variables:
       # Used for dotnet/versions update
       # - group: DotNet-Versions-Publish
 
-  # Inter-job publish variables.
-  # Custom values override official if provided.
-  - name: _AzureAccountName
-    value: $[ coalesce(variables.AzureAccountName, 'dotnetcli') ]
-  - name: _ContainerName
-    value: $[ coalesce(variables.ContainerName, 'dotnet') ]
-  - name: _AzureAccessToken
-    value: $[ coalesce(variables.AzureAccessToken, '$(dotnetcli-storage-key)') ]
-  - name: _ChecksumAzureAccountName
-    value: $[ coalesce(variables.ChecksumAzureAccountName, 'dotnetclichecksums') ]
-  - name: _ChecksumContainerName
-    value: $[ coalesce(variables.ChecksumContainerName, 'dotnet') ]
-  - name: _ChecksumAzureAccessToken
-    value: $[ coalesce(variables.ChecksumAzureAccessToken, '$(dotnetclichecksums-storage-key)') ]
-
-  - name: _CommonPublishArgs
-    value: >-
-      /p:AzureAccountName=$(_AzureAccountName)
-      /p:ContainerName=$(_ContainerName)
-      /p:AzureAccessToken=$(_AzureAccessToken)
-      /p:ChecksumAzureAccountName=$(_ChecksumAzureAccountName)
-      /p:ChecksumContainerName=$(_ChecksumContainerName)
-      /p:ChecksumAzureAccessToken=$(_ChecksumAzureAccessToken)
-
 jobs:
 ################################################################################
 # Build Bash legs (Linux and FreeBSD)
@@ -151,10 +127,12 @@ jobs:
     targetArchitecture: x64
 
 ################################################################################
-# Build Build_OSX leg
+# Build OSX (macOS) leg
 ################################################################################
 
 - template: /eng/jobs/osx-build.yml
+  parameters:
+    displayName: Build_OSX
 
 ################################################################################
 # Build Windows legs
@@ -209,12 +187,6 @@ jobs:
       - Build_Windows_x64
       - Build_Windows_x86
       _PublishType: nopublishtype
-  
-  # Publish to dotnet/versions
-  - template: /eng/jobs/finalize-publish-versions.yml
-    parameters:
-      DependsOn:
-      - Finalize_Publish
 
   # Publish to Build Asset Registry
   # - template: /eng/common/templates/job/publish-build-assets.yml

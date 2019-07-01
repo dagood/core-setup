@@ -1,5 +1,8 @@
+parameters:
+  displayName: ''
+
 jobs:
-- job: Build_OSX
+- job: ${{ parameters.displayName }}
   pool:
     ${{ if eq(variables['System.TeamProject'], 'public') }}:
       name: Hosted macOS
@@ -29,14 +32,12 @@ jobs:
     condition: succeeded()
 
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-    - script: >-
-        $(Build.SourcesDirectory)/build.sh --ci
-        --projects $(Build.SourcesDirectory)/publish/publish.proj
-        $(_CommonPublishArgs)
-        $(CommonMSBuildArgs)
-        /p:PublishType=$(_PublishType)
-        /bl:$(Build.SourcesDirectory)/publish.binlog
-      displayName: Publish 
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifacts
+      inputs:
+        pathToPublish: $(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)
+        artifactName: Artifacts-${{ parameters.displayName }}
+        artifactType: container
       condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
   - task: PublishTestResults@2

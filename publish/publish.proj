@@ -32,7 +32,8 @@
           Condition="'$(PublishType)' == 'nopublishtype'"
           DependsOnTargets="
             PublishDebFilesToDebianRepo;
-            PublishFinalOutput;" />
+            PublishFinalOutput;
+            PublishVersions" />
 
   <Target Name="PublishFinalOutput"
           Condition="'$(Finalize)' == 'true'"
@@ -56,8 +57,7 @@
           DependsOnTargets="GatherShippingPackages;
                             UpdatePublishedVersions" />
 
-  <Target Name="GatherShippingPackages"
-          DependsOnTargets="DownloadCoreHostPackages">
+  <Target Name="GatherShippingPackages">
     <ItemGroup>
       <PackagesToShip Include="$(DownloadDirectory)*.nupkg"
                       Exclude="$(DownloadDirectory)*.symbols.nupkg;
@@ -203,30 +203,13 @@
 
   <Target Name="DownloadCoreHostPackages"
           DependsOnTargets="GetProductVersions">
-    <ListAzureBlobs AccountName="$(AzureAccountName)"
-                      AccountKey="$(AzureAccessToken)"
-                      ContainerName="$(ContainerName)"
-                      FilterBlobNames="Runtime/$(SharedFrameworkNugetVersion)/">
-      <Output TaskParameter="BlobNames" ItemName="_BlobList" />
-    </ListAzureBlobs>
-    <ItemGroup>
-      <_CoreHostPackages Include="%(_BlobList.Identity)" />
-    </ItemGroup>
     <PropertyGroup>
       <DownloadDirectory Condition="'$(DownloadDirectory)' == ''">$(BinDir)PackageDownload/</DownloadDirectory>
-      <!-- The SignFiles target needs OutDir to be defined -->
-      <OutDir>$(DownloadDirectory)</OutDir>
     </PropertyGroup>
-    <MakeDir Directories="$(DownloadDirectory)"
-             Condition="!Exists('$(DownloadDirectory)')" />
-    <DownloadFromAzure AccountName="$(AzureAccountName)"
-                           AccountKey="$(AzureAccessToken)"
-                           ContainerName="$(ContainerName)"
-                           BlobNames="@(_CoreHostPackages)"
-                           BlobNamePrefix="Runtime/$(SharedFrameworkNugetVersion)/"
-                           DownloadDirectory="$(DownloadDirectory)" />
+
     <ItemGroup>
-      <_DownloadedAssets Include="@(_CoreHostPackages->'$(DownloadDirectory)%(Filename)%(Extension)')" />
+      <_DownloadedAssets Include="$(DownloadDirectory)**\*.nupkg" />
+
       <_DownloadedPackages Include="%(_DownloadedAssets.Identity)"
                            Condition="$([System.String]::new('%(_DownloadedAssets.Identity)').EndsWith('.nupkg'))" />
       <_DownloadedSymbolsPackages Include="%(_DownloadedPackages.Identity)"

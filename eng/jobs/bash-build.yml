@@ -136,14 +136,12 @@ jobs:
 
     # Publish only if internal and not PR
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-      - script: |
-          set -x
-          df -h
-          $(RunArguments) ./build.sh --ci \
-            --projects /root/coresetup/publish/publish.proj \
-            $(PublishArguments) \
-            $(_CommonPublishArgs)
-        displayName: Publish
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Artifacts
+        inputs:
+          pathToPublish: $(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)
+          artifactName: Artifacts-${{ parameters.displayName }}
+          artifactType: container
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
     # Files may be owned by root because builds don't set user ID. The next AzDO step runs 'find' in

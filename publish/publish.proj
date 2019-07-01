@@ -242,7 +242,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="RunPublishSymbols">
+  <Target Name="RunPublishSymbols"
+          Condition="'$(SkipPublishSymbols)' != 'true'">
     <ItemGroup>
       <SymbolServerConfig
         Include="msdl"

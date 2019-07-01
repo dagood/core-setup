@@ -64,7 +64,6 @@ jobs:
       /p:SignType=$(SignType)
       /p:DotNetSignType=$(SignType)
       /p:EnableSigning=true
-      /p:SkipSigning=true
       /p:TargetArchitecture=x64
       $(_BlobFeedArgs)
       $(_CommonPublishArgs)

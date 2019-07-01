@@ -102,7 +102,7 @@ jobs:
       displayName: Download Artifacts - ${{ job }}
       inputs:
         artifactName: Artifacts-${{ job }}
-        downloadPath: $(Build.SourcesDirectory)\artifacts\PackageDownload\${{ job }}
+        downloadPath: $(Build.SourcesDirectory)\artifacts\PackageDownload
 
   - powershell: |
       $prefix = "refs/heads/"

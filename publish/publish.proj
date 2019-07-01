@@ -11,12 +11,17 @@
   <Target Name="Build"
           DependsOnTargets="
             PublishBlob;
+            PublishVersions;
             PublishNoPublishType" />
 
   <!-- Always push the build assets to azure for final publish -->
   <Target Name="PublishBlob"
-          Condition="'$(PublishType)' == 'blob'"
+          Condition="$(PublishType.Contains('blob'))"
           DependsOnTargets="PublishToAzure" />
+
+  <Target Name="PublishVersions"
+          Condition="$(PublishType.Contains('versions'))"
+          DependsOnTargets="UpdateVersionsRepo" />
 
   <!--
     If we are not setting a publish type (i.e. nopublishtype) then do
@@ -51,7 +56,8 @@
           DependsOnTargets="GatherShippingPackages;
                             UpdatePublishedVersions" />
 
-  <Target Name="GatherShippingPackages">
+  <Target Name="GatherShippingPackages"
+          DependsOnTargets="DownloadCoreHostPackages">
     <ItemGroup>
       <PackagesToShip Include="$(DownloadDirectory)*.nupkg"
                       Exclude="$(DownloadDirectory)*.symbols.nupkg;

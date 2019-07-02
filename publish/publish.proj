@@ -3,6 +3,7 @@
 
   <UsingTask TaskName="DownloadFromAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="FinalizeBuild" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+  <UsingTask TaskName="GenerateChecksums" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="ListAzureBlobs" AssemblyFile="$(LocalBuildToolsTaskFile)" />
   <UsingTask TaskName="UploadToAzure" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 

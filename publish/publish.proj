@@ -81,10 +81,10 @@
       <!-- Other than nupkgs/symbols.nupkgs, the artifacts don't need filtering. -->
       <UploadToBlobStorageFile
         Include="@(DownloadedArtifactFile)"
-        Exclude="@(DownloadedNupkgFile);@(RidAgnosticSymbolNupkgToIgnoreFile)" />
+        Exclude="@(RidAgnosticNupkgToIgnoreFile);@(RidAgnosticSymbolNupkgToIgnoreFile)" />
 
       <!-- Nupkgs to include in dotnet/versions update. -->
-      <ShippedNuGetPackage Include="@(RidAgnosticNupkgToPublishFile);@(RuntimeNupkgFile)" />
+      <ShippedNuGetPackage Include="@(NupkgToPublishFile)" />
     </ItemGroup>
   </Target>
 
@@ -110,6 +110,7 @@
   <Target Name="UploadToAzure"
           DependsOnTargets="
             FindDownloadedArtifacts;
+            SignPackages;
             GetProductVersions">
     <Error Condition="'$(AzureAccessToken)' == ''" Text="Missing required property 'AzureAccessToken'" />
     <Error Condition="'$(AzureAccountName)' == ''" Text="Missing required property 'AzureAccountName'" />

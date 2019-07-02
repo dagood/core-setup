@@ -56,17 +56,17 @@
 
       <!-- RID-specific nupkg. These are published from every leg. -->
       <RuntimeNupkgFile Include="
-        $(PackageOutputPath)**/runtime.*.nupkg;
-        $(PackageOutputPath)**/*.Runtime.*.nupkg;
-        $(PackageOutputPath)**/*.App.Host.*.nupkg;
-        $(PackageOutputPath)**/VS.Redist.Common.*.nupkg" />
+        $(DownloadDirectory)**\runtime.*.nupkg;
+        $(DownloadDirectory)**\*.Runtime.*.nupkg;
+        $(DownloadDirectory)**\*.App.Host.*.nupkg;
+        $(DownloadDirectory)**\VS.Redist.Common.*.nupkg" />
 
       <!--
         RID-agnostic nupkg. These are built with the same ID/version by every leg, so only one leg's
         results are published.
       -->
       <RidAgnosticNupkgToPublishFile
-        Include="$(DownloadDirectory)$(PublishRidAgnosticPackagesFromJobName)\**\*.nupkg"
+        Include="$(DownloadDirectory)Artifacts-$(PublishRidAgnosticPackagesFromJobName)\**\*.nupkg"
         Exclude="@(RuntimeNupkgFile)" />
       
       <RidAgnosticNupkgToIgnoreFile

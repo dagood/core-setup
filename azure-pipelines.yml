@@ -61,7 +61,6 @@ jobs:
       DependsOn:
       - Build_OSX
       PublishRidAgnosticPackagesFromJobName: Build_OSX
-      _PublishType: nopublishtype
 
   # Publish to Build Asset Registry
   # - template: /eng/common/templates/job/publish-build-assets.yml

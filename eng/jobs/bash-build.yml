@@ -11,10 +11,8 @@ parameters:
     matrix: 
       # debug:
       #   _BuildConfig: Debug
-      #   _PublishType: none
       release:
         _BuildConfig: Release
-        _PublishType: blob
   targetArchitecture: x64
 jobs:
   - job: ${{ parameters.displayName }}
@@ -62,7 +60,6 @@ jobs:
         /p:StripSymbols=true
 
       PublishArguments: >-
-        /p:PublishType=$(_PublishType)
         /p:PortableBuild=${{ parameters.portableBuild }}
         $(CommonMSBuildArgs)
         ${{ parameters.additionalMSBuildArgs }}

@@ -21,10 +21,8 @@ jobs:
       matrix: 
         # debug:
         #   _BuildConfig: Debug
-        #   _PublishType: none
         release:
           _BuildConfig: Release
-          _PublishType: blob
     workspace:
       clean: all
     variables: 

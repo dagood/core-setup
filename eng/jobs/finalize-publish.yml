@@ -1,7 +1,6 @@
 parameters:
   DependsOn: []
   PublishRidAgnosticPackagesFromJobName: ''
-  _PublishType: {}
 jobs:
 
 - job: Finalize_Publish
@@ -20,10 +19,8 @@ jobs:
   workspace:
     clean: all
   variables:
-  - name: _PublishType
-    value: ${{ parameters._PublishType}}
 
-  # Blob storage publish (installers and checksums)
+    # Blob storage publish (installers and checksums)
   - name: _AzureAccountName
     value: $[ coalesce(variables.AzureAccountName, 'dotnetcli') ]
   - name: _ContainerName
@@ -123,7 +120,6 @@ jobs:
       /p:Configuration=Release
       /p:Finalize=true
       /p:PublishRidAgnosticPackagesFromJobName=${{ parameters.PublishRidAgnosticPackagesFromJobName }}
-      /p:PublishType=nopublishtype
       /p:SignType=$(SignType)
       /p:DotNetSignType=$(SignType)
       /p:EnableSigning=true
@@ -133,8 +129,7 @@ jobs:
       $(_SymbolServerArgs)
       $(_DotNetVersionsArgs)
       /bl:$(Build.SourcesDirectory)\finalizepublish.binlog
-    displayName: Publish (no PublishType)
-    condition: and(succeeded(), eq(variables._PublishType, 'nopublishtype'))
+    displayName: Publish
 
   - task: CopyFiles@2
     displayName: Copy Files to $(Build.StagingDirectory)\BuildLogs

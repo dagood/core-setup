@@ -80,7 +80,7 @@
 
       <!-- Other than nupkgs/symbols.nupkgs, the artifacts don't need filtering. -->
       <UploadToBlobStorageFile
-        Include="$(DownloadedArtifactFile)"
+        Include="@(DownloadedArtifactFile)"
         Exclude="@(DownloadedNupkgFile);@(RidAgnosticSymbolNupkgToIgnoreFile)" />
 
       <!-- Nupkgs to include in dotnet/versions update. -->

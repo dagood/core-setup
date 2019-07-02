@@ -94,8 +94,8 @@
           DependsOnTargets="FindDownloadedArtifacts">
     <ItemGroup>
       <ArtifactsForGeneratingChecksums
-        Include="@(DownloadedArtifactFile)"
-        DestinationPath="%(ItemsToChecksum.FullPath)$(ChecksumExtension)" />
+        Include="@(UploadToBlobStorageFile)"
+        DestinationPath="%(FullPath)$(ChecksumExtension)" />
       
       <GeneratedChecksumFile Include="@(ArtifactsForGeneratingChecksums -> '%(DestinationPath)')" />
     </ItemGroup>

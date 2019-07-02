@@ -55,11 +55,13 @@
         Exclude="@(DownloadedSymbolNupkgFile)" />
 
       <!-- RID-specific nupkg. These are published from every leg. -->
-      <RuntimeNupkgFile Include="
-        $(DownloadDirectory)**\runtime.*.nupkg;
-        $(DownloadDirectory)**\*.Runtime.*.nupkg;
-        $(DownloadDirectory)**\*.App.Host.*.nupkg;
-        $(DownloadDirectory)**\VS.Redist.Common.*.nupkg" />
+      <RuntimeNupkgFile
+        Include="
+          $(DownloadDirectory)**\runtime.*.nupkg;
+          $(DownloadDirectory)**\*.Runtime.*.nupkg;
+          $(DownloadDirectory)**\*.App.Host.*.nupkg;
+          $(DownloadDirectory)**\VS.Redist.Common.*.nupkg"
+        Exclude="@(DownloadedSymbolNupkgFile)" />
 
       <!--
         RID-agnostic nupkg. These are built with the same ID/version by every leg, so only one leg's
@@ -67,7 +69,7 @@
       -->
       <RidAgnosticNupkgToPublishFile
         Include="$(DownloadDirectory)Artifacts-$(PublishRidAgnosticPackagesFromJobName)\**\*.nupkg"
-        Exclude="@(RuntimeNupkgFile)" />
+        Exclude="@(RuntimeNupkgFile);@(DownloadedSymbolNupkgFile)" />
       
       <RidAgnosticNupkgToIgnoreFile
         Include="@(DownloadedNupkgFile)"

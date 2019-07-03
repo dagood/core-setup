@@ -19,6 +19,15 @@ jobs:
   workspace:
     clean: all
   variables:
+  # Only get the secret variable groups if the def has the official name. Reduce dev build def risk.
+  - ${{ if eq(variables['Build.DefinitionName'], 'dotnet-core-setup') }}:
+    # # Variable groups containing official build publish info.
+    # - group: DotNet-Blob-Feed
+    - group: DotNet-Symbol-Server-Pats
+    # # Used for publishing individual leg assets to azure blob storage
+    # - group: DotNet-DotNetCli-Storage
+    # Used for dotnet/versions update
+    # - group: DotNet-Versions-Publish
 
     # Blob storage publish (installers and checksums)
   - name: _AzureAccountName

@@ -27,19 +27,10 @@ variables:
     - name: SignType
       value: test
 
-  # Set publish variables only for non-PR build from internal
+  # Set up non-PR build from internal project
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: SignType
       value: $[ coalesce(variables.OfficialSignType, 'real') ]
-    # Only get the secret variable groups if the def has the official name. Allows dev build defs.
-    - ${{ if eq(variables['Build.DefinitionName'], 'dotnet-core-setup') }}:
-      # # Variable groups containing official build publish info.
-      # - group: DotNet-Blob-Feed
-      - group: DotNet-Symbol-Server-Pats
-      # # Used for publishing individual leg assets to azure blob storage
-      # - group: DotNet-DotNetCli-Storage
-      # Used for dotnet/versions update
-      # - group: DotNet-Versions-Publish
 
 jobs:
 ################################################################################

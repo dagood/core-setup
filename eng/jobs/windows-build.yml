@@ -95,7 +95,7 @@ jobs:
         TargetFolder: '$(Build.StagingDirectory)\BuildLogs'
         CleanTargetFolder: true
       continueOnError: true
-      condition: always()
+      condition: succeededOrFailed()
 
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact BuildLogs

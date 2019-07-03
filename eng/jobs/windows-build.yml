@@ -68,7 +68,7 @@ jobs:
         displayName: Publish Artifacts
         inputs:
           pathToPublish: $(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)
-          artifactName: Artifacts-${{ parameters.displayName }}
+          artifactName: Bin-${{ parameters.displayName }}
           artifactType: container
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 

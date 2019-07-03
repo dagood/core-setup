@@ -18,9 +18,9 @@ jobs:
   - job: ${{ parameters.displayName }}
     displayName: ${{ parameters.displayName }}
     pool:
-      ${{ if and(eq(parameters.displayName, 'Build_FreeBSD_x64'), ne(variables['System.TeamProject'], 'public')) }}:
+      ${{ if and(eq(parameters.displayName, 'FreeBSD_x64'), ne(variables['System.TeamProject'], 'public')) }}:
         name: dnceng-freebsd-internal
-      ${{ if ne(parameters.displayName, 'Build_FreeBSD_x64') }}:
+      ${{ if ne(parameters.displayName, 'FreeBSD_x64') }}:
         ${{ if eq(variables['System.TeamProject'], 'public') }}:
           name: NetCorePublic-Pool
           queue: buildpool.ubuntu.1604.amd64.open
@@ -30,7 +30,7 @@ jobs:
     strategy: ${{ parameters.strategy }}
     variables:
 
-      ${{ if ne(parameters.displayName, 'Build_FreeBSD_x64')}}:
+      ${{ if ne(parameters.displayName, 'FreeBSD_x64')}}:
         RunArguments: >-
           docker run --privileged --rm
           -v "$(Build.SourcesDirectory):/root/coresetup"
@@ -38,7 +38,7 @@ jobs:
           ${{ parameters.additionalRunArgs }}
           ${{ parameters.dockerImage }}
       
-      ${{ if eq(parameters.displayName, 'Build_FreeBSD_x64')}}:
+      ${{ if eq(parameters.displayName, 'FreeBSD_x64')}}:
         RunArguments: export DotNetBootstrapCliTarPath=/dotnet-sdk-freebsd-x64.tar &&
 
       CommonMSBuildArgs: >-
@@ -103,7 +103,7 @@ jobs:
       displayName: Build
 
     # Only for glibc leg, here we produce RPMs and Debs
-    - ${{ if eq(parameters.displayName, 'Build_Linux_x64_glibc')}}:
+    - ${{ if eq(parameters.displayName, 'Linux_x64_glibc')}}:
       - task: CopyFiles@2
         displayName: 'Copy built Portable linux-x64 binaries to staging directory'
         inputs:
@@ -137,7 +137,7 @@ jobs:
         displayName: Publish Artifacts
         inputs:
           pathToPublish: $(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)
-          artifactName: Artifacts-${{ parameters.displayName }}
+          artifactName: Bin-${{ parameters.displayName }}
           artifactType: container
         condition: and(succeeded(), eq(variables._BuildConfig, 'Release'))
 
@@ -192,7 +192,7 @@ jobs:
       continueOnError: true
 
     # Force clean up machine in case any docker images are left behind
-    - ${{ if ne(parameters.displayName, 'Build_FreeBSD_x64')}}:
+    - ${{ if ne(parameters.displayName, 'FreeBSD_x64')}}:
       - script: docker system prune -af && df -h
         displayName: Run Docker clean up
         condition: succeededOrFailed()

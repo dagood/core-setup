@@ -98,7 +98,7 @@ jobs:
     - task: DownloadBuildArtifacts@0
       displayName: Download Artifacts - ${{ job }}
       inputs:
-        artifactName: Artifacts-${{ job }}
+        artifactName: Bin-${{ job }}
         downloadPath: $(Build.SourcesDirectory)\artifacts\PackageDownload
 
   - powershell: |

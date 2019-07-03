@@ -68,7 +68,7 @@
         results are published.
       -->
       <RidAgnosticNupkgToPublishFile
-        Include="$(DownloadDirectory)Artifacts-$(PublishRidAgnosticPackagesFromJobName)\**\*.nupkg"
+        Include="$(DownloadDirectory)Bin-$(PublishRidAgnosticPackagesFromJobName)\**\*.nupkg"
         Exclude="@(RuntimeNupkgFile);@(DownloadedSymbolNupkgFile)" />
       
       <RidAgnosticNupkgToIgnoreFile

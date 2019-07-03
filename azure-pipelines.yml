@@ -17,7 +17,7 @@ variables:
     value: dotnet-core-acquisition
   # Skip Running CI tests
   - name: SkipTests
-    value: true
+    value: false
   # Set Official Build Id
   - name: OfficialBuildId
     value: $(Build.BuildNumber)

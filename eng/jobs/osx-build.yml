@@ -10,8 +10,8 @@ jobs:
       name: Hosted Mac internal
   strategy:
     matrix: 
-      # debug:
-      #   _BuildConfig: Debug
+      debug:
+        _BuildConfig: Debug
       release:
         _BuildConfig: Release
   workspace:

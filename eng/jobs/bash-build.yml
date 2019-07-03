@@ -9,8 +9,8 @@ parameters:
   skipTests: $(SkipTests)
   strategy:
     matrix: 
-      # debug:
-      #   _BuildConfig: Debug
+      debug:
+        _BuildConfig: Debug
       release:
         _BuildConfig: Release
   targetArchitecture: x64

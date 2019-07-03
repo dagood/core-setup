@@ -54,7 +54,7 @@
         Include="$(DownloadDirectory)**\*.nupkg"
         Exclude="@(DownloadedSymbolNupkgFile)" />
 
-      <!-- RID-specific nupkg. These are published from every leg. -->
+      <!-- RID-specific nupkg. These are published from every job. -->
       <RuntimeNupkgFile
         Include="
           $(DownloadDirectory)**\runtime.*.nupkg;
@@ -64,7 +64,7 @@
         Exclude="@(DownloadedSymbolNupkgFile)" />
 
       <!--
-        RID-agnostic nupkg. These are built with the same ID/version by every leg, so only one leg's
+        RID-agnostic nupkg. These are built with the same ID/version by every job, so only one job's
         results are published.
       -->
       <RidAgnosticNupkgToPublishFile
@@ -79,8 +79,9 @@
         Include="@(RidAgnosticNupkgToIgnoreFile -> '%(RootDir)%(Directory)%(Filename).symbols.nupkg')" />
 
       <NupkgToPublishFile Include="@(RuntimeNupkgFile);@(RidAgnosticNupkgToPublishFile)" />
+      <SymbolNupkgToPublishFile Include="@(DownloadedSymbolNupkgFile)" Exclude="@(RidAgnosticSymbolNupkgToIgnoreFile)" />
 
-      <!-- Other than nupkgs/symbols.nupkgs, the artifacts don't need filtering. -->
+      <!-- Filter out duplicate nupkgs/symbols.nupkgs, but other artifacts are fine. -->
       <UploadToBlobStorageFile
         Include="@(DownloadedArtifactFile)"
         Exclude="@(RidAgnosticNupkgToIgnoreFile);@(RidAgnosticSymbolNupkgToIgnoreFile)" />
@@ -285,7 +286,7 @@
     <ItemGroup>
       <ItemsToPush Remove="@(ItemsToPush)" />
       <ItemsToPush Include="@(NupkgToPublishFile)" />
-      <ItemsToPush Include="@(DownloadedSymbolNupkgFile)" />
+      <ItemsToPush Include="@(SymbolNupkgToPublishFile)" />
     </ItemGroup>
 
     <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
@@ -314,7 +315,9 @@
 
     <ItemGroup>
       <ItemsToPush Remove="@(ItemsToPush)" />
-      <ItemsToPush Include="@(UploadToBlobStorageFile)" />
+      <ItemsToPush
+        Include="@(UploadToBlobStorageFile)"
+        Exclude="@(NupkgToPublishFile);@(SymbolNupkgToPublishFile)" />
       <ItemsToPush>
         <RelativeBlobPath>assets/core-setup/$(InstallersRelativePath)%(Filename)%(Extension)</RelativeBlobPath>
       </ItemsToPush>

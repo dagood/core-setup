@@ -146,7 +146,7 @@
     <ItemGroup>
       <ChecksumToPublish
         Include="@(GeneratedChecksumFile)"
-        RelativeBlobPath="$(BinariesRelativePath)/%(Filename)%(Extension)" />
+        RelativeBlobPath="$(BinariesRelativePath)%(Filename)%(Extension)" />
     </ItemGroup>
 
     <Message Text="Uploading checksum files to $(ChecksumAzureAccountName)/$(ChecksumContainerName)/$(BinariesRelativePath)" />

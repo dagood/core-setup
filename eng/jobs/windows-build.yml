@@ -37,7 +37,6 @@ jobs:
       MsbuildSigningArguments: >-
         /p:CertificateId=400
         /p:DotNetSignType=$(SignType)
-        /p:EnableSigning=true
 
     steps:
 

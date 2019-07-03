@@ -4,7 +4,7 @@
 
   <!-- If signing is enabled, wait until all projects in this stage are done and sign them. -->
   <Target Name="Build"
-          Condition="'$(EnableSigning)' == 'true'">
+          Condition="'$(SkipSigning)' != 'true'">
     <!-- Ensure all projects in this stage have built. -->
     <MSBuild
       Projects="@(StageProject)"

@@ -3,32 +3,65 @@
   <!--
     Projects for Arcade to build.
 
+    %(Phase): Supports the '/p:Phases=<desired phases>' build argument. If not set, all phases run.
+      Otherwise, each project only runs if the desired phases string contains its %(Phase) value.
+      Phases listed in the property should be separated by '-' to avoid unintended matches.
+
     %(SignPhase): Indicates this project must be built before a certain signing phase. Projects can
       depend on 'signing/stages/Sign<stage>.proj' to wait until all projects that are part of a
       stage are complete. This allows the build to perform complex container signing that isn't
       (can't be?) supported by Arcade's single pass, such as MSIs and bundles:
       https://github.com/dotnet/arcade/issues/388
+
+    Each phase has its own <phase>ProjectToBuild items so that the build can depend on a phase,
+    and the dependency on the phase is broken automatically when Phases doesn't contain the phase.
   -->
-  <ItemGroup>
-    <ProjectToBuild Include="$(RepoRoot)src\corehost\build.proj" SignPhase="Binaries" />
-    <ProjectToBuild Include="$(RepoRoot)src\managed\**\*.csproj" SignPhase="Binaries" />
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('corehost'))">
+    <CorehostProjectToBuild Include="$(RepoRoot)src\corehost\build.proj" SignPhase="Binaries" />
+    <ProjectToBuild Include="@(CorehostProjectToBuild)" />
+  </ItemGroup>
 
-    <!--
-      Build pkgproj/depproj but not sfxproj. sfxproj requires pkgprojs to build their nupkgs first,
-      before Restore, which doesn't seem supported by Arcade.
-    -->
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" SignPhase="Binaries" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" SignPhase="MsiFiles" />
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('managed'))">
+    <ManagedProjectToBuild Include="$(RepoRoot)src\managed\**\*.csproj" SignPhase="Binaries" />
+    <ManagedProjectToBuild Include="$(RepoRoot)src\pkg\packaging\pack-managed.proj" />
+    <ProjectToBuild Include="@(ManagedProjectToBuild)" />
+  </ItemGroup>
 
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
-    <ProjectToBuild Include="$(RepoRoot)src\pkg\packaging\pack-managed.proj" />
+  <!--
+    Build pkgproj/depproj but not sfxproj. sfxproj requires pkgprojs to build their nupkgs first,
+    before Restore, which doesn't seem supported by Arcade.
+  -->
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('depproj'))">
+    <DepprojProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.depproj" SignPhase="Binaries" />
+    <ProjectToBuild Include="@(DepprojProjectToBuild)" />
+  </ItemGroup>
 
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('pkgproj'))">
+    <PkgprojProjectToBuild Include="$(RepoRoot)src\pkg\projects\**\*.pkgproj" SignPhase="MsiFiles" />
+    <ProjectToBuild Include="@(PkgprojProjectToBuild)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('installer'))">
+    <InstallerProjectToBuild Include="$(RepoRoot)src\pkg\packaging\installers.proj" />
+    <ProjectToBuild Include="@(InstallerProjectToBuild)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Phases)' == '' or $(Phases.Contains('test'))">
     <!-- Test projects. -->
-    <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\AppHost.Bundle.Tests\AppHost.Bundle.Tests.csproj" />
-    <ProjectToBuild Include="$(RepoRoot)src\test\BundleTests\Microsoft.NET.HostModel.Bundle.Tests\Microsoft.NET.HostModel.Bundle.Tests.csproj" />
-    <ProjectToBuild Include="$(RepoRoot)src\test\HostActivation.Tests\HostActivation.Tests.csproj" />
-    <ProjectToBuild Include="$(RepoRoot)src\test\Microsoft.DotNet.CoreSetup.Packaging.Tests\Microsoft.DotNet.CoreSetup.Packaging.Tests.csproj" />
-    <ProjectToBuild Include="$(RepoRoot)src\test\Microsoft.Extensions.DependencyModel.Tests\Microsoft.Extensions.DependencyModel.Tests.csproj" />
+    <TestProjectToBuild Include="$(RepoRoot)src\test\BundleTests\AppHost.Bundle.Tests\AppHost.Bundle.Tests.csproj" />
+    <TestProjectToBuild Include="$(RepoRoot)src\test\BundleTests\Microsoft.NET.HostModel.Bundle.Tests\Microsoft.NET.HostModel.Bundle.Tests.csproj" />
+    <TestProjectToBuild Include="$(RepoRoot)src\test\HostActivation.Tests\HostActivation.Tests.csproj" />
+    <TestProjectToBuild Include="$(RepoRoot)src\test\Microsoft.DotNet.CoreSetup.Packaging.Tests\Microsoft.DotNet.CoreSetup.Packaging.Tests.csproj" />
+    <TestProjectToBuild Include="$(RepoRoot)src\test\Microsoft.Extensions.DependencyModel.Tests\Microsoft.Extensions.DependencyModel.Tests.csproj" />
+    <ProjectToBuild Include="@(TestProjectToBuild)" />
+  </ItemGroup>
+
+  <!--
+    Prevent Arcade fallback to use the VS solution file. If we hit this situation, the user probably
+    misspelled the Phases string and we should stop the build from happening.
+  -->
+  <ItemGroup Condition="'@(ProjectToBuild)' == ''">
+    <ProjectToBuild Include="$(MSBuildThisFileDirectory)ShowNoProjectToBuildError.proj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -36,9 +69,11 @@
     <RepoTasksOutputFile>$(ArtifactsObjDir)core-setup.tasks\$(Configuration)\build-semaphore.txt</RepoTasksOutputFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <RepoTasksSrc Include="$(RepoTasksDir)**\*.cs" />
-  </ItemGroup>
+  <Target Name="GetRepoTasksSrc">
+    <ItemGroup>
+      <RepoTasksSrc Include="$(RepoTasksDir)**\*.cs" />
+    </ItemGroup>
+  </Target>
 
   <!--
     Use this extensibility point to build custom tasks during Build.proj, before any restoring or
@@ -53,6 +88,7 @@
     isn't particularly accurate, but better than nothing.
   -->
   <Target Name="BuildRepoTasks"
+          DependsOnTargets="GetRepoTasksSrc"
           BeforeTargets="Execute"
           Inputs="@(RepoTasksSrc)"
           Outputs="$(RepoTasksOutputFile)">

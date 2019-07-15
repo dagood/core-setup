@@ -1,0 +1,16 @@
+<Project>
+
+  <!--
+    Display an error if no projects will be built. Echo back the Phases variable if set: a typo in
+    that variable is the anticipated way to hit this situation.
+  -->
+  <Target Name="Build">
+    <PropertyGroup>
+      <Message>No ProjectToBuild items found</Message>
+      <Message Condition="'$(Phases)' != ''">$(Message) in phase matching '$(Phases)'</Message>
+    </PropertyGroup>
+
+    <Error Text="$(Message)." />
+  </Target>
+
+</Project>

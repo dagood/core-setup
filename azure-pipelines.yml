@@ -20,7 +20,7 @@ variables:
     value: false
   # Set Official Build Id
   - name: OfficialBuildId
-    value: $(Build.BuildNumber)
+    value: $[ coalesce(variables.ForceBuildNumber, variables['Build.BuildNumber']) ]
 
   # Produce test-signed build for PR and Public builds
   - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:

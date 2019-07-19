@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <DisableImplicitNETCorePlatformsReference>true</DisableImplicitNETCorePlatformsReference>
+    <UseAppHostFromAssetsFile>true</UseAppHostFromAssetsFile>
   </PropertyGroup>
 
 </Project>

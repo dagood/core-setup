@@ -13,9 +13,11 @@
 
   <ItemGroup Condition="'$(UseMicrosoftNETCoreAppInternalWorkaround)' == 'true'">
     <PackageReference Include="Microsoft.NETCore.App.Internal" Version="$(MNAVersion)" />
+    <!-- Provide a framework to put in the runtimeconfig. -->
+    <RuntimeFramework Include="Microsoft.NETCore.App" Version="$(MNAVersion)" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(UseMicrosoftNETCoreAppInternalWorkaround)' == 'true'">
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <DisableImplicitNETCorePlatformsReference>true</DisableImplicitNETCorePlatformsReference>
     <UseAppHostFromAssetsFile>true</UseAppHostFromAssetsFile>

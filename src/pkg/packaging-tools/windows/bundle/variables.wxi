@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include "..\variables.wxi" ?>
+
+  <?define Link_PreReqPage  = "https://go.microsoft.com/fwlink/?linkid=846817"?>
+
+  <!--
+    The provided upgrade code already between x86 and x64
+    (since it is a GUID based on a string which includes the architecture)
+  -->
+  <?define UpgradeCode="$(var.FrameworkUpgradeCode)"?>
+
+</Include>

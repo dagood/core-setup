@@ -15,7 +15,10 @@
 
     <Feature Id="MainFeature" Title="Main Feature" Level="1">
       <ComponentGroupRef Id="InstallFiles" />
-      <ComponentGroupRef Id="AuthoredRegistryKeys"/>
+
+      <?ifdef AuthoredRegistryKeys ?>
+        <ComponentGroupRef Id="AuthoredRegistryKeys"/>
+      <?endif?>
 
       <?ifdef WerRelatedKeys ?>
         <ComponentGroupRef Id="WerRelatedKeys"/>

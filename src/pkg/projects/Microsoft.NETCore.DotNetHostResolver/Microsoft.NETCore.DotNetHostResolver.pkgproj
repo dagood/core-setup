@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <VersionProp>HostResolverVersion</VersionProp>
+
+    <BuildMsi>true</BuildMsi>
+    <DependencyKeyName></DependencyKeyName>
   </PropertyGroup>
 
   <ItemGroup>

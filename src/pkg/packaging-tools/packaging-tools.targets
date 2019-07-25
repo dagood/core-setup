@@ -85,6 +85,7 @@
       <!-- Location to place the installer, in bin. -->
       <InstallerFileNameWithoutExtension>$(InstallerName)-$(InstallerBuildPart)</InstallerFileNameWithoutExtension>
       <InstallerFile Condition="'$(InstallerFile)' == ''">$(AssetOutputPath)$(InstallerFileNameWithoutExtension)$(InstallerExtension)</InstallerFile>
+      <ExeBundleInstallerFile>$(AssetOutputPath)$(InstallerFileNameWithoutExtension).exe</ExeBundleInstallerFile>
       <CompressedArchiveFile>$(AssetOutputPath)$(InstallerFileNameWithoutExtension)$(CompressedFileExtension)</CompressedArchiveFile>
     </PropertyGroup>
 

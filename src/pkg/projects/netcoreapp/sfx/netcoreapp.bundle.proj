@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <BundleComponentReference Include="Microsoft.NETCore.App.SharedFx.sfxproj" />
+    <BundleComponentReference Include="..\..\Microsoft.NETCore.DotNetHost\pkg\Microsoft.NETCore.DotNetHost.pkgproj" />
+    <BundleComponentReference Include="..\..\Microsoft.NETCore.DotNetHostResolver\pkg\Microsoft.NETCore.DotNetHostResolver.pkgproj" />
+  </ItemGroup>
+
+</Project>

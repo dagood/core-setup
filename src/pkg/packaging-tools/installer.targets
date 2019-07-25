@@ -17,12 +17,14 @@
             GenerateDeb;
             GenerateRpm;
             GenerateMsi;
+            GenerateExeBundle;
             GeneratePkg;
             GenerateCompressedArchive" />
 
   <Target Name="GenerateDeb" DependsOnTargets="TestDebuild;CreateDeb" Condition="'$(BuildDebPackage)' == 'true'"/>
   <Target Name="GenerateRpm" DependsOnTargets="TestFPMTool;CreateRpm" Condition="'$(BuildRpmPackage)' == 'true'"/>
   <Target Name="GenerateMsi" DependsOnTargets="CreateMsi" Condition="'$(GenerateMSI)' == 'true'"/>
+  <Target Name="GenerateExeBundle" DependsOnTargets="CreateExeBundle" Condition="'$(GenerateExeBundle)' == 'true'"/>
   <Target Name="GeneratePkg" DependsOnTargets="CreatePkg" Condition="'$(GeneratePkg)' == 'true'"/>
   <Target Name="GenerateCompressedArchive" DependsOnTargets="CreateCompressedArchive" Condition="'$(GenerateCompressedArchive)' == 'true'"/>
 
@@ -170,6 +172,13 @@
       OverwriteDestination="true" />
 
     <Message Text="$(MSBuildProjectName) -> $(CompressedArchiveFile)" Importance="high" />
+  </Target>
+
+  <!--
+    Create EXE bundle installer, using WiX tools.
+  -->
+  <Target Name="CreateExeBundle">
+    <Message Text="$(MSBuildProjectName) -> $(ExeBundleInstallerFile)" Importance="high" />
   </Target>
 
   <!--

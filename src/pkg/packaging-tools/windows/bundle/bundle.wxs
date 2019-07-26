@@ -27,9 +27,11 @@
       List of bundles that this bundle is an upgrade for. Used to support upgrade from bundles
       that were produced before UpdateCode was standardized per major-minor channel.
     -->
-    <?foreach relatedId in $(var.RelatedDotNetBundleIds)?>
-      <RelatedBundle Action="Upgrade" Id="$(var.relatedId)"/>
-    <?endforeach?>
+    <?ifdef RelatedDotNetBundleIds?>
+      <?foreach relatedId in $(var.RelatedDotNetBundleIds)?>
+        <RelatedBundle Action="Upgrade" Id="$(var.relatedId)"/>
+      <?endforeach?>
+    <?endif?>
 
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.Foundation">
       <bal:WixStandardBootstrapperApplication

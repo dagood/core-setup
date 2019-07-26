@@ -5,6 +5,7 @@
 
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
     <WixDependencyKeyName>Dotnet_CLI_HostFxr</WixDependencyKeyName>
+    <RegKeyProductName>hostfxr</RegKeyProductName>
   </PropertyGroup>
 
   <ItemGroup>

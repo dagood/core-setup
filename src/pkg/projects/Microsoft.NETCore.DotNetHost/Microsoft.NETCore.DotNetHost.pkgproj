@@ -5,6 +5,7 @@
 
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
     <WixDependencyKeyName>Dotnet_CLI_SharedHost</WixDependencyKeyName>
+    <RegKeyProductName>sharedhost</RegKeyProductName>
   </PropertyGroup>
 
   <ItemGroup>

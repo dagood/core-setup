@@ -95,21 +95,18 @@
             GenerateMsiVersionString">
     <PropertyGroup>
       <WixDependencyKeyName Condition="'$(WixDependencyKeyName)' == ''">$(InstallerName.Replace('-', '_'))</WixDependencyKeyName>
+      <RegKeyProductName Condition="'$(RegKeyProductName)' == '' and '$(SharedFrameworkName)' != ''">sharedfx\$(SharedFrameworkName)</RegKeyProductName>
     </PropertyGroup>
 
     <ItemGroup>
+      <CandleVariables Include="SharedWixDir" Value="$(MSBuildThisFileDirectory.TrimEnd('\'))" />
       <CandleVariables Include="DependencyKeyName" Value="$(WixDependencyKeyName)" />
+
       <CandleVariables Include="%(DirectoryToHarvest.SubstituteVar)" Value="%(DirectoryToHarvest.Identity)" />
 
-      <CandleVariables
-        Condition="'@(WixExtraComponentGroupRefId)' == ''"
-        Include="ExtraComponentGroupRefIds"
-        Value="@(WixExtraComponentGroupRefId)" />
-
-      <CandleVariables
-        Condition="'$(SharedFrameworkName)' == ''"
-        Include="FrameworkName"
-        Value="SharedFrameworkName" />
+      <CandleVariables Include="ExtraComponentGroupRefIds" Value="@(WixExtraComponentGroupRefId)" Condition="'@(WixExtraComponentGroupRefId)' != ''" />
+      <CandleVariables Include="FrameworkName" Value="$(SharedFrameworkName)" Condition="'$(SharedFrameworkName)' != ''" />
+      <CandleVariables Include="RegKeyProductName" Value="$(RegKeyProductName)" Condition="'$(RegKeyProductName)' != ''" />
     </ItemGroup>
 
     <PropertyGroup>

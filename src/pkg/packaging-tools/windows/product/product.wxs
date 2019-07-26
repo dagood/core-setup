@@ -28,13 +28,15 @@
         <ComponentRef Id="BreadcrumbStoreFolder"/>
       <?endif?>
 
-      <?foreach extraComponentGroupRefId in $(var.ExtraComponentGroupRefIds)?>
-        <ComponentRef Id="$(var.extraComponentGroupRefId)"/>
-      <?endforeach?>
-
-      <Property Id="ProductCPU" Value="$(var.Platform)" />
-      <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
+      <?ifdef ExtraComponentGroupRefIds ?>
+        <?foreach extraComponentGroupRefId in $(var.ExtraComponentGroupRefIds)?>
+          <ComponentRef Id="$(var.extraComponentGroupRefId)"/>
+        <?endforeach?>
+      <?endif?>
     </Feature>
+
+    <Property Id="ProductCPU" Value="$(var.Platform)" />
+    <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
   </Product>
 
   <Fragment>

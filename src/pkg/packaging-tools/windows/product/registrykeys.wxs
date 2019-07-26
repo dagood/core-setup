@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?include "..\Variables.wxi" ?>
+
+  <?include "..\variables.wxi" ?>
+
   <Fragment>
     <ComponentGroup Id="AuthoredRegistryKeys">
       <Component Id="SetupRegistry_x86" Directory="TARGETDIR" Win64="no">

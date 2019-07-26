@@ -27,15 +27,20 @@
       <?ifdef BreadcrumbStoreFolder ?>
         <ComponentRef Id="BreadcrumbStoreFolder"/>
       <?endif?>
+
+      <?foreach extraComponentGroupRefId in $(var.ExtraComponentGroupRefIds)?>
+        <ComponentRef Id="$(var.extraComponentGroupRefId)"/>
+      <?endforeach?>
+
+      <Property Id="ProductCPU" Value="$(var.Platform)" />
+      <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
     </Feature>
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.Program_Files)">
-        <Directory Id="DOTNETHOME" Name="dotnet" >
-          <Directory Id="SHARED" Name="shared" />
-        </Directory>
+        <Directory Id="DOTNETHOME" Name="dotnet" />
       </Directory>
     </Directory>
   </Fragment>

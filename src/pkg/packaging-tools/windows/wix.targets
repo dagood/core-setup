@@ -32,7 +32,7 @@
         ComponentGroupName="InstallFiles"
         DirectoryRef="DOTNETHOME" />
 
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)pack/product.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(GenerateSharedFramework)' == 'true'">
@@ -43,17 +43,18 @@
         ComponentGroupName="InstallFiles"
         DirectoryRef="SHARED" />
 
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)sharedFramework/product.wxs" />
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)sharedFramework/registrykeys.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/sharedfxdir.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IncludeWerRelatedKeys)' == 'true'">
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)sharedFramework/werrelatedkeys.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/werrelatedkeys.wxs" />
       <CandleVariables Include="WerRelatedKeys" Value="true" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IncludeBreadcrumbStoreFolder)' == 'true'">
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)sharedFramework/breadcrumbstorefolder.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/breadcrumbstorefolder.wxs" />
       <CandleVariables Include="BreadcrumbStoreFolder" Value="true" />
     </ItemGroup>
 
@@ -92,8 +93,23 @@
             GetWixBuildConfiguration;
             GetUpgradeCode;
             GenerateMsiVersionString">
+    <PropertyGroup>
+      <WixDependencyKeyName Condition="'$(WixDependencyKeyName)' == ''">$(InstallerName.Replace('-', '_'))</WixDependencyKeyName>
+    </PropertyGroup>
+
     <ItemGroup>
+      <CandleVariables Include="DependencyKeyName" Value="$(WixDependencyKeyName)" />
       <CandleVariables Include="%(DirectoryToHarvest.SubstituteVar)" Value="%(DirectoryToHarvest.Identity)" />
+
+      <CandleVariables
+        Condition="'@(WixExtraComponentGroupRefId)' == ''"
+        Include="ExtraComponentGroupRefIds"
+        Value="@(WixExtraComponentGroupRefId)" />
+
+      <CandleVariables
+        Condition="'$(SharedFrameworkName)' == ''"
+        Include="FrameworkName"
+        Value="SharedFrameworkName" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -104,12 +120,10 @@
 
       <_wixArgs>$(_wixArgs) -dMicrosoftEula="$(MicrosoftEulaFile)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dProductMoniker="$(WixProductMoniker)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dFrameworkName="$(SharedFrameworkName)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dBuildVersion="$(MsiVersionString)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dNugetVersion="$(ProductVersion)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dTargetArchitecture="$(TargetArchitecture)"</_wixArgs>
       <_wixArgs>$(_wixArgs) -dUpgradeCode="$(UpgradeCode)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dDependencyKeyName="$(InstallerName.Replace('-', '_'))"</_wixArgs>
       <_wixArgs>$(_wixArgs) @(CandleVariables -> '-d%(Identity)="%(Value)"', ' ')</_wixArgs>
 
       <_wixArgs>$(_wixArgs) @(WixSrcFile -> '"%(Identity)"', ' ')</_wixArgs>

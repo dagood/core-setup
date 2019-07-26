@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <VersionProp>HostVersion</VersionProp>
+
+    <GenerateMSI>true</GenerateMSI>
+    <WixDependencyKeyName>Dotnet_CLI_SharedHost</WixDependencyKeyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <WixSrcFile Include="host.wxs" />
+    <WixExtraComponentGroupRefId Include="InstallSharedHostandDetectionKeys" />
+  </ItemGroup>
 
   <Import Condition="'$(PackageTargetRuntime)' != ''" Project="$(MSBuildThisFileDirectory)runtime.$(OSGroup).$(MSBuildProjectName).props" />
 

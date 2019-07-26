@@ -3,7 +3,7 @@
   <PropertyGroup>
     <VersionProp>HostResolverVersion</VersionProp>
 
-    <GenerateMSI>true</GenerateMSI>
+    <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
     <WixDependencyKeyName>Dotnet_CLI_HostFxr</WixDependencyKeyName>
   </PropertyGroup>
 

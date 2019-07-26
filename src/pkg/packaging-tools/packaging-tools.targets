@@ -94,12 +94,16 @@
       <SharedFrameworkArchiveSourceDir Condition="'$(SharedFrameworkArchiveSourceDir)' == ''">$(SharedFrameworkLayoutDir)shared/</SharedFrameworkArchiveSourceDir>
     </PropertyGroup>
 
-    <!-- Always generate installers for packs and sfxproj. -->
-    <PropertyGroup Condition="'$(FrameworkPackType)' != '' or '$(GenerateSharedFramework)' == 'true'">
-      <GeneratePkg>true</GeneratePkg>
-      <BuildDebPackage>true</BuildDebPackage>
-      <BuildRpmPackage>true</BuildRpmPackage>
-      <GenerateMSI>true</GenerateMSI>
+    <!-- Only generate installers for packs and sfxproj. -->
+    <PropertyGroup
+      Condition="
+        '$(FrameworkPackType)' == '' and
+        '$(GenerateSharedFramework)' != 'true' and
+        '$(GenerateSharedFrameworkPart)' != 'true'">
+      <GeneratePkg>false</GeneratePkg>
+      <BuildDebPackage>false</BuildDebPackage>
+      <BuildRpmPackage>false</BuildRpmPackage>
+      <GenerateMSI>false</GenerateMSI>
     </PropertyGroup>
 
     <!-- Use existing infra for non-Windows shared framework installers. -->
@@ -107,12 +111,6 @@
       <GeneratePkg>false</GeneratePkg>
       <BuildDebPackage>false</BuildDebPackage>
       <BuildRpmPackage>false</BuildRpmPackage>
-    </PropertyGroup>
-
-    <!-- Only generate an MSI when on a supported Windows arch. -->
-    <PropertyGroup>
-      <GenerateMSI Condition="'$(TargetArchitecture)' == 'arm' or '$(TargetArchitecture)' == 'arm64'">false</GenerateMSI>
-      <GenerateMSI Condition="'$(OSGroup)' != 'Windows_NT'">false</GenerateMSI>
     </PropertyGroup>
   </Target>
 

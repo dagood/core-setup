@@ -4,4 +4,12 @@
     <StageProject Include="@(ProjectToBuild -> WithMetadataValue('SignPhase', 'MsiFiles'))" />
   </ItemGroup>
 
+  <Target Name="SetupEnsureSharedFrameworkProjectsBuilt"
+          DependsOnTargets="GetSharedFrameworkProjects"
+          BeforeTargets="EnsureProjectsBuilt">
+    <ItemGroup>
+      <StageProject Include="@(SharedFrameworkProjects)" />
+    </ItemGroup>
+  </Target>
+
 </Project>

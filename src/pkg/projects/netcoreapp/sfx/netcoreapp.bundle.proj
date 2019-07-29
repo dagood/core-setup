@@ -6,4 +6,8 @@
     <BundleComponentReference Include="..\..\Microsoft.NETCore.DotNetHostResolver\pkg\Microsoft.NETCore.DotNetHostResolver.pkgproj" />
   </ItemGroup>
 
+  <Target Name="BuildBundle"
+          DependsOnTargets="GenerateInstallers"
+          BeforeTargets="Build" />
+
 </Project>

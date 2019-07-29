@@ -4,4 +4,8 @@
     <BundleComponentReference Include="Microsoft.WindowsDesktop.App.SharedFx.sfxproj" />
   </ItemGroup>
 
+  <Target Name="BuildBundle"
+          DependsOnTargets="GenerateInstallers"
+          BeforeTargets="Build" />
+
 </Project>

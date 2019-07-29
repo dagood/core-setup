@@ -3,15 +3,47 @@
   <PropertyGroup>
     <VersionProp>HostVersion</VersionProp>
 
+    <InstallerName>dotnet-host</InstallerName>
+
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
     <WixDependencyKeyName>Dotnet_CLI_SharedHost</WixDependencyKeyName>
     <RegKeyProductName>sharedhost</RegKeyProductName>
+    <VSInsertionShortComponentName>SharedHost</VSInsertionShortComponentName>
   </PropertyGroup>
 
   <ItemGroup>
     <WixSrcFile Include="host.wxs" />
     <WixExtraComponentGroupRefId Include="InstallSharedHostandDetectionKeys" />
   </ItemGroup>
+
+  <Target Name="GetProjectSpecificWixBuildConfiguration"
+          BeforeTargets="GetWixBuildConfiguration">
+    <PropertyGroup>
+      <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
+    </PropertyGroup>
+
+    <!-- Always clean this up for reasonable dev builds. -->
+    <RemoveDir Directories="$(PublishRootDir)" />
+
+    <!-- copy shared host layout -->
+    <Copy SourceFiles="$(SharedFrameworkPublishDir)dotnet$(ExeSuffix)"
+          DestinationFolder="$(PublishRootDir)" />
+
+    <Copy SourceFiles="$(ProjectDir)THIRD-PARTY-NOTICES.TXT"
+          DestinationFiles="$(PublishRootDir)ThirdPartyNotices.txt" />
+
+    <Copy SourceFiles="$(ProjectDir)LICENSE.TXT"
+          DestinationFiles="$(PublishRootDir)LICENSE.txt"
+          Condition="'$(TargetsUnix)' == 'true'"/>
+
+    <Copy SourceFiles="$(ProjectDir)resources/LICENSE-MSFT.txt"
+          DestinationFiles="$(PublishRootDir)LICENSE.txt"
+          Condition="'$(TargetsUnix)' != 'true'"/>
+
+    <ItemGroup>
+      <CandleVariables Include="HostSrc" Value="$(PublishRootDir)" />
+    </ItemGroup>
+  </Target>
 
   <Import Condition="'$(PackageTargetRuntime)' != ''" Project="$(MSBuildThisFileDirectory)runtime.$(OSGroup).$(MSBuildProjectName).props" />
 

@@ -26,11 +26,13 @@
     <PropertyGroup Condition="'$(FrameworkPackType)' == 'targeting'">
       <InstallerName>$(ShortFrameworkName)-targeting-pack</InstallerName>
       <WixProductMoniker>$(TargetingPackBrandName)</WixProductMoniker>
+      <VSInsertionShortComponentName>TargetingPack</VSInsertionShortComponentName>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(FrameworkPackType)' == 'apphost'">
       <InstallerName>$(ShortFrameworkName)-apphost-pack</InstallerName>
       <WixProductMoniker>$(AppHostPackBrandName)</WixProductMoniker>
+      <VSInsertionShortComponentName>AppHostPack</VSInsertionShortComponentName>
     </PropertyGroup>
 
     <!-- Runtime packs are obtained only through NuGet. -->
@@ -41,14 +43,10 @@
       <GenerateMSI>false</GenerateMSI>
     </PropertyGroup>
 
-    <!-- Non-framework pkgproj shouldn't build MSIs. -->
-    <PropertyGroup Condition="'$(FrameworkPackType)' == '' and '$(MSBuildProjectExtension)' == '.pkgproj'">
-      <GenerateMSI>false</GenerateMSI>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(GenerateSharedFramework)' == 'true'">
       <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
       <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>
+      <VSInsertionShortComponentName>SharedFramework</VSInsertionShortComponentName>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
@@ -58,6 +56,11 @@
     <Error
       Text="InstallerName starts with a '-': missing ShortFrameworkName value."
       Condition="$(InstallerName.StartsWith('-'))" />
+
+    <PropertyGroup>
+      <VSInsertionComponentName>$(VSInsertionCommonPrefix).$(VSInsertionProductName).$(VSInsertionShortComponentName).$(TargetArchitecture).$(ProductBandVersion)</VSInsertionComponentName>
+      <VSInsertionComponentFriendlyName>$(ProductBandVersion) $(ProductBrandPrefix) $(VSInsertionShortComponentName)</VSInsertionComponentFriendlyName>
+    </PropertyGroup>
 
     <PropertyGroup>
       <MacOSComponentName>com.microsoft.$(ShortFrameworkName).pack.$(FrameworkPackType).$(ProductVersion).component.osx.x64</MacOSComponentName>
@@ -144,6 +147,24 @@
     <ItemGroup>
       <SyncInfoLines Include="$(LatestCommit)" />
     </ItemGroup>
+  </Target>
+
+  <!--
+    Acquire NuGet.exe, if not present.
+  -->
+  <Target Name="AcquireNuGetExe"
+          DependsOnTargets="GetAcquireNuGetExeProperties">
+    <MSBuild Projects="$(AcquireNuGetExeProjectFile)" Targets="AcquireNuGetExeCore" />
+  </Target>
+
+  <Target Name="GetAcquireNuGetExeProperties">
+    <PropertyGroup>
+      <AcquireNuGetExeProjectFile>$(PackagingToolsDir)acquire-nuget-exe\acquire-nuget-exe.proj</AcquireNuGetExeProjectFile>
+      <!-- Using 3.5.0 to workaround https://github.com/NuGet/Home/issues/5016 -->
+      <NuGetExeDownloadUrl>https://dist.nuget.org/win-x86-commandline/v3.5.0/nuget.exe</NuGetExeDownloadUrl>
+      <NuGetExeToolDir>$(IntermediateOutputRootPath)nuget\</NuGetExeToolDir>
+      <NuGetExeFile>$(NuGetExeToolDir)NuGet.exe</NuGetExeFile>
+    </PropertyGroup>
   </Target>
 
   <!--

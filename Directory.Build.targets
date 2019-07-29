@@ -19,6 +19,12 @@
     <NETCoreAppMaximumVersion>$(MajorVersion).$(MinorVersion)</NETCoreAppMaximumVersion>
   </PropertyGroup>
 
+  <Target Name="GetSharedFrameworkProjects">
+    <ItemGroup>
+      <SharedFrameworkProject Include="$(SourceDir)pkg\projects\**\*.sfxproj" />
+    </ItemGroup>
+  </Target>
+
   <!--
     Arcade SDK versioning is defined by static properties in a targets file: work around this by
     moving properties based on versioning into a target.

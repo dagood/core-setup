@@ -3,14 +3,45 @@
   <PropertyGroup>
     <VersionProp>HostResolverVersion</VersionProp>
 
+    <InstallerName>dotnet-hostfxr</InstallerName>
+
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
     <WixDependencyKeyName>Dotnet_CLI_HostFxr</WixDependencyKeyName>
     <RegKeyProductName>hostfxr</RegKeyProductName>
+    <VSInsertionShortComponentName>HostFXR</VSInsertionShortComponentName>
   </PropertyGroup>
 
   <ItemGroup>
     <Dependency Include="Microsoft.NETCore.DotNetAppHost" VersionProp="AppHostVersion" />
   </ItemGroup>
+
+  <Target Name="GetProjectSpecificWixBuildConfiguration"
+          BeforeTargets="GetWixBuildConfiguration">
+    <PropertyGroup>
+      <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
+    </PropertyGroup>
+
+    <!-- Always clean this up for reasonable dev builds. -->
+    <RemoveDir Directories="$(PublishRootDir)" />
+
+    <!-- Copy layout to staging location to easily set up relative directory for WiX. -->
+    <ItemGroup>
+      <HostFxrFiles Include="$(SharedFrameworkPublishDir)host\**\*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(HostFxrFiles)"
+      DestinationFolder="$(PublishRootDir)host/%(HostFxrFiles.RecursiveDir)" />
+
+    <ItemGroup>
+      <DirectoryToHarvest
+        Include="$(PublishRootDir)"
+        Name="install-files"
+        SubstituteVar="HostFxrSrc"
+        ComponentGroupName="InstallFiles"
+        DirectoryRef="DOTNETHOME" />
+    </ItemGroup>
+  </Target>
 
   <Import Project="$(MSBuildProjectName).props" />
 

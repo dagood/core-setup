@@ -14,7 +14,9 @@
     <?include "..\product.common.wxi" ?>
 
     <Feature Id="MainFeature" Title="Main Feature" Level="1">
-      <ComponentGroupRef Id="InstallFiles" />
+      <?ifdef InstallFiles ?>
+        <ComponentGroupRef Id="InstallFiles" />
+      <?endif?>
 
       <?ifdef AuthoredRegistryKeys ?>
         <ComponentGroupRef Id="AuthoredRegistryKeys"/>
@@ -30,7 +32,7 @@
 
       <?ifdef ExtraComponentGroupRefIds ?>
         <?foreach extraComponentGroupRefId in $(var.ExtraComponentGroupRefIds)?>
-          <ComponentRef Id="$(var.extraComponentGroupRefId)"/>
+          <ComponentGroupRef Id="$(var.extraComponentGroupRefId)"/>
         <?endforeach?>
       <?endif?>
     </Feature>

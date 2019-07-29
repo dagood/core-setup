@@ -68,6 +68,12 @@
       <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+
+      <WixExtensions Include="@(ProductWixExtensions)" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(CreatingBundle)' == 'true'">
       <LocFile Include="theme\**\bundle.wxl" />
 
@@ -86,6 +92,10 @@
       <OutInstallerFile>$(CombinedInstallerFile)</OutInstallerFile>
     </PropertyGroup>
 
+    <ItemGroup Condition="'@(DirectoryToHarvest)' != ''">
+      <CandleVariables Include="InstallFiles" Value="true" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(IncludeWerRelatedKeys)' == 'true'">
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/werrelatedkeys.wxs" />
       <CandleVariables Include="WerRelatedKeys" Value="true" />
@@ -103,6 +113,7 @@
   </Target>
 
   <Target Name="RunHeatHarvester"
+          Condition="'@(DirectoryToHarvest)' != ''"
           DependsOnTargets="GetWixBuildConfiguration">
     <ItemGroup>
       <DirectoryToHarvest
@@ -162,7 +173,7 @@
 
       <_wixArgs>$(_wixArgs) @(WixExtensions -> '-ext %(Identity)', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(CandleVariables -> '-d%(Identity)="%(Value)"', ' ')</_wixArgs>
-      <_wixArgs>$(_wixArgs) @(WixSrcFile -> '"%(Identity)"', ' ')</_wixArgs>
+      <_wixArgs>$(_wixArgs) @(WixSrcFile -> '"%(FullPath)"', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(DirectoryToHarvest -> '"%(WixSourceFile)"', ' ')</_wixArgs>
     </PropertyGroup>
 
@@ -189,10 +200,62 @@
     <!--
       Run light.exe with retries. This is intended to avoid interference by Windows Defender by
       giving it time to catch up. Light creates a file then immediately moves it, which Defender
-      sometimes blocks if the computer is too busy to check the file quickly enough.
+      sometimes blocks if the computer is too busy to check the file quickly enough. Use a small
+      base because it usually resolves itself quickly.
     -->
     <Message Importance="High" Text="Light '$(MSBuildProjectName)'" />
-    <ExecWithRetries Command="light.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
+    <ExecWithRetries
+      Command="light.exe $(_wixArgs)"
+      WorkingDirectory="$(WixToolsDir)"
+      RetryDelayBase="2" />
+  </Target>
+
+  <!--
+    Entry point: create a NuGet package suitable for VS insertion.
+  -->
+  <Target Name="CreateVSInsertionNupkg"
+          DependsOnTargets="
+            EnsureMsiBuilt;
+            GetInstallerProperties;
+            CreateVSInsertionNupkgIfApplicable" />
+
+  <!--
+    When using the CreateVSInsertionNupkg entry point target, we have to make sure this project's
+    MSI was created first.
+  -->
+  <Target Name="EnsureMsiBuilt">
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Build" />
+  </Target>
+
+  <Target Name="CreateVSInsertionNupkgIfApplicable"
+          Condition="'$(GenerateMSI)' == 'true'"
+          DependsOnTargets="
+            AcquireNuGetExe;
+            GetWixBuildConfiguration">
+    <PropertyGroup>
+      <PackProperties />
+      <PackProperties>$(PackProperties)COMPONENT_MSI=$(OutInstallerFile);</PackProperties>
+      <PackProperties>$(PackProperties)ARCH=$(MsiArch);</PackProperties>
+      <PackProperties>$(PackProperties)COMPONENT_NAME=$(VSInsertionComponentName);</PackProperties>
+      <PackProperties>$(PackProperties)FRIENDLY_NAME=$(VSInsertionComponentFriendlyName);</PackProperties>
+      <PackProperties>$(PackProperties)PROJECT_URL=$(ProjectUrl);</PackProperties>
+
+      <PackArgs />
+      <PackArgs>$(PackArgs) $(MSBuildThisFileDirectory)vs\VS.Redist.Common.Component.nuspec</PackArgs>
+      <PackArgs>$(PackArgs) -Version $(ProductVersion)</PackArgs>
+      <PackArgs>$(PackArgs) -OutputDirectory $(ArtifactsNonShippingPackagesDir)</PackArgs>
+      <PackArgs>$(PackArgs) -NoDefaultExcludes</PackArgs>
+      <PackArgs>$(PackArgs) -NoPackageAnalysis</PackArgs>
+      <PackArgs>$(PackArgs) -Properties "$(PackProperties)"</PackArgs>
+    </PropertyGroup>
+
+    <Exec Command="$(NuGetExeFile) pack $(PackArgs)" />
+
+    <Error
+      Condition="!Exists('$(ArtifactsNonShippingPackagesDir)$(VSInsertionComponentName).$(ProductVersion).nupkg')"
+      Text="Pack command didn't produce expected nupkg." />
+
+    <Message Text="$(MSBuildProjectName) -> $(VSInsertionComponentName)" Importance="High" />
   </Target>
 
   <Target Name="ExtractEngineBundle">

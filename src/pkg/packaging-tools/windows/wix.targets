@@ -6,6 +6,8 @@
     this file and switch to wixproj. See https://github.com/wixtoolset/issues/issues/5627
   -->
 
+  <UsingTask TaskName="ExecWithRetries" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+
   <!--
     If UpgradeCode isn't manually set, generate based on installer full path. Not suitable for
     bundles.
@@ -23,6 +25,20 @@
           DependsOnTargets="
             AcquireWix;
             GetInstallerProperties">
+    <PropertyGroup>
+      <CreatingBundle Condition="'@(BundleComponentReference)' != ''">true</CreatingBundle>
+      <OutInstallerFile>$(InstallerFile)</OutInstallerFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProductWixExtensions Include="WixUIExtension.dll" />
+      <ProductWixExtensions Include="WixDependencyExtension.dll" />
+
+      <BundleWixExtensions Include="WixBalExtension.dll" />
+      <BundleWixExtensions Include="WixTagExtension.dll" />
+
+      <WixExtensions Include="WixUtilExtension.dll" />
+    </ItemGroup>
 
     <ItemGroup Condition="'$(FrameworkPackType)' != ''">
       <DirectoryToHarvest
@@ -33,6 +49,8 @@
         DirectoryRef="DOTNETHOME" />
 
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+
+      <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(GenerateSharedFramework)' == 'true'">
@@ -46,7 +64,27 @@
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/sharedfxdir.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
+
+      <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
+
+    <ItemGroup Condition="'$(CreatingBundle)' == 'true'">
+      <LocFile Include="theme\**\bundle.wxl" />
+
+      <CandleVariables Include="DisplayVersion" Value="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildNumberMajor)" />
+      <CandleVariables Include="ProductBandVersion" Value="$(ProductBandVersion)" />
+      <CandleVariables Include="FrameworkDisplayVersion" Value="$(ProductVersion)" />
+      <CandleVariables Include="LcidList" Value="@(LocFile -> '%(RecursiveDir)', ';')" />
+
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)bundle/bundle.wxs" />
+
+      <WixExtensions Include="@(BundleWixExtensions)" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(CreatingBundle)' == 'true'">
+      <BundleInstallerOutputGuidString>.NET Core Shared Framework Bundle Installer $(ProductBandVersion) $(PackageTargetRid)</BundleInstallerOutputGuidString>
+      <OutInstallerFile>$(CombinedInstallerFile)</OutInstallerFile>
+    </PropertyGroup>
 
     <ItemGroup Condition="'$(IncludeWerRelatedKeys)' == 'true'">
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/werrelatedkeys.wxs" />
@@ -60,6 +98,7 @@
 
     <ItemGroup>
       <WixSrcFile Include="$(MSBuildThisFileDirectory)provider.wxs" />
+      <CandleVariables Include="MicrosoftEula" Value="$(MSBuildThisFileDirectory)eula.rtf" />
     </ItemGroup>
   </Target>
 
@@ -107,26 +146,24 @@
       <CandleVariables Include="ExtraComponentGroupRefIds" Value="@(WixExtraComponentGroupRefId)" Condition="'@(WixExtraComponentGroupRefId)' != ''" />
       <CandleVariables Include="FrameworkName" Value="$(SharedFrameworkName)" Condition="'$(SharedFrameworkName)' != ''" />
       <CandleVariables Include="RegKeyProductName" Value="$(RegKeyProductName)" Condition="'$(RegKeyProductName)' != ''" />
+
+      <CandleVariables Include="ProductMoniker" Value="$(WixProductMoniker)" />
+      <CandleVariables Include="BuildVersion" Value="$(MsiVersionString)" />
+      <CandleVariables Include="NugetVersion" Value="$(ProductVersion)" />
+      <CandleVariables Include="TargetArchitecture" Value="$(TargetArchitecture)" />
+      <CandleVariables Include="UpgradeCode" Value="$(UpgradeCode)" />
     </ItemGroup>
 
     <PropertyGroup>
       <_wixArgs></_wixArgs>
       <_wixArgs>$(_wixArgs) -nologo</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixDependencyExtension.dll</_wixArgs>
       <_wixArgs>$(_wixArgs) -arch $(MsiArch)</_wixArgs>
+      <_wixArgs>$(_wixArgs) -out "$(WixObjDir)"</_wixArgs>
 
-      <_wixArgs>$(_wixArgs) -dMicrosoftEula="$(MicrosoftEulaFile)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dProductMoniker="$(WixProductMoniker)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dBuildVersion="$(MsiVersionString)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dNugetVersion="$(ProductVersion)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dTargetArchitecture="$(TargetArchitecture)"</_wixArgs>
-      <_wixArgs>$(_wixArgs) -dUpgradeCode="$(UpgradeCode)"</_wixArgs>
+      <_wixArgs>$(_wixArgs) @(WixExtensions -> '-ext %(Identity)', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(CandleVariables -> '-d%(Identity)="%(Value)"', ' ')</_wixArgs>
-
       <_wixArgs>$(_wixArgs) @(WixSrcFile -> '"%(Identity)"', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(DirectoryToHarvest -> '"%(WixSourceFile)"', ' ')</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) -out "$(WixObjDir)"</_wixArgs>
     </PropertyGroup>
 
     <Message Importance="High" Text="Candle '$(MSBuildProjectName)'" />
@@ -141,19 +178,33 @@
     <PropertyGroup>
       <_wixArgs></_wixArgs>
       <_wixArgs>$(_wixArgs) -nologo</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixUIExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixDependencyExtension.dll</_wixArgs>
-      <_wixArgs>$(_wixArgs) -ext WixUtilExtension.dll</_wixArgs>
       <_wixArgs>$(_wixArgs) -cultures:en-us</_wixArgs>
+      <_wixArgs>$(_wixArgs) -out $(OutInstallerFile)</_wixArgs>
 
+      <_wixArgs>$(_wixArgs) @(WixExtensions -> '-ext %(Identity)', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(WixSrcFile -> '"$(WixObjDir)%(Filename).wixobj"', ' ')</_wixArgs>
       <_wixArgs>$(_wixArgs) @(DirectoryToHarvest -> '"%(WixObjFile)"', ' ')</_wixArgs>
-
-      <_wixArgs>$(_wixArgs) -out $(InstallerFile)</_wixArgs>
     </PropertyGroup>
 
+    <!--
+      Run light.exe with retries. This is intended to avoid interference by Windows Defender by
+      giving it time to catch up. Light creates a file then immediately moves it, which Defender
+      sometimes blocks if the computer is too busy to check the file quickly enough.
+    -->
     <Message Importance="High" Text="Light '$(MSBuildProjectName)'" />
-    <Exec Command="light.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
+    <ExecWithRetries Command="light.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
+  </Target>
+
+  <Target Name="ExtractEngineBundle">
+    <Exec
+      Command="insignia.exe -ib $(CombinedInstallerFile) -o $(CombinedInstallerEngine)"
+      WorkingDirectory="$(WixToolsDir)" />
+  </Target>
+
+  <Target Name="ReattachEngineToBundle">
+    <Exec
+      Command="insignia.exe -ab $(CombinedInstallerEngine) $(CombinedInstallerFile) -o $(CombinedInstallerFile)"
+      WorkingDirectory="$(WixToolsDir)" />
   </Target>
 
 </Project>

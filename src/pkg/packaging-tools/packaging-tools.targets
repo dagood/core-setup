@@ -51,6 +51,10 @@
       <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
+      <GenerateExeBundle>true</GenerateExeBundle>
+    </PropertyGroup>
+
     <Error
       Text="InstallerName starts with a '-': missing ShortFrameworkName value."
       Condition="$(InstallerName.StartsWith('-'))" />
@@ -104,6 +108,7 @@
       <BuildDebPackage>false</BuildDebPackage>
       <BuildRpmPackage>false</BuildRpmPackage>
       <GenerateMSI>false</GenerateMSI>
+      <GenerateExeBundle>false</GenerateExeBundle>
     </PropertyGroup>
 
     <!-- Use existing infra for non-Windows shared framework installers. -->

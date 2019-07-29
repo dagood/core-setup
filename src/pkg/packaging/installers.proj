@@ -28,20 +28,12 @@
             $(PackageTargets)"
           Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
 
-  <Target Name="BuildCombinedInstallers"
-          DependsOnTargets="
-            EnsureSignedMsiFiles;
-            GenerateCombinedInstallers"
-          Condition="'$(DOTNET_BUILD_SKIP_PACKAGING)' != 'true'" />
-
   <Target Name="SignCombinedInstallers"
           Condition="
             '$(OSGroup)' == 'Windows_NT' and
             '$(SkipSigning)' != 'true'"
           DependsOnTargets="
-            ExtractEngineBundle;
             EnsureSignedBurnEngineFiles;
-            ReattachEngineToBundle;
             EnsureSignedBurnBundleFiles" />
 
   <!--
@@ -247,22 +239,18 @@
     <Error Condition="!Exists('$(AssetOutputPath)$(SharedFrameworkSymbolsCompressedFile)')" Message="Unable to create $(AssetOutputPath)$(SharedFrameworkSymbolsCompressedFile)" />
   </Target>
 
-  <Import Project="windows\package.targets" />
   <Import Project="osx\package.targets" />
   <Import Project="deb\package.targets" />
   <Import Project="rpm\package.targets" />
 
   <PropertyGroup>
    <InstallerDependsOn>
-     GenerateMsis;
      GeneratePkgs;
      GenerateDebs;
      GenerateRpms;
    </InstallerDependsOn>
   </PropertyGroup>
   <Target Name="GenerateInstallers" DependsOnTargets="InitPackage;$(InstallerDependsOn)" />
-
-  <Target Name="GenerateCombinedInstallers" DependsOnTargets="InitPackage;GenerateBundles" />
 
   <Target Name="GenerateVSNugetPackages"
           Condition="'$(OS)' == 'Windows_NT' AND '$(TargetArchitecture)' != 'arm' AND '$(TargetArchitecture)' != 'arm64'"

@@ -35,7 +35,7 @@
 
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.Foundation">
       <bal:WixStandardBootstrapperApplication
-        LicenseFile="..\..\windows\sharedframework\dummyEula.rtf"
+        LicenseFile="dummyEula.rtf"
         ShowFilesInUse="yes"
         ShowVersion="yes"
         />

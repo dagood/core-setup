@@ -63,7 +63,6 @@
     <WixObjRoot>$(IntermediateOutputRootPath)wix/</WixObjRoot>
     <WixObjDir>$(WixObjRoot)$(MSBuildProjectName)/</WixObjDir>
     <MsiArch>$(TargetArchitecture)</MsiArch>
-    <MicrosoftEulaFile>$(MSBuildThisFileDirectory)packaging/windows/eula.rtf</MicrosoftEulaFile>
 
     <GenerateMSI>true</GenerateMSI>
     <GenerateMSI Condition="'$(TargetArchitecture)' == 'arm' or '$(TargetArchitecture)' == 'arm64'">false</GenerateMSI>

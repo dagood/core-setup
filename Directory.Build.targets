@@ -223,10 +223,4 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="GetBundleDisplayVersion">
-    <PropertyGroup>
-      <BundleDisplayVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildNumberMajor)</BundleDisplayVersion>
-    </PropertyGroup>
-  </Target>
-
 </Project>

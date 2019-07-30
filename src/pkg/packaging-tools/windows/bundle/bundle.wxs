@@ -35,7 +35,7 @@
 
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.Foundation">
       <bal:WixStandardBootstrapperApplication
-        LicenseFile="dummyEula.rtf"
+        LicenseFile="$(var.DotNetDummyEulaFile)"
         ShowFilesInUse="yes"
         ShowVersion="yes"
         />
@@ -63,13 +63,13 @@
 
   <Fragment>
     <PayloadGroup Id="DotnetCoreBAPayloads">
-      <Payload Name="thm.xml" Compressed="yes" SourceFile="$(var.BundleThmDir)theme.thm" />
-      <Payload Name="thm.wxl" Compressed="yes" SourceFile="$(var.BundleWxlFile)" />
+      <Payload Name="thm.xml" Compressed="yes" SourceFile="$(var.BundleThmDir)\bundle.thm" />
+      <Payload Name="thm.wxl" Compressed="yes" SourceFile="$(var.BundleThmDir)\bundle.wxl" />
 
-      <Payload Name="bg.png" Compressed="yes" SourceFile="..\..\packaging\osx\sharedframework\resources\dotnetbackground.png" />
+      <Payload Name="bg.png" Compressed="yes" SourceFile="$(var.DotNetBackgroundPngFile)" />
 
       <?foreach LCID in $(var.LcidList)?>
-        <Payload Id="thm-$(var.LCID)" Compressed="yes" Name="$(var.LCID)\thm.wxl" SourceFile="$(var.BundleThmDir)theme\$(var.LCID)\bundle.wxl" />
+        <Payload Id="thm-$(var.LCID)" Compressed="yes" Name="$(var.LCID)\thm.wxl" SourceFile="$(var.BundleThmDir)\theme\$(var.LCID)\bundle.wxl" />
       <?endforeach?>
 
       <Payload Name='eula.rtf' Compressed='yes' SourceFile='!(wix.WixStdbaLicenseRtf)' />

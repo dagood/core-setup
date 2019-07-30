@@ -24,9 +24,11 @@
   <Target Name="GetWixBuildConfiguration"
           DependsOnTargets="
             AcquireWix;
-            GetInstallerProperties">
+            GetInstallerProperties;
+            GetInstallerLocations;
+            GenerateMsiVersionString;
+            GetBundledMsiFiles">
     <PropertyGroup>
-      <CreatingBundle Condition="'@(BundleComponentReference)' != ''">true</CreatingBundle>
       <OutInstallerFile>$(InstallerFile)</OutInstallerFile>
     </PropertyGroup>
 
@@ -49,6 +51,7 @@
         DirectoryRef="DOTNETHOME" />
 
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
 
       <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
@@ -64,6 +67,7 @@
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/sharedfxdir.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
 
       <WixExtensions Include="@(ProductWixExtensions)" />
 
@@ -74,24 +78,29 @@
     <ItemGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
 
       <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(CreatingBundle)' == 'true'">
+    <ItemGroup Condition="'$(GenerateExeBundle)' == 'true'">
       <LocFile Include="theme\**\bundle.wxl" />
+      <LocDirName Include="$([System.String]::new('%(LocFile.RecursiveDir)').TrimEnd('\'))" />
 
       <CandleVariables Include="DisplayVersion" Value="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildNumberMajor)" />
       <CandleVariables Include="ProductBandVersion" Value="$(ProductBandVersion)" />
       <CandleVariables Include="FrameworkDisplayVersion" Value="$(ProductVersion)" />
-      <CandleVariables Include="LcidList" Value="@(LocFile -> '%(RecursiveDir)', ';')" />
+      <CandleVariables Include="LcidList" Value="@(LocDirName)" />
+
+      <CandleVariables Include="DotNetBackgroundPngFile" Value="$(MSBuildThisFileDirectory)..\..\packaging\osx\sharedframework\resources\dotnetbackground.png" />
+      <CandleVariables Include="DotNetDummyEulaFile" Value="$(MSBuildThisFileDirectory)bundle\dummyEula.rtf" />
 
       <WixSrcFile Include="$(MSBuildThisFileDirectory)bundle/bundle.wxs" />
 
       <WixExtensions Include="@(BundleWixExtensions)" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(CreatingBundle)' == 'true'">
+    <PropertyGroup Condition="'$(GenerateExeBundle)' == 'true'">
       <BundleInstallerOutputGuidString>.NET Core Shared Framework Bundle Installer $(ProductBandVersion) $(PackageTargetRid)</BundleInstallerOutputGuidString>
       <OutInstallerFile>$(CombinedInstallerFile)</OutInstallerFile>
     </PropertyGroup>
@@ -111,8 +120,24 @@
     </ItemGroup>
 
     <ItemGroup>
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)provider.wxs" />
       <CandleVariables Include="MicrosoftEula" Value="$(MSBuildThisFileDirectory)eula.rtf" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Ensure MSIs are built and signed (if necessary), then obtain all paths to MSIs to bundle from
+    the bundle references.
+  -->
+  <Target Name="GetBundledMsiFiles">
+    <MSBuild Projects="$(RepoRoot)signing\SignMsiFiles.proj" Targets="Build" />
+    <MSBuild Projects="@(BundleComponentReference)" Targets="Build" />
+
+    <MSBuild Projects="@(BundleComponentReference)" Targets="GetOutputWixInstallerFile">
+      <Output TaskParameter="TargetOutputs" ItemName="BundleMsiFile" />
+    </MSBuild>
+
+    <ItemGroup>
+      <CandleVariables Include="ChainedDotNetPackageFiles" Value="@(BundleMsiFile)" />
     </ItemGroup>
   </Target>
 
@@ -138,8 +163,10 @@
           -out %(WixSourceFile)" />
     </ItemGroup>
 
-    <Message Importance="High" Text="Heat '$(MSBuildProjectName)'" />
-    <Exec Command="%(DirectoryToHarvest.Command)" WorkingDirectory="$(WixToolsDir)" />
+    <Exec
+      Command="%(DirectoryToHarvest.Command)"
+      WorkingDirectory="$(WixToolsDir)"
+      StandardOutputImportance="normal" />
   </Target>
 
   <Target Name="RunCandleCompiler"
@@ -181,8 +208,10 @@
       <_wixArgs>$(_wixArgs) @(DirectoryToHarvest -> '"%(WixSourceFile)"', ' ')</_wixArgs>
     </PropertyGroup>
 
-    <Message Importance="High" Text="Candle '$(MSBuildProjectName)'" />
-    <Exec Command="candle.exe $(_wixArgs)" WorkingDirectory="$(WixToolsDir)" />
+    <Exec
+      Command="candle.exe $(_wixArgs)"
+      WorkingDirectory="$(WixToolsDir)"
+      StandardOutputImportance="normal" />
   </Target>
 
   <Target Name="RunLightLinker"
@@ -207,10 +236,11 @@
       sometimes blocks if the computer is too busy to check the file quickly enough. Use a small
       base because it usually resolves itself quickly.
     -->
-    <Message Importance="High" Text="Light '$(MSBuildProjectName)'" />
     <ExecWithRetries
       Command="light.exe $(_wixArgs)"
       WorkingDirectory="$(WixToolsDir)"
+      StandardOutputImportance="normal"
+      IgnoreStandardErrorWarningFormat="true"
       RetryDelayBase="2" />
   </Target>
 
@@ -273,5 +303,9 @@
       Command="insignia.exe -ab $(CombinedInstallerEngine) $(CombinedInstallerFile) -o $(CombinedInstallerFile)"
       WorkingDirectory="$(WixToolsDir)" />
   </Target>
+
+  <Target Name="GetOutputWixInstallerFile"
+          DependsOnTargets="GetWixBuildConfiguration"
+          Returns="$(OutInstallerFile)"/>
 
 </Project>

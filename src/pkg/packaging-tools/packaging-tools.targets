@@ -49,7 +49,7 @@
       <VSInsertionShortComponentName>SharedFramework</VSInsertionShortComponentName>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
+    <PropertyGroup Condition="'@(BundleComponentReference)' != ''">
       <GenerateExeBundle>true</GenerateExeBundle>
     </PropertyGroup>
 
@@ -106,7 +106,8 @@
       Condition="
         '$(FrameworkPackType)' == '' and
         '$(GenerateSharedFramework)' != 'true' and
-        '$(GenerateSharedFrameworkPart)' != 'true'">
+        '$(GenerateSharedFrameworkPart)' != 'true' and
+        '$(GenerateExeBundle)' != 'true'">
       <GeneratePkg>false</GeneratePkg>
       <BuildDebPackage>false</BuildDebPackage>
       <BuildRpmPackage>false</BuildRpmPackage>

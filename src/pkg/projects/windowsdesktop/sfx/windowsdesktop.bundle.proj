@@ -4,6 +4,10 @@
     <BundleComponentReference Include="Microsoft.WindowsDesktop.App.SharedFx.sfxproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <CandleVariables Include="BundleThmDir" Value="$(MSBuildProjectDirectory)" />
+  </ItemGroup>
+
   <Target Name="BuildBundle"
           DependsOnTargets="GenerateInstallers"
           BeforeTargets="Build" />

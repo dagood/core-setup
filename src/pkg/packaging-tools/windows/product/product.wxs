@@ -11,7 +11,7 @@
     Manufacturer="$(var.Manufacturer)"
     UpgradeCode="$(var.UpgradeCode)">
 
-    <?include "..\product.common.wxi" ?>
+    <?include "product.common.wxi" ?>
 
     <Feature Id="MainFeature" Title="Main Feature" Level="1">
       <?ifdef InstallFiles ?>

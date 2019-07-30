@@ -15,6 +15,11 @@
     <Dependency Include="Microsoft.NETCore.DotNetAppHost" VersionProp="AppHostVersion" />
   </ItemGroup>
 
+  <ItemGroup>
+    <WixSrcFile Include="$(PackagingToolsDir)windows\product\registrykeys.wxs" />
+    <CandleVariables Include="RegKeyNugetVersionValue" Value="true" />
+  </ItemGroup>
+
   <Target Name="GetProjectSpecificWixBuildConfiguration"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>

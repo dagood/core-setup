@@ -4,6 +4,7 @@
   <?include "$(var.SharedWixDir)\variables.wxi" ?>
 
   <Fragment>
+
     <ComponentGroup Id="InstallSharedHostandDetectionKeys">
 
       <Component Id="cmpCoreHost" Directory="DOTNETHOME" Guid="{45399BBB-DDA5-4386-A2E9-618FB3C54A18}" >
@@ -20,6 +21,10 @@
       </Component>
 
     </ComponentGroup>
+
+    <Property Id="ProductCPU" Value="$(var.Platform)" />
+    <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
+
   </Fragment>
 
 </Wix>

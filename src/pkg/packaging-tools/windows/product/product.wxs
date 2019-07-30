@@ -37,12 +37,10 @@
       <?endif?>
     </Feature>
 
-    <?ifdef IncludeProductCPU ?>
-      <Property Id="ProductCPU" Value="$(var.Platform)" />
-    <?endif?>
-
-    <?ifdef IncludeRTM_ProductVersion ?>
-      <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
+    <?ifdef ExtraPropertyRefIds ?>
+      <?foreach extraPropertyRefId in $(var.ExtraPropertyRefIds)?>
+        <PropertyRef Id="$(var.extraPropertyRefId)" />
+      <?endforeach?>
     <?endif?>
 
   </Product>

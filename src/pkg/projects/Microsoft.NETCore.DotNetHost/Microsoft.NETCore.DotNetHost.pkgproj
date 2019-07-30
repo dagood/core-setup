@@ -15,8 +15,7 @@
     <WixSrcFile Include="host.wxs" />
     <WixExtraComponentGroupRefId Include="InstallSharedHostandDetectionKeys" />
 
-    <CandleVariables Include="IncludeProductCPU" Value="true" />
-    <CandleVariables Include="IncludeRTM_ProductVersion" Value="true" />
+    <CandleVariables Include="ExtraPropertyRefIds" Value="ProductCPU;RTM_ProductVersion" />
   </ItemGroup>
 
   <Target Name="GetProjectSpecificWixBuildConfiguration"

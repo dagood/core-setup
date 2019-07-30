@@ -66,6 +66,8 @@
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
 
       <WixExtensions Include="@(ProductWixExtensions)" />
+
+      <CandleVariables Include="RegKeyNugetVersionExistence" Value="true" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">

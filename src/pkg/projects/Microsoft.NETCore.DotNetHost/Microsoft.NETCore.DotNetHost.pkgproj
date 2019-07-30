@@ -19,8 +19,11 @@
   </ItemGroup>
 
   <Target Name="GetProjectSpecificWixBuildConfiguration"
+          DependsOnTargets="GetInstallerBrandingNames"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>
+      <WixProductMoniker>$(SharedHostBrandName)</WixProductMoniker>
+
       <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
     </PropertyGroup>
 

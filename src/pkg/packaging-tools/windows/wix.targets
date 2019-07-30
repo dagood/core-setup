@@ -67,11 +67,13 @@
 
       <WixExtensions Include="@(ProductWixExtensions)" />
 
+      <CandleVariables Include="AuthoredRegistryKeys" Value="true" />
       <CandleVariables Include="RegKeyNugetVersionExistence" Value="true" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
 
       <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>

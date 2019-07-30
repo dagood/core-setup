@@ -16,13 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <WixSrcFile Include="$(PackagingToolsDir)windows\product\registrykeys.wxs" />
-    <CandleVariables Include="RegKeyNugetVersionValue" Value="true" />
+    <CandleVariables Include="AuthoredRegistryKeys;RegKeyNugetVersionValue" Value="true" />
   </ItemGroup>
 
   <Target Name="GetProjectSpecificWixBuildConfiguration"
+          DependsOnTargets="GetInstallerBrandingNames"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>
+      <WixProductMoniker>$(HostFxrBrandName)</WixProductMoniker>
+
       <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
     </PropertyGroup>
 

@@ -18,10 +18,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CandleVariables Include="AuthoredRegistryKeys" Value="true" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PkgProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.Internal.pkgproj" />
     <PkgProjectReference Include="..\pkg\legacy\Microsoft.NETCore.App.pkgproj" />
     <PkgProjectReference Include="..\..\Microsoft.NETCore.DotNetAppHost\Microsoft.NETCore.DotNetAppHost.pkgproj" />

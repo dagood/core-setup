@@ -37,8 +37,14 @@
       <?endif?>
     </Feature>
 
-    <Property Id="ProductCPU" Value="$(var.Platform)" />
-    <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
+    <?ifdef IncludeProductCPU ?>
+      <Property Id="ProductCPU" Value="$(var.Platform)" />
+    <?endif?>
+
+    <?ifdef IncludeRTM_ProductVersion ?>
+      <Property Id="RTM_ProductVersion" Value="$(var.Dotnet_ProductVersion)" />
+    <?endif?>
+
   </Product>
 
   <Fragment>

@@ -102,7 +102,7 @@
 
     <PropertyGroup Condition="'$(GenerateExeBundle)' == 'true'">
       <BundleInstallerOutputGuidString>.NET Core Shared Framework Bundle Installer $(ProductBandVersion) $(PackageTargetRid)</BundleInstallerOutputGuidString>
-      <OutInstallerFile>$(CombinedInstallerFile)</OutInstallerFile>
+      <OutInstallerFile>$(ExeBundleInstallerFile)</OutInstallerFile>
     </PropertyGroup>
 
     <ItemGroup Condition="'@(DirectoryToHarvest)' != ''">

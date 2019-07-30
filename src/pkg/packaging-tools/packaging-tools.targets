@@ -50,6 +50,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'@(BundleComponentReference)' != ''">
+      <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
       <GenerateExeBundle>true</GenerateExeBundle>
     </PropertyGroup>
 

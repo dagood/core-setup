@@ -51,6 +51,7 @@
 
     <PropertyGroup Condition="'@(BundleComponentReference)' != ''">
       <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
+      <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>
       <GenerateExeBundle>true</GenerateExeBundle>
     </PropertyGroup>
 

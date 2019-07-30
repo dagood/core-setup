@@ -9,13 +9,33 @@
   <UsingTask TaskName="ExecWithRetries" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <!--
-    If UpgradeCode isn't manually set, generate based on installer full path. Not suitable for
-    bundles.
+    Generate bundle upgrade code. This code needs to be constant within a product band for upgrades.
+  -->
+  <Target Name="GetBundleUpgradeCode"
+          DependsOnTargets="GetWixBuildConfiguration"
+          Condition="
+            '$(GenerateExeBundle)' == 'true' and
+            '$(UpgradeCode)' == ''">
+    <Error
+      Condition="'$(BundleInstallerUpgradeCodeSeed)' == ''"
+      Text="BundleInstallerUpgradeCodeSeed not defined. Required to produce a stable bundle upgrade code." />
+
+    <PropertyGroup>
+      <BundleInstallerOutputGuidString>$(BundleInstallerUpgradeCodeSeed) $(ProductBandVersion) $(PackageTargetRid)</BundleInstallerOutputGuidString>
+    </PropertyGroup>
+
+    <GenerateGuidFromName Name="$(BundleInstallerOutputGuidString)">
+      <Output TaskParameter="GeneratedGuid" PropertyName="UpgradeCode" />
+    </GenerateGuidFromName>
+  </Target>
+
+  <!--
+    If UpgradeCode isn't already set, generate one based on installer full path.
   -->
   <Target Name="GetUpgradeCode"
-          DependsOnTargets="GetInstallerProperties"
+          DependsOnTargets="GetWixBuildConfiguration"
           Condition="'$(UpgradeCode)' == ''">
-    <GenerateGuidFromName Name="$(InstallerFile)">
+    <GenerateGuidFromName Name="$(OutInstallerFile)">
       <Output TaskParameter="GeneratedGuid" PropertyName="UpgradeCode" />
     </GenerateGuidFromName>
   </Target>
@@ -101,7 +121,6 @@
     </ItemGroup>
 
     <PropertyGroup Condition="'$(GenerateExeBundle)' == 'true'">
-      <BundleInstallerOutputGuidString>.NET Core Shared Framework Bundle Installer $(ProductBandVersion) $(PackageTargetRid)</BundleInstallerOutputGuidString>
       <OutInstallerFile>$(ExeBundleInstallerFile)</OutInstallerFile>
     </PropertyGroup>
 
@@ -172,6 +191,7 @@
   <Target Name="RunCandleCompiler"
           DependsOnTargets="
             GetWixBuildConfiguration;
+            GetBundleUpgradeCode;
             GetUpgradeCode;
             GenerateMsiVersionString">
     <PropertyGroup>

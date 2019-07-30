@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <!-- Name, used to generate the bundle upgrade code. -->
+    <BundleInstallerUpgradeCodeSeed>Windows Desktop Shared Framework Bundle Installer</BundleInstallerUpgradeCodeSeed>
+  </PropertyGroup>
+
   <ItemGroup>
     <BundleComponentReference Include="Microsoft.WindowsDesktop.App.SharedFx.sfxproj" />
   </ItemGroup>

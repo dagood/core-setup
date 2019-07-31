@@ -15,4 +15,9 @@
     </PropertyGroup>
   </Target>
 
+  <!-- Target overrides (can't be shared with other package projects) -->
+
+  <Target Name="Build"
+          DependsOnTargets="GenerateInstallers" />
+
 </Project>

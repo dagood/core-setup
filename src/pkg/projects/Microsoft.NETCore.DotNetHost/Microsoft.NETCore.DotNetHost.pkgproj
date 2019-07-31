@@ -7,7 +7,7 @@
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
   </PropertyGroup>
 
-  <Target Name="GetHostSpecificWixBuildConfiguration"
+  <Target Name="SetupHostSpecificWixBuild"
           DependsOnTargets="GetInstallerBrandingNames"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>
@@ -19,7 +19,7 @@
       <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
     </PropertyGroup>
 
-    <!-- Always clean this up for reasonable dev builds. -->
+    <!-- Always clean this up to avoid side-by-side versions in unclean dev builds. -->
     <RemoveDir Directories="$(PublishRootDir)" />
 
     <!-- copy shared host layout -->

@@ -15,7 +15,7 @@
     -->
     <ItemsToSign Remove="@(ItemsToSign)" />
 
-    <!-- Find cross-cutting items ahead of time for clean Excludes. -->
+    <!-- Find bundle artifacts, which need multiple stages to fully sign. -->
     <BundleInstallerEngineArtifact Include="$(ArtifactsPackagesDir)**/*engine.exe" />
     <BundleInstallerExeArtifact Include="$(ArtifactsPackagesDir)**/*.exe" />
   </ItemGroup>

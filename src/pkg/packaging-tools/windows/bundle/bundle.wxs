@@ -6,21 +6,22 @@
 
   <?include "..\variables.wxi" ?>
 
-  <Bundle Name="$(var.ProductName)" Manufacturer="$(var.Manufacturer)"
-          Version="$(var.DisplayVersion)" UpgradeCode="$(var.UpgradeCode)"
-          AboutUrl="https://dot.net/core"
-          Compressed="yes">
+  <Bundle
+    Name="$(var.ProductName)"
+    Manufacturer="$(var.Manufacturer)"
+    Version="$(var.DisplayVersion)"
+    UpgradeCode="$(var.UpgradeCode)"
+    AboutUrl="https://dot.net/core"
+    Compressed="yes">
     
-    <bal:Condition
-     Message="#(loc.FailureNotSupportedCurrentOperatingSystem)">
-    ((VersionNT &gt; v6.1) OR (VersionNT = v6.1 AND ServicePackLevel &gt;= 1))
+    <bal:Condition Message="#(loc.FailureNotSupportedCurrentOperatingSystem)">
+      ((VersionNT &gt; v6.1) OR (VersionNT = v6.1 AND ServicePackLevel &gt;= 1))
     </bal:Condition>
 
     <?if $(var.Platform)=x64?>
-     <bal:Condition
-      Message="#(loc.FailureNotSupportedX86OperatingSystem)">
-       VersionNT64
-     </bal:Condition>
+      <bal:Condition Message="#(loc.FailureNotSupportedX86OperatingSystem)">
+        VersionNT64
+      </bal:Condition>
     <?endif?>
 
     <!--
@@ -37,8 +38,7 @@
       <bal:WixStandardBootstrapperApplication
         LicenseFile="$(var.DotNetDummyEulaFile)"
         ShowFilesInUse="yes"
-        ShowVersion="yes"
-        />
+        ShowVersion="yes" />
 
       <PayloadGroupRef Id="DotnetCoreBAPayloads" />
     </BootstrapperApplicationRef>
@@ -76,9 +76,9 @@
     </PayloadGroup>
 
     <CustomTable Id='WixStdbaInformation'>
-        <Row>
-            <Data Column='LicenseFile'>eula.rtf</Data>
-        </Row>
+      <Row>
+        <Data Column='LicenseFile'>eula.rtf</Data>
+      </Row>
     </CustomTable>
   </Fragment>
 

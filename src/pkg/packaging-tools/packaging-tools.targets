@@ -32,7 +32,7 @@
       Apply the global Build*Package properties. These use distro-specific logic to determine if the
       current distro should build RPM packages or Debian packages.
 
-      Once the legacy infra no longer needs the values, the underlying logic should move here.
+      This logic is external because the legacy infra needs the values.
     -->
     <PropertyGroup>
       <GenerateDeb Condition="'$(BuildDebPackage)' != 'true'">false</GenerateDeb>
@@ -83,7 +83,7 @@
       <CompressedArchiveFile>$(AssetOutputPath)$(InstallerFileNameWithoutExtension)$(CompressedFileExtension)</CompressedArchiveFile>
     </PropertyGroup>
 
-    <!-- By default, a shared framework only has files in shared/, so specifically archive that. -->
+    <!-- By default, a shared framework only has files in shared/, so archive that. -->
     <PropertyGroup>
       <SharedFrameworkArchiveSourceDir Condition="'$(SharedFrameworkArchiveSourceDir)' == ''">$(SharedFrameworkLayoutDir)shared/</SharedFrameworkArchiveSourceDir>
     </PropertyGroup>

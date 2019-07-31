@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Name, used to generate the bundle upgrade code. -->
+    <!--
+      Name, used to generate the bundle upgrade code. Must stay the same to allow bundles in a given
+      product band to upgrade in place.
+    -->
     <BundleInstallerUpgradeCodeSeed>Windows Desktop Shared Framework Bundle Installer</BundleInstallerUpgradeCodeSeed>
   </PropertyGroup>
 
@@ -12,9 +15,5 @@
   <ItemGroup>
     <CandleVariables Include="BundleThmDir" Value="$(MSBuildProjectDirectory)" />
   </ItemGroup>
-
-  <Target Name="BuildBundle"
-          DependsOnTargets="GenerateInstallers"
-          BeforeTargets="Build" />
 
 </Project>

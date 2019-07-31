@@ -252,10 +252,10 @@
     </PropertyGroup>
 
     <!--
-      Run light.exe with retries. This is intended to avoid interference by Windows Defender by
-      giving it time to catch up. Light creates a file then immediately moves it, which Defender
-      sometimes blocks if the computer is too busy to check the file quickly enough. Use a small
-      base because it usually resolves itself quickly.
+      Run light.exe with retries. This hardens against interference by Windows Defender by giving
+      Defender time to catch up. Light creates a file then immediately moves it, which fails when
+      Defender is holding it open. Uses a small base time because it resolves itself quickly and we
+      don't want to delay the build very long if it's an actual build authoring error.
     -->
     <ExecWithRetries
       Command="light.exe $(_wixArgs)"
@@ -266,12 +266,12 @@
   </Target>
 
   <!--
-    Entry point: create a NuGet package suitable for VS insertion.
+    Entry point for an MSBuild call: creates a NuGet package suitable for VS insertion.
   -->
   <Target Name="GenerateVSInsertionNupkg"
           DependsOnTargets="
             GetInstallerGenerationFlags;
-            CreateVSInsertionNupkg" />
+            GenerateVSInsertionNupkgCore" />
 
   <!--
     When using the CreateVSInsertionNupkg entry point target, we have to make sure this project's
@@ -281,7 +281,7 @@
     <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Build" />
   </Target>
 
-  <Target Name="CreateVSInsertionNupkg"
+  <Target Name="GenerateVSInsertionNupkgCore"
           Condition="'$(GenerateMSI)' == 'true'"
           DependsOnTargets="
             EnsureMsiBuilt;
@@ -294,12 +294,14 @@
 
       <NupkgOutputFile>$(ArtifactsNonShippingPackagesDir)$(VSInsertionComponentName).$(ProductVersion).nupkg</NupkgOutputFile>
 
+      <ProjectUrlForVS>https://github.com/dotnet/core-setup</ProjectUrlForVS>
+
       <PackProperties />
       <PackProperties>$(PackProperties)COMPONENT_MSI=$(OutInstallerFile);</PackProperties>
       <PackProperties>$(PackProperties)ARCH=$(MsiArch);</PackProperties>
       <PackProperties>$(PackProperties)COMPONENT_NAME=$(VSInsertionComponentName);</PackProperties>
       <PackProperties>$(PackProperties)FRIENDLY_NAME=$(VSInsertionComponentFriendlyName);</PackProperties>
-      <PackProperties>$(PackProperties)PROJECT_URL=$(ProjectUrl);</PackProperties>
+      <PackProperties>$(PackProperties)PROJECT_URL=$(ProjectUrlForVS);</PackProperties>
 
       <PackArgs />
       <PackArgs>$(PackArgs) $(MSBuildThisFileDirectory)vs\VS.Redist.Common.Component.nuspec</PackArgs>
@@ -314,7 +316,7 @@
 
     <Error
       Condition="!Exists('$(NupkgOutputFile)')"
-      Text="Pack command didn't produce expected nupkg." />
+      Text="Failed to find VS insertion nupkg after pack command. Expected '$(NupkgOutputFile)'" />
 
     <Message Text="$(MSBuildProjectName) -> $(NupkgOutputFile)" Importance="High" />
   </Target>

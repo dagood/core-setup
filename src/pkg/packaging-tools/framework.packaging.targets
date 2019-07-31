@@ -49,8 +49,8 @@
     </PropertyGroup>
 
     <!--
-      Handle shared framework part (host, hostfxr) installer generation with this tooling. However,
-      not all platforms are supported yet.
+      Generate MSIs for projects that build a part of the shared framework (host, hostfxr) with this
+      tooling. Other installer types are not supported and Core-Setup infra generates them.
     -->
     <PropertyGroup Condition="'$(GenerateSharedFrameworkPart)' != 'true'">
       <GenerateMSI>false</GenerateMSI>

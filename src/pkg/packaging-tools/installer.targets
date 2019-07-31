@@ -156,6 +156,10 @@
           DependsOnTargets="
             GetInstallerProperties;
             RunLightLinker">
+    <Error
+      Condition="'$(GenerateExeBundle)' == 'true' and '$(GenerateMSI)' == 'true'"
+      Text="GenerateExeBundle and GenerateMSI are both set, but only one can be created at a time." />
+
     <Message Text="$(MSBuildProjectName) -> $(OutInstallerFile)" Importance="high" />
   </Target>
 

@@ -147,7 +147,8 @@
     Ensure MSIs are built and signed (if necessary), then obtain all paths to MSIs to bundle from
     the bundle references.
   -->
-  <Target Name="GetBundledMsiFiles">
+  <Target Name="GetBundledMsiFiles"
+          Condition="'@(BundleComponentReference)' != ''">
     <MSBuild Projects="$(RepoRoot)signing\SignMsiFiles.proj" Targets="Build" />
     <MSBuild Projects="@(BundleComponentReference)" Targets="Build" />
 

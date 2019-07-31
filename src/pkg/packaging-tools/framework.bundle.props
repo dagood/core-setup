@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Shared properties specific to packaging projects (pkgproj).
+  -->
+
+  <PropertyGroup>
+    <GenerateExeBundle>true</GenerateExeBundle>
+  </PropertyGroup>
+
+</Project>

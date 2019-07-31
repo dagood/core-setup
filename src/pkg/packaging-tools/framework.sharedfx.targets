@@ -5,6 +5,28 @@
 
   <UsingTask TaskName="ProcessSharedFrameworkDeps" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
+  <Target Name="GetSharedFrameworkInstallerProperties"
+          Condition="'$(GenerateSharedFramework)' == 'true'"
+          BeforeTargets="
+            GetInstallerGenerationFlags;
+            GetInstallerProperties">
+    <PropertyGroup>
+      <InstallerName>$(ShortFrameworkName)-runtime</InstallerName>
+      <WixProductMoniker>$(SharedFrameworkBrandName)</WixProductMoniker>
+      <VSInsertionShortComponentName>SharedFramework</VSInsertionShortComponentName>
+    </PropertyGroup>
+
+    <!--
+      Use existing infra for non-Windows shared framework installers. Packaging tooling isn't ready
+      to create these yet.
+    -->
+    <PropertyGroup>
+      <GeneratePkg>false</GeneratePkg>
+      <GenerateDeb>false</GenerateDeb>
+      <GenerateRpm>false</GenerateRpm>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="GetPackageReference"
           DependsOnTargets="GetProductVersions"
           BeforeTargets="CollectPackageReferences">

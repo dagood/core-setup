@@ -13,7 +13,7 @@
 
   <Target Name="GenerateInstallers"
           DependsOnTargets="
-            GetInstallerProperties;
+            GetInstallerGenerationFlags;
             GenerateDeb;
             GenerateRpm;
             GenerateMsi;
@@ -21,8 +21,8 @@
             GeneratePkg;
             GenerateCompressedArchive" />
 
-  <Target Name="GenerateDeb" DependsOnTargets="TestDebuild;CreateDeb" Condition="'$(BuildDebPackage)' == 'true'"/>
-  <Target Name="GenerateRpm" DependsOnTargets="TestFPMTool;CreateRpm" Condition="'$(BuildRpmPackage)' == 'true'"/>
+  <Target Name="GenerateDeb" DependsOnTargets="TestDebuild;CreateDeb" Condition="'$(GenerateDeb)' == 'true'"/>
+  <Target Name="GenerateRpm" DependsOnTargets="TestFPMTool;CreateRpm" Condition="'$(GenerateRpm)' == 'true'"/>
   <Target Name="GenerateMsi" DependsOnTargets="CreateWixInstaller" Condition="'$(GenerateMSI)' == 'true'"/>
   <Target Name="GenerateExeBundle" DependsOnTargets="CreateWixInstaller" Condition="'$(GenerateExeBundle)' == 'true'"/>
   <Target Name="GeneratePkg" DependsOnTargets="CreatePkg" Condition="'$(GeneratePkg)' == 'true'"/>
@@ -182,6 +182,9 @@
             GetInstallerProperties;
             FixLayoutPermissions">
     <PropertyGroup>
+      <MacOSComponentName>com.microsoft.$(ShortFrameworkName).pack.$(FrameworkPackType).$(ProductVersion).component.osx.x64</MacOSComponentName>
+      <MacOSSharedInstallDir>/usr/local/share/dotnet</MacOSSharedInstallDir>
+
       <_pkgArgs></_pkgArgs>
       <_pkgArgs>$(_pkgArgs) --root $(PackLayoutDir)</_pkgArgs>
       <_pkgArgs>$(_pkgArgs) --identifier $(MacOSComponentName)</_pkgArgs>

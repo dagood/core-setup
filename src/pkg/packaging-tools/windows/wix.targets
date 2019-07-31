@@ -268,11 +268,10 @@
   <!--
     Entry point: create a NuGet package suitable for VS insertion.
   -->
-  <Target Name="CreateVSInsertionNupkg"
+  <Target Name="GenerateVSInsertionNupkg"
           DependsOnTargets="
-            EnsureMsiBuilt;
-            GetInstallerProperties;
-            CreateVSInsertionNupkgIfApplicable" />
+            GetInstallerGenerationFlags;
+            CreateVSInsertionNupkg" />
 
   <!--
     When using the CreateVSInsertionNupkg entry point target, we have to make sure this project's
@@ -282,12 +281,19 @@
     <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Build" />
   </Target>
 
-  <Target Name="CreateVSInsertionNupkgIfApplicable"
+  <Target Name="CreateVSInsertionNupkg"
           Condition="'$(GenerateMSI)' == 'true'"
           DependsOnTargets="
+            EnsureMsiBuilt;
             AcquireNuGetExe;
+            GetInstallerProperties;
             GetWixBuildConfiguration">
     <PropertyGroup>
+      <VSInsertionComponentName>$(VSInsertionCommonPrefix).$(VSInsertionProductName).$(VSInsertionShortComponentName).$(TargetArchitecture).$(ProductBandVersion)</VSInsertionComponentName>
+      <VSInsertionComponentFriendlyName>$(ProductBandVersion) $(ProductBrandPrefix) $(VSInsertionShortComponentName)</VSInsertionComponentFriendlyName>
+
+      <NupkgOutputFile>$(ArtifactsNonShippingPackagesDir)$(VSInsertionComponentName).$(ProductVersion).nupkg</NupkgOutputFile>
+
       <PackProperties />
       <PackProperties>$(PackProperties)COMPONENT_MSI=$(OutInstallerFile);</PackProperties>
       <PackProperties>$(PackProperties)ARCH=$(MsiArch);</PackProperties>
@@ -304,13 +310,13 @@
       <PackArgs>$(PackArgs) -Properties "$(PackProperties)"</PackArgs>
     </PropertyGroup>
 
-    <Exec Command="$(NuGetExeFile) pack $(PackArgs)" />
+    <Exec Command="$(NuGetExeFile) pack $(PackArgs)" StandardOutputImportance="normal" />
 
     <Error
-      Condition="!Exists('$(ArtifactsNonShippingPackagesDir)$(VSInsertionComponentName).$(ProductVersion).nupkg')"
+      Condition="!Exists('$(NupkgOutputFile)')"
       Text="Pack command didn't produce expected nupkg." />
 
-    <Message Text="$(MSBuildProjectName) -> $(VSInsertionComponentName)" Importance="High" />
+    <Message Text="$(MSBuildProjectName) -> $(NupkgOutputFile)" Importance="High" />
   </Target>
 
   <Target Name="ExtractEngineBundle">

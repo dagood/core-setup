@@ -319,14 +319,18 @@
     <Message Text="$(MSBuildProjectName) -> $(NupkgOutputFile)" Importance="High" />
   </Target>
 
-  <Target Name="ExtractEngineBundle">
+  <Target Name="ExtractEngineBundle"
+          DependsOnTargets="GetInstallerGenerationFlags">
     <Exec
+      Condition="'$(GenerateExeBundle)' == 'true'"
       Command="insignia.exe -ib $(CombinedInstallerFile) -o $(CombinedInstallerEngine)"
       WorkingDirectory="$(WixToolsDir)" />
   </Target>
 
-  <Target Name="ReattachEngineToBundle">
+  <Target Name="ReattachEngineToBundle"
+          DependsOnTargets="GetInstallerGenerationFlags">
     <Exec
+      Condition="'$(GenerateExeBundle)' == 'true'"
       Command="insignia.exe -ab $(CombinedInstallerEngine) $(CombinedInstallerFile) -o $(CombinedInstallerFile)"
       WorkingDirectory="$(WixToolsDir)" />
   </Target>

@@ -18,8 +18,12 @@
   <Target Name="GetInstallerGenerationFlags">
     <!-- Filter the installer generation/build flags for the current build machine. -->
     <PropertyGroup>
-      <GenerateMSI Condition="'$(TargetArchitecture)' == 'arm' or '$(TargetArchitecture)' == 'arm64'">false</GenerateMSI>
-      <GenerateMSI Condition="'$(OSGroup)' != 'Windows_NT'">false</GenerateMSI>
+      <_supportsWixBasedInstallers>true</_supportsWixBasedInstallers>
+      <_supportsWixBasedInstallers Condition="'$(TargetArchitecture)' == 'arm' or '$(TargetArchitecture)' == 'arm64'">false</_supportsWixBasedInstallers>
+      <_supportsWixBasedInstallers Condition="'$(OSGroup)' != 'Windows_NT'">false</_supportsWixBasedInstallers>
+
+      <GenerateMSI Condition="'$(_supportsWixBasedInstallers)' != 'true'">false</GenerateMSI>
+      <GenerateExeBundle Condition="'$(_supportsWixBasedInstallers)' != 'true'">false</GenerateExeBundle>
 
       <GeneratePkg Condition="'$(OSGroup)' != 'OSX'">false</GeneratePkg>
     </PropertyGroup>

@@ -4,26 +4,23 @@
     <VersionProp>HostResolverVersion</VersionProp>
 
     <InstallerName>dotnet-hostfxr</InstallerName>
-
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
-    <WixDependencyKeyName>Dotnet_CLI_HostFxr</WixDependencyKeyName>
-    <RegKeyProductName>hostfxr</RegKeyProductName>
-    <VSInsertionShortComponentName>HostFXR</VSInsertionShortComponentName>
   </PropertyGroup>
 
   <ItemGroup>
     <Dependency Include="Microsoft.NETCore.DotNetAppHost" VersionProp="AppHostVersion" />
   </ItemGroup>
 
-  <ItemGroup>
-    <CandleVariables Include="AuthoredRegistryKeys;RegKeyNugetVersionValue" Value="true" />
-  </ItemGroup>
-
-  <Target Name="GetProjectSpecificWixBuildConfiguration"
-          DependsOnTargets="GetInstallerBrandingNames"
+  <Target Name="GetHostResolverSpecificWixBuildConfiguration"
+          DependsOnTargets="
+            GetProductVersions;
+            GetInstallerBrandingNames"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>
       <WixProductMoniker>$(HostFxrBrandName)</WixProductMoniker>
+      <RegKeyProductName>hostfxr</RegKeyProductName>
+      <WixDependencyKeyName>Dotnet_CLI_HostFxr</WixDependencyKeyName>
+      <VSInsertionShortComponentName>HostFXR</VSInsertionShortComponentName>
 
       <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
     </PropertyGroup>
@@ -31,16 +28,14 @@
     <!-- Always clean this up for reasonable dev builds. -->
     <RemoveDir Directories="$(PublishRootDir)" />
 
-    <!-- Copy layout to staging location to easily set up relative directory for WiX. -->
-    <ItemGroup>
-      <HostFxrFiles Include="$(SharedFrameworkPublishDir)host\**\*" />
-    </ItemGroup>
-
+    <!-- Copy files to staging location to easily set up relative directory for WiX. -->
     <Copy
-      SourceFiles="@(HostFxrFiles)"
-      DestinationFolder="$(PublishRootDir)host/%(HostFxrFiles.RecursiveDir)" />
+      SourceFiles="$(DotNetHostBinDir)/$(LibraryFilePrefix)hostfxr$(LibraryFileExtension)"
+      DestinationFolder="$(PublishRootDir)host/fxr/$(HostResolverVersion)" />
 
     <ItemGroup>
+      <CandleVariables Include="AuthoredRegistryKeys;RegKeyNugetVersionValue" Value="true" />
+
       <DirectoryToHarvest
         Include="$(PublishRootDir)"
         Name="install-files"

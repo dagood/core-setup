@@ -4,25 +4,17 @@
     <VersionProp>HostVersion</VersionProp>
 
     <InstallerName>dotnet-host</InstallerName>
-
     <GenerateSharedFrameworkPart>true</GenerateSharedFrameworkPart>
-    <WixDependencyKeyName>Dotnet_CLI_SharedHost</WixDependencyKeyName>
-    <RegKeyProductName>sharedhost</RegKeyProductName>
-    <VSInsertionShortComponentName>SharedHost</VSInsertionShortComponentName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <WixSrcFile Include="host.wxs" />
-    <WixExtraComponentGroupRefId Include="InstallSharedHostandDetectionKeys" />
-
-    <CandleVariables Include="ExtraPropertyRefIds" Value="ProductCPU;RTM_ProductVersion" />
-  </ItemGroup>
-
-  <Target Name="GetProjectSpecificWixBuildConfiguration"
+  <Target Name="GetHostSpecificWixBuildConfiguration"
           DependsOnTargets="GetInstallerBrandingNames"
           BeforeTargets="GetWixBuildConfiguration">
     <PropertyGroup>
       <WixProductMoniker>$(SharedHostBrandName)</WixProductMoniker>
+      <RegKeyProductName>sharedhost</RegKeyProductName>
+      <WixDependencyKeyName>Dotnet_CLI_SharedHost</WixDependencyKeyName>
+      <VSInsertionShortComponentName>SharedHost</VSInsertionShortComponentName>
 
       <PublishRootDir>$(IntermediateOutputPath)publishRoot/</PublishRootDir>
     </PropertyGroup>
@@ -31,7 +23,7 @@
     <RemoveDir Directories="$(PublishRootDir)" />
 
     <!-- copy shared host layout -->
-    <Copy SourceFiles="$(SharedFrameworkPublishDir)dotnet$(ExeSuffix)"
+    <Copy SourceFiles="$(DotNetHostBinDir)/dotnet$(ApplicationFileExtension)"
           DestinationFolder="$(PublishRootDir)" />
 
     <Copy SourceFiles="$(ProjectDir)THIRD-PARTY-NOTICES.TXT"
@@ -46,6 +38,11 @@
           Condition="'$(TargetsUnix)' != 'true'"/>
 
     <ItemGroup>
+      <WixSrcFile Include="host.wxs" />
+
+      <WixExtraComponentGroupRefId Include="InstallSharedHostandDetectionKeys" />
+
+      <CandleVariables Include="ExtraPropertyRefIds" Value="ProductCPU;RTM_ProductVersion" />
       <CandleVariables Include="HostSrc" Value="$(PublishRootDir)" />
     </ItemGroup>
   </Target>

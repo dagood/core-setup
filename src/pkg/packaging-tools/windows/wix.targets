@@ -40,43 +40,44 @@
     </GenerateGuidFromName>
   </Target>
 
-  <!-- Set up information to pass to WiX, depending on the type of installer being created. -->
-  <Target Name="GetWixBuildConfiguration"
-          DependsOnTargets="
-            AcquireWix;
-            GetInstallerProperties;
-            GetInstallerLocations;
-            GenerateMsiVersionString;
-            GetBundledMsiFiles">
-    <PropertyGroup>
-      <OutInstallerFile>$(InstallerFile)</OutInstallerFile>
-    </PropertyGroup>
-
+  <Target Name="UseProductWixProject">
     <ItemGroup>
-      <ProductWixExtensions Include="WixUIExtension.dll" />
-      <ProductWixExtensions Include="WixDependencyExtension.dll" />
-
-      <BundleWixExtensions Include="WixBalExtension.dll" />
-      <BundleWixExtensions Include="WixTagExtension.dll" />
-
+      <WixExtensions Include="WixUIExtension.dll" />
+      <WixExtensions Include="WixDependencyExtension.dll" />
       <WixExtensions Include="WixUtilExtension.dll" />
-    </ItemGroup>
 
-    <ItemGroup Condition="'$(FrameworkPackType)' != ''">
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="UseBundleWixProject">
+    <ItemGroup>
+      <WixExtensions Include="WixBalExtension.dll" />
+      <WixExtensions Include="WixTagExtension.dll" />
+      <WixExtensions Include="WixUtilExtension.dll" />
+
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)bundle/bundle.wxs" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetFrameworkPackWixConfiguration"
+          Condition="'$(FrameworkPackType)' != ''"
+          DependsOnTargets="UseProductWixProject">
+    <ItemGroup>
       <DirectoryToHarvest
         Include="$(PackLayoutDir)"
         Name="install-files"
         SubstituteVar="PackSrc"
         ComponentGroupName="InstallFiles"
         DirectoryRef="DOTNETHOME" />
-
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
-
-      <WixExtensions Include="@(ProductWixExtensions)" />
     </ItemGroup>
+  </Target>
 
-    <ItemGroup Condition="'$(GenerateSharedFramework)' == 'true'">
+  <Target Name="GetSharedFrameworkWixConfiguration"
+          Condition="'$(GenerateSharedFramework)' == 'true'"
+          DependsOnTargets="UseProductWixProject">
+    <ItemGroup>
       <DirectoryToHarvest
         Include="$(SharedFrameworkLayoutDir)shared/"
         Name="install-shared-framework"
@@ -84,48 +85,11 @@
         ComponentGroupName="InstallFiles"
         DirectoryRef="SHARED" />
 
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/sharedfxdir.wxs" />
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
-
-      <WixExtensions Include="@(ProductWixExtensions)" />
 
       <CandleVariables Include="AuthoredRegistryKeys" Value="true" />
       <CandleVariables Include="RegKeyNugetVersionExistence" Value="true" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(GenerateSharedFrameworkPart)' == 'true'">
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/product.wxs" />
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/provider.wxs" />
-
-      <WixExtensions Include="@(ProductWixExtensions)" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(GenerateExeBundle)' == 'true'">
-      <LocFile Include="theme\**\bundle.wxl" />
-      <LocDirName Include="$([System.String]::new('%(LocFile.RecursiveDir)').TrimEnd('\'))" />
-
-      <CandleVariables Include="DisplayVersion" Value="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildNumberMajor)" />
-      <CandleVariables Include="ProductBandVersion" Value="$(ProductBandVersion)" />
-      <CandleVariables Include="FrameworkDisplayVersion" Value="$(ProductVersion)" />
-      <CandleVariables Include="LcidList" Value="@(LocDirName)" />
-
-      <CandleVariables Include="DotNetBackgroundPngFile" Value="$(MSBuildThisFileDirectory)..\..\packaging\osx\sharedframework\resources\dotnetbackground.png" />
-      <CandleVariables Include="DotNetDummyEulaFile" Value="$(MSBuildThisFileDirectory)bundle\dummyEula.rtf" />
-
-      <WixSrcFile Include="$(MSBuildThisFileDirectory)bundle/bundle.wxs" />
-
-      <WixExtensions Include="@(BundleWixExtensions)" />
-    </ItemGroup>
-
-    <PropertyGroup Condition="'$(GenerateExeBundle)' == 'true'">
-      <OutInstallerFile>$(ExeBundleInstallerFile)</OutInstallerFile>
-    </PropertyGroup>
-
-    <ItemGroup Condition="'@(DirectoryToHarvest)' != ''">
-      <CandleVariables Include="InstallFiles" Value="true" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IncludeWerRelatedKeys)' == 'true'">
@@ -137,6 +101,53 @@
       <WixSrcFile Include="$(MSBuildThisFileDirectory)product/breadcrumbstorefolder.wxs" />
       <CandleVariables Include="BreadcrumbStoreFolder" Value="true" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="GetSharedFrameworkPartWixConfiguration"
+          Condition="'$(GenerateSharedFrameworkPart)' == 'true'"
+          DependsOnTargets="UseProductWixProject">
+    <ItemGroup>
+      <WixSrcFile Include="$(MSBuildThisFileDirectory)product/registrykeys.wxs" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetBundleWixConfiguration"
+          Condition="'$(GenerateExeBundle)' == 'true'"
+          DependsOnTargets="
+            UseBundleWixProject;
+            GetBundledMsiFiles">
+    <ItemGroup>
+      <LocFile Include="theme\**\bundle.wxl" />
+      <LocDirName Include="$([System.String]::new('%(LocFile.RecursiveDir)').TrimEnd('\'))" />
+
+      <CandleVariables Include="DisplayVersion" Value="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildNumberMajor)" />
+      <CandleVariables Include="ProductBandVersion" Value="$(ProductBandVersion)" />
+      <CandleVariables Include="FrameworkDisplayVersion" Value="$(ProductVersion)" />
+      <CandleVariables Include="LcidList" Value="@(LocDirName)" />
+
+      <CandleVariables Include="DotNetBackgroundPngFile" Value="$(MSBuildThisFileDirectory)..\..\packaging\osx\sharedframework\resources\dotnetbackground.png" />
+      <CandleVariables Include="DotNetDummyEulaFile" Value="$(MSBuildThisFileDirectory)bundle\dummyEula.rtf" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <OutInstallerFile>$(ExeBundleInstallerFile)</OutInstallerFile>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Set up information to pass to WiX, depending on the type of installer being created. -->
+  <Target Name="GetWixBuildConfiguration"
+          DependsOnTargets="
+            AcquireWix;
+            GetInstallerProperties;
+            GetInstallerLocations;
+            GenerateMsiVersionString;
+            GetFrameworkPackWixConfiguration;
+            GetSharedFrameworkWixConfiguration;
+            GetSharedFrameworkPartWixConfiguration;
+            GetBundleWixConfiguration">
+    <PropertyGroup>
+      <OutInstallerFile Condition="'$(OutInstallerFile)' == ''">$(InstallerFile)</OutInstallerFile>
+    </PropertyGroup>
 
     <ItemGroup>
       <CandleVariables Include="MicrosoftEula" Value="$(MSBuildThisFileDirectory)eula.rtf" />
@@ -147,8 +158,7 @@
     Ensure MSIs are built and signed (if necessary), then obtain all paths to MSIs to bundle from
     the bundle references.
   -->
-  <Target Name="GetBundledMsiFiles"
-          Condition="'@(BundleComponentReference)' != ''">
+  <Target Name="GetBundledMsiFiles">
     <MSBuild Projects="$(RepoRoot)signing\SignMsiFiles.proj" Targets="Build" />
     <MSBuild Projects="@(BundleComponentReference)" Targets="Build" />
 
@@ -181,6 +191,8 @@
           -srd ^
           -dr %(DirectoryRef) ^
           -out %(WixSourceFile)" />
+
+      <CandleVariables Include="InstallFiles" Value="true" />
     </ItemGroup>
 
     <Exec

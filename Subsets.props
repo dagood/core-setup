@@ -138,4 +138,14 @@
     <ProjectToBuild Include="$(RepoRoot)tools-local\regenerate-readme-table.proj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <SubsetName
+      Include="RegenerateThirdPartyNotices"
+      Description="Regenerates the THIRD-PARTY-NOTICES.TXT file based on other repos' TPN files."
+      OnDemand="true"/>
+  </ItemGroup>
+  <ItemGroup Condition="$(SubsetToLower.Contains('regeneratethirdpartynotices'))">
+    <ProjectToBuild Include="$(RepoRoot)tools-local\regenerate-third-party-notices.proj" />
+  </ItemGroup>
+
 </Project>

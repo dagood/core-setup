@@ -1,0 +1,42 @@
+<Project>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.props))\Directory.Build.props" />
+
+  <UsingTask TaskName="RegenerateThirdPartyNotices" AssemblyFile="$(LocalBuildToolsTaskFile)" />
+
+  <Target Name="Build">
+    <PropertyGroup>
+      <TpnFile>$(RepoRoot)THIRD-PARTY-NOTICES.TXT</TpnFile>
+    </PropertyGroup>
+
+    <!--
+      Repo configuration. Upstreams, but also more: the TPN in Core-Setup serves many repos outside
+      its graph, because Core-Setup produces the installer that ends up placing the single TPN file
+      in the dotnet home directory.
+    -->
+    <ItemGroup>
+      <TpnRepo Include="aspnet/AspNetCore" />
+      <TpnRepo Include="dotnet/cli" />
+      <TpnRepo Include="dotnet/core-sdk" />
+      <TpnRepo Include="dotnet/coreclr" />
+      <TpnRepo Include="dotnet/corefx" />
+      <TpnRepo Include="dotnet/roslyn" />
+      <TpnRepo Include="dotnet/standard" />
+      <TpnRepo Include="dotnet/winforms" />
+      <TpnRepo Include="Microsoft/msbuild" />
+      <TpnRepo Include="nuget/nuget.client" />
+
+      <TpnRepo Branch="master" />
+
+      <PotentialTpnPath Include="THIRD-PARTY-NOTICES.TXT;THIRD-PARTY-NOTICES;THIRDPARTYNOTICES.TXT" />
+    </ItemGroup>
+
+    <RegenerateThirdPartyNotices
+      File="$(TpnFile)"
+      PotentialTpnPaths="@(PotentialTpnPath)"
+      TpnRepos="@(TpnRepo)" />
+
+    <Message Text="$(MSBuildProjectName) -> $(TpnFile)" Importance="High" />
+  </Target>
+
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory).., Directory.Build.targets))\Directory.Build.targets" />
+</Project>

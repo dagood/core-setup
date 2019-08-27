@@ -4,194 +4,223 @@
 
 using Microsoft.Build.Framework;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Build.Tasks
 {
     public class RegenerateThirdPartyNotices : BuildTask
     {
-        private const string TableComment = "generated table";
-        private const string LinksComment = "links to include in table";
+        private const string GitHubRawContentBaseUrl = "https://raw.githubusercontent.com/";
 
         /// <summary>
-        /// A readme file that contains a Markdown table and a list of links. This task reads the
-        /// "links to include in table" section to find available links, then updates the
-        /// "generated table" section to include a Markdown table. Cells in the table are generated
-        /// by looking for links that apply to the current combination of platform and branch.
-        ///
-        /// The sections are marked by one-line html comments:
-        ///
-        /// <!-- BEGIN <section name> -->
-        /// ...
-        /// <!-- END <section name> -->
+        /// The Third Party Notices file (TPN file) to regenerate.
         /// </summary>
         [Required]
-        public string ReadmeFile { get; set; }
+        public string File { get; set; }
 
         /// <summary>
-        /// %(Identity): Name of this branch, as appears in the column header.
-        /// %(Abbr): Abbreviation of this branch, used to match up with link names.
+        /// Potential names for the file in various repositories. Each one is tried for each repo.
         /// </summary>
         [Required]
-        public ITaskItem[] Branches { get; set; }
+        public string[] PotentialTpnPaths { get; set; }
 
         /// <summary>
-        /// %(Identity): Name of this platform, as appears in bold as the first column of the row.
-        /// %(Parenthetical): An extra non-bold string to add after the platform name.
-        /// %(Abbr): Abbreviation of this platform, used to match up with link names.
+        /// %(Identity): The "{organization}/{name}" of a repo to gather TPN info from.
+        /// %(Branch): The branch to pull from.
         /// </summary>
         [Required]
-        public ITaskItem[] Platforms { get; set; }
-
-
-        private string Begin(string marker) => $"<!-- BEGIN {marker} -->";
-        private string End(string marker) => $"<!-- END {marker} -->";
-
+        public ITaskItem[] TpnRepos { get; set; }
 
         public override bool Execute()
         {
-            string[] readmeLines = File.ReadAllLines(ReadmeFile);
-
-            if (readmeLines.Contains(Begin(LinksComment)) &&
-                readmeLines.Contains(End(LinksComment)))
+            using (var client = new HttpClient())
             {
-                // In the links section, extract the name of each reference-style Markdown link.
-                // For example, grabs 'win-x86-badge-2.1.X' from
-                // [win-x86-badge-2.1.X]: https://example.org/foo
-                string[] links = readmeLines
-                    .SkipWhile(line => line != Begin(LinksComment))
-                    .Skip(1)
-                    .TakeWhile(line => line != End(LinksComment))
-                    .Where(line => line.StartsWith("[") && line.Contains("]:"))
-                    .Select(line => line.Substring(
-                        1,
-                        line.IndexOf("]:", StringComparison.Ordinal) - 1))
-                    .ToArray();
-
-                string[] rows = Platforms.Select(p => CreateRow(p, links)).ToArray();
-
-                // Final table to write to the file, with a newline before and after.
-                string[] table = new[]
-                {
-                    "",
-                    $"| Platform |{string.Concat(Branches.Select(p => $" {p.ItemSpec} |"))}",
-                    $"| --- | {string.Concat(Enumerable.Repeat(" :---: |", Branches.Length))}"
-                }.Concat(rows).Concat(new[]
-                {
-                    ""
-                }).ToArray();
-
-                if (readmeLines.Contains(Begin(TableComment)) &&
-                    readmeLines.Contains(End(TableComment)))
-                {
-                    string[] beforeTable = readmeLines
-                        .TakeWhile(line => line != Begin(TableComment))
-                        .Concat(new[] { Begin(TableComment) })
-                        .ToArray();
-
-                    string[] afterTable = readmeLines
-                        .Skip(beforeTable.Length)
-                        .SkipWhile(line => line != End(TableComment))
-                        .ToArray();
-
-                    File.WriteAllLines(
-                        ReadmeFile,
-                        beforeTable.Concat(table).Concat(afterTable));
-                }
-                else
-                {
-                    Log.LogError($"Readme '{ReadmeFile}' has no '{TableComment}' section.");
-                }
-            }
-            else
-            {
-                Log.LogError($"Readme '{ReadmeFile}' has no '{LinksComment}' section.");
+                ExecuteAsync(client).Wait();
             }
 
             return !Log.HasLoggedErrors;
         }
 
-        private string CreateRow(ITaskItem platform, string[] links)
+        public async Task ExecuteAsync(HttpClient client)
         {
-            string parenthetical = platform.GetMetadata("Parenthetical");
+            var file = TpnFile.Parse(System.IO.File.ReadAllLines(File));
 
-            string cells = string.Concat(
-                Branches.Select(branch => $" {CreateCell(platform, branch, links)} |"));
+            Log.LogMessage(MessageImportance.High, file.Preamble);
 
-            return $"| **{platform.ItemSpec}**{parenthetical} |{cells}";
+            foreach (var s in file.Sections)
+            {
+                Log.LogMessage(MessageImportance.High, "");
+                Log.LogMessage(MessageImportance.High, s.Header.Name);
+                Log.LogMessage(MessageImportance.High, "---");
+                Log.LogMessage(MessageImportance.High, s.Content);
+                Log.LogMessage(MessageImportance.High, "---");
+            }
+
+            var results = await Task.WhenAll(TpnRepos
+                .SelectMany(r =>
+                {
+                    string repo = r.ItemSpec;
+                    string branch = r.GetMetadata("Branch")
+                        ?? throw new ArgumentException($"{r.ItemSpec} specifies no Branch.");
+
+                    return PotentialTpnPaths.Select(path => new
+                    {
+                        Repo = repo,
+                        Branch = branch,
+                        PotentialPath = path,
+                        Url = $"{GitHubRawContentBaseUrl}{repo}/{branch}/{path}"
+                    });
+                })
+                .Select(async c =>
+                {
+                    string content = null;
+
+                    HttpResponseMessage response = await client.GetAsync(c.Url);
+
+                    if (response.StatusCode != HttpStatusCode.NotFound)
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        content = await response.Content.ReadAsStringAsync();
+                        Log.LogMessage($"Got content from URL: {c.Url}");
+                    }
+                    else
+                    {
+                        Log.LogMessage($"Checked for content, but does not exist: {c.Url}");
+                    }
+
+                    return new
+                    {
+                        c.Repo,
+                        c.Branch,
+                        c.PotentialPath,
+                        Content = content
+                    };
+                }));
+
+            foreach (var r in results.Where(r => r.Content != null).OrderBy(r => r.Repo))
+            {
+                Log.LogMessage(
+                    MessageImportance.High,
+                    $"Found TPN: {r.Repo} {r.Branch} - {r.PotentialPath}");
+            }
         }
 
-        private string CreateCell(ITaskItem platform, ITaskItem branch, string[] links)
+        private class TpnFile
         {
-            string branchAbbr = branch.GetMetadata("Abbr");
-            if (string.IsNullOrEmpty(branchAbbr))
+
+            public static TpnFile Parse(string[] lines)
             {
-                Log.LogError($"Branch '{branch.ItemSpec}' has no Abbr metadata.");
-            }
+                SectionHeader header;
+                int lastHeaderLine = 0;
 
-            string platformAbbr = platform.GetMetadata("Abbr");
-            if (string.IsNullOrEmpty(platformAbbr))
-            {
-                Log.LogError($"Platform '{platform.ItemSpec}' has no Abbr metadata.");
-            }
+                string preamble = null;
+                List<Section> sections = new List<Section>();
 
-            var sb = new StringBuilder();
-
-            string Link(string type) => $"{platformAbbr}-{type}-{branchAbbr}";
-
-            void AddLink(string name, string type)
-            {
-                string link = Link(type);
-                string checksum = Link($"{type}-checksum");
-
-                if (links.Contains(link))
+                while ((header = SectionHeader.ParseNext(lines, lastHeaderLine)) != null)
                 {
-                    sb.Append("<br>");
-                    sb.Append($"[{name}][{link}]");
-                    if (links.Contains(checksum))
+                    string lastContent = string.Join(
+                        Environment.NewLine,
+                        lines.Skip(lastHeaderLine).Take(header.StartLine - lastHeaderLine - 1));
+
+                    lastHeaderLine = header.StartLine + header.LineLength;
+
+                    if (preamble == null)
                     {
-                        sb.Append($" ([Checksum][{checksum}])");
+                        preamble = lastContent;
+                    }
+                    else
+                    {
+                        sections.Last().Content = lastContent;
+                    }
+
+                    sections.Add(new Section
+                    {
+                        Header = header
+                    });
+                }
+
+                sections.Last().Content = string.Join(
+                    Environment.NewLine,
+                    lines.Skip(lastHeaderLine));
+
+                return new TpnFile
+                {
+                    Preamble = preamble,
+                    Sections = sections
+                };
+            }
+
+            public string Preamble { get; set; }
+
+            public IEnumerable<Section> Sections { get; set; }
+        }
+
+        private class SectionHeader
+        {
+            /// <summary>
+            /// Find the index of the section after the start index. A section is either:
+            /// 
+            /// 1. A line of more than two '-' characters preceded immediately by a section name.
+            ///    This is an "underlined" header.
+            /// 2. A line of more than two '-' characters with blank lines above and below it and a
+            ///    section name two lines below it.
+            /// </summary>
+            public static SectionHeader ParseNext(string[] lines, int startLine = 0)
+            {
+                for (int i = startLine; i < lines.Length; i++)
+                {
+                    if (i > 0 &&
+                        lines[i].Length > 2 &&
+                        lines[i].All(c => c == '-'))
+                    {
+                        // Type 1.
+                        string lineAbove = lines[i - 1];
+                        if (!string.IsNullOrEmpty(lineAbove))
+                        {
+                            return new SectionHeader
+                            {
+                                Name = lineAbove,
+                                Underlined = true,
+                                StartLine = i - 1,
+                                LineLength = 3
+                            };
+                        }
+
+                        // Type 2.
+                        if (i + 2 < lines.Length &&
+                            string.IsNullOrEmpty(lines[i + 1]))
+                        {
+                            return new SectionHeader
+                            {
+                                Name = lines[i + 2],
+                                Underlined = false,
+                                StartLine = i - 1,
+                                LineLength = 5
+                            };
+                        }
                     }
                 }
+
+                return null;
             }
 
-            string badge = Link("badge");
-            string version = Link("version");
+            public string Name { get; set; }
 
-            if (links.Contains(badge) && links.Contains(version))
-            {
-                sb.Append($"[![][{badge}]][{version}]");
-            }
+            public bool Underlined { get; set; }
 
-            // Look for various types of links. The first parameter is the name of the link as it
-            // appears in the table cell. The second parameter is how this type of link is
-            // abbreviated in the link section. A generic checksum link is added for any of these
-            // that also have a '<type>-checksum' link.
+            public int StartLine { get; set; }
+            public int LineLength { get; set; }
+        }
 
-            AddLink("Installer", "installer");
-
-            AddLink("Runtime-Deps", "runtime-deps");
-            AddLink("Host", "host");
-            AddLink("Host FX Resolver", "hostfxr");
-            AddLink("Shared Framework", "sharedfx");
-
-            AddLink("zip", "zip");
-            AddLink("tar.gz", "targz");
-
-            AddLink("NetHost (zip)", "nethost-zip");
-            AddLink("NetHost (tar.gz)", "nethost-targz");
-
-            AddLink("Symbols (zip)", "symbols-zip");
-            AddLink("Symbols (tar.gz)", "symbols-targz");
-
-            if (sb.Length == 0)
-            {
-                sb.Append("N/A");
-            }
-
-            return sb.ToString();
+        private class Section
+        {
+            public SectionHeader Header { get; set; }
+            public string Content { get; set; }
         }
     }
 }

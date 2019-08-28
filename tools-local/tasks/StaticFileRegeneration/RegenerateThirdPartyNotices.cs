@@ -133,11 +133,11 @@ namespace Microsoft.DotNet.Build.Tasks
                 MessageImportance.High,
                 $"Existing TPN file preamble: {existingTpn.Preamble.Substring(0, 10)}...");
 
-            foreach (var s in existingTpn.Sections.OrderBy(s => s.Header.Name))
+            foreach (var s in existingTpn.Sections.OrderBy(s => s.Header.SingleLineName))
             {
                 Log.LogMessage(
                     MessageImportance.High,
-                    $"{s.Header.StartLine + 1}:{s.Header.StartLine + s.Header.LineLength} {s.Header.Format} '{s.Header.Name}'");
+                    $"{s.Header.StartLine + 1}:{s.Header.StartLine + s.Header.LineLength} {s.Header.Format} '{s.Header.SingleLineName}'");
             }
 
             TpnDocument[] otherTpns = results
@@ -158,14 +158,14 @@ namespace Microsoft.DotNet.Build.Tasks
             {
                 Log.LogMessage(
                     MessageImportance.High,
-                    $"Found already-imported section: '{existing.Header.Name}'");
+                    $"Found already-imported section: '{existing.Header.SingleLineName}'");
             }
 
             foreach (var s in newSections)
             {
                 Log.LogMessage(
                     MessageImportance.High,
-                    $"New section to import: '{s.Header.Name}' of " +
+                    $"New section to import: '{s.Header.SingleLineName}' of " +
                     string.Join(
                         ", ",
                         results

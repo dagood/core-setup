@@ -65,6 +65,8 @@ namespace Microsoft.DotNet.Build.Tasks
         public int StartLine { get; set; }
         public int LineLength { get; set; }
 
+        public string SingleLineName => Name.Replace('\n', ' ').Replace('\r', ' ');
+
         public override string ToString()
         {
             switch (Format)
@@ -98,8 +100,8 @@ namespace Microsoft.DotNet.Build.Tasks
 
             string name = string.Join(Environment.NewLine, nameLines);
 
-            // If there's a separator line as the last line in the name, this line
-            // doesn't indicate a section. Underlined handler will detect it later.
+            // If there's a separator line as the last line in the name, this line doesn't indicate
+            // a section. It needs to be handled by ParseUnderlined instead.
             if (nameLines.Any(IsSeparatorLine))
             {
                 if (nameLines.Take(nameLines.Length - 1).Any(IsSeparatorLine))

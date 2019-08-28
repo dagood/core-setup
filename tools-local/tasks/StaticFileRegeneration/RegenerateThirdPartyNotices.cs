@@ -5,9 +5,13 @@
 using Microsoft.Build.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Build.Tasks
@@ -16,11 +20,14 @@ namespace Microsoft.DotNet.Build.Tasks
     {
         private const string GitHubRawContentBaseUrl = "https://raw.githubusercontent.com/";
 
+        private static readonly char[] NewlineChars = { '\n', '\r' };
+        private static readonly char[] SectionSeparatorChars = { '-', '=' };
+
         /// <summary>
         /// The Third Party Notices file (TPN file) to regenerate.
         /// </summary>
         [Required]
-        public string File { get; set; }
+        public string TpnFile { get; set; }
 
         /// <summary>
         /// Potential names for the file in various repositories. Each one is tried for each repo.
@@ -47,25 +54,12 @@ namespace Microsoft.DotNet.Build.Tasks
 
         public async Task ExecuteAsync(HttpClient client)
         {
-            var file = TpnFile.Parse(System.IO.File.ReadAllLines(File));
-
-            Log.LogMessage(MessageImportance.High, file.Preamble);
-
-            foreach (var s in file.Sections)
-            {
-                Log.LogMessage(MessageImportance.High, "");
-                Log.LogMessage(MessageImportance.High, s.Header.Name);
-                Log.LogMessage(MessageImportance.High, "---");
-                Log.LogMessage(MessageImportance.High, s.Content);
-                Log.LogMessage(MessageImportance.High, "---");
-            }
-
             var results = await Task.WhenAll(TpnRepos
-                .SelectMany(r =>
+                .SelectMany(item =>
                 {
-                    string repo = r.ItemSpec;
-                    string branch = r.GetMetadata("Branch")
-                        ?? throw new ArgumentException($"{r.ItemSpec} specifies no Branch.");
+                    string repo = item.ItemSpec;
+                    string branch = item.GetMetadata("Branch")
+                        ?? throw new ArgumentException($"{item.ItemSpec} specifies no Branch.");
 
                     return PotentialTpnPaths.Select(path => new
                     {
@@ -77,7 +71,11 @@ namespace Microsoft.DotNet.Build.Tasks
                 })
                 .Select(async c =>
                 {
-                    string content = null;
+                    TpnDocument content = null;
+
+                    Log.LogMessage(
+                        MessageImportance.High,
+                        $"Getting {c.Url}");
 
                     HttpResponseMessage response = await client.GetAsync(c.Url);
 
@@ -85,7 +83,18 @@ namespace Microsoft.DotNet.Build.Tasks
                     {
                         response.EnsureSuccessStatusCode();
 
-                        content = await response.Content.ReadAsStringAsync();
+                        string tpnContent = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            content = TpnDocument.Parse(tpnContent.Split(NewlineChars));
+                        }
+                        catch
+                        {
+                            Log.LogError($"Failed to parse response from {c.Url}");
+                            throw;
+                        }
+
                         Log.LogMessage($"Got content from URL: {c.Url}");
                     }
                     else
@@ -98,6 +107,7 @@ namespace Microsoft.DotNet.Build.Tasks
                         c.Repo,
                         c.Branch,
                         c.PotentialPath,
+                        c.Url,
                         Content = content
                     };
                 }));
@@ -106,14 +116,79 @@ namespace Microsoft.DotNet.Build.Tasks
             {
                 Log.LogMessage(
                     MessageImportance.High,
-                    $"Found TPN: {r.Repo} {r.Branch} - {r.PotentialPath}");
+                    $"Found TPN: {r.Repo} [{r.Branch}] {r.PotentialPath}");
             }
+
+            // Ensure we found one (and only one) TPN file for each repo.
+            foreach (var miscount in results
+                .GroupBy(r => r.Repo)
+                .Where(g => g.Count(r => r.Content != null) != 1))
+            {
+                Log.LogError($"Unable to find exactly one TPN for {miscount.Key}");
+            }
+
+            if (Log.HasLoggedErrors)
+            {
+                return;
+            }
+
+            TpnDocument existingTpn = TpnDocument.Parse(File.ReadAllLines(TpnFile));
+
+            Log.LogMessage(
+                MessageImportance.High,
+                $"Existing TPN file preamble: {existingTpn.Preamble.Substring(0, 10)}...");
+
+            foreach (var s in existingTpn.Sections.OrderBy(s => s.Header.Name))
+            {
+                Log.LogMessage(
+                    MessageImportance.High,
+                    $"- '{s.Header.Name}': {s.Content.Substring(0, 10)}...");
+            }
+
+            TpnDocument[] otherTpns = results
+                .Select(r => r.Content)
+                .Where(r => r != null)
+                .ToArray();
+
+            Section[] newSections = otherTpns
+                .SelectMany(o => o.Sections)
+                .Except(existingTpn.Sections, new Section.ByHeaderNameComparer())
+                .OrderBy(s => s.Header.Name)
+                .ToArray();
+
+            foreach (Section existing in results
+                .SelectMany(r => (r.Content?.Sections.Except(newSections)).NullAsEmpty())
+                .Where(s => !newSections.Contains(s))
+                .OrderBy(s => s.Header.Name))
+            {
+                Log.LogMessage(
+                    MessageImportance.High,
+                    $"Found already-imported section: '{existing.Header.Name}'");
+            }
+
+            foreach (var s in newSections)
+            {
+                Log.LogMessage(
+                    MessageImportance.High,
+                    $"New section to import: '{s.Header.Name}' of " +
+                    string.Join(
+                        ", ",
+                        results
+                            .Where(r => r.Content?.Sections.Contains(s) == true)
+                            .Select(r => r.Url)) +
+                    $" line {s.Header.StartLine}");
+            }
+
+            Log.LogMessage(MessageImportance.High, $"Importing {newSections.Length} sections...");
+
+            existingTpn.Sections = existingTpn.Sections.Concat(newSections);
+
+
         }
 
-        private class TpnFile
+        private class TpnDocument
         {
-
-            public static TpnFile Parse(string[] lines)
+            public static TpnDocument Parse(string[] lines)
             {
                 SectionHeader header;
                 int lastHeaderLine = 0;
@@ -144,11 +219,16 @@ namespace Microsoft.DotNet.Build.Tasks
                     });
                 }
 
+                if (sections.Count == 0)
+                {
+                    throw new ArgumentException($"No sections found.");
+                }
+
                 sections.Last().Content = string.Join(
                     Environment.NewLine,
                     lines.Skip(lastHeaderLine));
 
-                return new TpnFile
+                return new TpnDocument
                 {
                     Preamble = preamble,
                     Sections = sections
@@ -158,51 +238,93 @@ namespace Microsoft.DotNet.Build.Tasks
             public string Preamble { get; set; }
 
             public IEnumerable<Section> Sections { get; set; }
+
+            public override string ToString() =>
+                Preamble + Environment.NewLine + string.Join(Environment.NewLine, Sections);
+        }
+
+        private enum SectionHeaderFormat
+        {
+            /// <summary>
+            /// {blank line}
+            /// {name}
+            /// {3+ section separator chars}
+            /// {blank line}
+            /// </summary>
+            Underlined,
+
+            /// <summary>
+            /// {blank line}
+            /// {3+ section separator chars}
+            /// {blank line}
+            /// {name}
+            /// </summary>
+            Separated,
+
+            /// <summary>
+            /// {blank line}
+            /// {number}.{tab}{name}
+            /// {blank line}
+            /// </summary>
+            Numbered
         }
 
         private class SectionHeader
         {
-            /// <summary>
-            /// Find the index of the section after the start index. A section is either:
-            /// 
-            /// 1. A line of more than two '-' characters preceded immediately by a section name.
-            ///    This is an "underlined" header.
-            /// 2. A line of more than two '-' characters with blank lines above and below it and a
-            ///    section name two lines below it.
-            /// </summary>
+            private static readonly Regex NumberListPrefix = new Regex(@"^[0-9]+\.\t(?<name>.*)$");
+
             public static SectionHeader ParseNext(string[] lines, int startLine = 0)
             {
                 for (int i = startLine; i < lines.Length; i++)
                 {
-                    if (i > 0 &&
-                        lines[i].Length > 2 &&
-                        lines[i].All(c => c == '-'))
+                    if (i == 0)
                     {
-                        // Type 1.
-                        string lineAbove = lines[i - 1];
+                        continue;
+                    }
+
+                    string lineAbove = lines[i - 1];
+
+                    if (lines[i].Length > 2 && lines[i].All(c => SectionSeparatorChars.Contains(c)))
+                    {
                         if (!string.IsNullOrEmpty(lineAbove))
                         {
                             return new SectionHeader
                             {
                                 Name = lineAbove,
-                                Underlined = true,
+                                SeparatorLine = lines[i],
+                                Format = SectionHeaderFormat.Underlined,
                                 StartLine = i - 1,
                                 LineLength = 3
                             };
                         }
 
-                        // Type 2.
                         if (i + 2 < lines.Length &&
                             string.IsNullOrEmpty(lines[i + 1]))
                         {
                             return new SectionHeader
                             {
                                 Name = lines[i + 2],
-                                Underlined = false,
+                                SeparatorLine = lines[i],
+                                Format = SectionHeaderFormat.Separated,
                                 StartLine = i - 1,
                                 LineLength = 5
                             };
                         }
+                    }
+
+                    var numberListMatch = NumberListPrefix.Match(lines[i]);
+                    if (string.IsNullOrEmpty(lineAbove) &&
+                        string.IsNullOrEmpty(lines[i + 1]) &&
+                        numberListMatch.Success)
+                    {
+                        return new SectionHeader
+                        {
+                            Name = numberListMatch.Groups["name"].Value,
+                            SeparatorLine = lines[i],
+                            Format = SectionHeaderFormat.Numbered,
+                            StartLine = i - 1,
+                            LineLength = 3
+                        };
                     }
                 }
 
@@ -210,17 +332,46 @@ namespace Microsoft.DotNet.Build.Tasks
             }
 
             public string Name { get; set; }
+            public string SeparatorLine { get; set; }
 
-            public bool Underlined { get; set; }
+            public SectionHeaderFormat Format { get; set; }
 
             public int StartLine { get; set; }
             public int LineLength { get; set; }
+
+            public override string ToString()
+            {
+                switch(Format)
+                {
+                    case SectionHeaderFormat.Underlined:
+                        return Name + Environment.NewLine + SeparatorLine;
+
+                    case SectionHeaderFormat.Separated:
+                        return SeparatorLine + Environment.NewLine + SeparatorLine;
+
+                    case SectionHeaderFormat.Numbered:
+                        return SeparatorLine + Environment.NewLine;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         }
 
         private class Section
         {
+            public class ByHeaderNameComparer : EqualityComparer<Section>
+            {
+                public override bool Equals(Section x, Section y) =>
+                    string.Equals(x.Header.Name, y.Header.Name, StringComparison.OrdinalIgnoreCase);
+
+                public override int GetHashCode(Section obj) => obj.Header.Name.GetHashCode();
+            }
+
             public SectionHeader Header { get; set; }
             public string Content { get; set; }
+
+            public override string ToString() => Header + Environment.NewLine + Content;
         }
     }
 }

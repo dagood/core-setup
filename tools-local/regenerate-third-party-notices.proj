@@ -23,15 +23,19 @@
       <TpnRepo Include="dotnet/standard" />
       <TpnRepo Include="dotnet/winforms" />
       <TpnRepo Include="Microsoft/msbuild" />
-      <TpnRepo Include="nuget/nuget.client" />
+      <TpnRepo Include="NuGet/NuGet.Client" Branch="dev" />
 
-      <TpnRepo Branch="master" />
+      <TpnRepo Condition="'%(TpnRepo.Branch)' == ''" Branch="master" />
 
-      <PotentialTpnPath Include="THIRD-PARTY-NOTICES.TXT;THIRD-PARTY-NOTICES;THIRDPARTYNOTICES.TXT" />
+      <PotentialTpnPath Include="THIRD-PARTY-NOTICES.TXT" />
+      <PotentialTpnPath Include="THIRD-PARTY-NOTICES.txt" />
+      <PotentialTpnPath Include="THIRD-PARTY-NOTICES" />
+      <PotentialTpnPath Include="THIRDPARTYNOTICES.TXT" />
+      <PotentialTpnPath Include="THIRDPARTYNOTICES.txt" />
     </ItemGroup>
 
     <RegenerateThirdPartyNotices
-      File="$(TpnFile)"
+      TpnFile="$(TpnFile)"
       PotentialTpnPaths="@(PotentialTpnPath)"
       TpnRepos="@(TpnRepo)" />
 

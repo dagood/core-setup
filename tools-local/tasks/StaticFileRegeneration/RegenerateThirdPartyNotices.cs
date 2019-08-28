@@ -4,14 +4,10 @@
 
 using Microsoft.Build.Framework;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Build.Tasks
@@ -149,13 +145,13 @@ namespace Microsoft.DotNet.Build.Tasks
                 .Where(r => r != null)
                 .ToArray();
 
-            Section[] newSections = otherTpns
+            TpnSection[] newSections = otherTpns
                 .SelectMany(o => o.Sections)
-                .Except(existingTpn.Sections, new Section.ByHeaderNameComparer())
+                .Except(existingTpn.Sections, new TpnSection.ByHeaderNameComparer())
                 .OrderBy(s => s.Header.Name)
                 .ToArray();
 
-            foreach (Section existing in results
+            foreach (TpnSection existing in results
                 .SelectMany(r => (r.Content?.Sections.Except(newSections)).NullAsEmpty())
                 .Where(s => !newSections.Contains(s))
                 .OrderBy(s => s.Header.Name))
@@ -189,240 +185,6 @@ namespace Microsoft.DotNet.Build.Tasks
             File.WriteAllText(TpnFile, newTpn.ToString());
 
             Log.LogMessage(MessageImportance.High, $"Wrote new TPN contents to {TpnFile}.");
-        }
-
-        private class TpnDocument
-        {
-            public static TpnDocument Parse(string[] lines)
-            {
-                var headers = SectionHeader.ParseAll(lines).ToArray();
-
-                var sections = headers
-                    .Select((h, i) =>
-                    {
-                        int headerEndLine = h.StartLine + h.LineLength + 1;
-                        int linesUntilNext = lines.Length - headerEndLine;
-
-                        if (i + 1 < headers.Length)
-                        {
-                            linesUntilNext = headers[i + 1].StartLine - headerEndLine;
-                        }
-
-                        return new Section
-                        {
-                            Header = h,
-                            Content = string.Join(
-                                Environment.NewLine,
-                                lines
-                                    .Skip(headerEndLine)
-                                    .Take(linesUntilNext)
-                                    // Trim empty line at the end of the section.
-                                    .Reverse()
-                                    .SkipWhile(line => string.IsNullOrWhiteSpace(line))
-                                    .Reverse())
-                        };
-                    })
-                    .ToArray();
-
-                if (sections.Length == 0)
-                {
-                    throw new ArgumentException($"No sections found.");
-                }
-
-                return new TpnDocument
-                {
-                    Preamble = string.Join(
-                        Environment.NewLine,
-                        lines.Take(sections.First().Header.StartLine)),
-
-                    Sections = sections
-                };
-            }
-
-            public string Preamble { get; set; }
-
-            public IEnumerable<Section> Sections { get; set; }
-
-            public override string ToString() =>
-                Preamble + Environment.NewLine +
-                string.Join(Environment.NewLine + Environment.NewLine, Sections);
-        }
-
-        private enum SectionHeaderFormat
-        {
-            /// <summary>
-            /// {blank line}
-            /// {3+ section separator chars}
-            /// {blank line}
-            /// {name}
-            /// </summary>
-            Separated,
-
-            /// <summary>
-            /// {blank line}
-            /// {name (multiline)}
-            /// {3+ section separator chars}
-            /// {blank line}
-            /// </summary>
-            Underlined,
-
-            /// <summary>
-            /// {blank line}
-            /// {number}.{tab}{name}
-            /// {blank line}
-            /// </summary>
-            Numbered
-        }
-
-        private class SectionHeader
-        {
-            private static readonly char[] SectionSeparatorChars = { '-', '=' };
-            private static readonly Regex NumberListPrefix = new Regex(@"^[0-9]+\.\t(?<name>.*)$");
-
-            public static IEnumerable<SectionHeader> ParseAll(string[] lines)
-            {
-                // A separator line can't represent a section if it's on the first or last line.
-                for (int i = 1; i < lines.Length - 1; i++)
-                {
-                    string lineAbove = lines[i - 1].Trim();
-                    string line = lines[i].Trim();
-                    string lineBelow = lines[i + 1].Trim();
-
-                    if (line.Length > 2 &&
-                        IsSeparatorLine(line) &&
-                        string.IsNullOrEmpty(lineBelow))
-                    {
-                        // 'line' is a separator line. Check around to see what kind it is.
-
-                        if (string.IsNullOrEmpty(lineAbove))
-                        {
-                            string[] nameLines = lines
-                                .Skip(i + 2)
-                                .TakeWhile(s => !string.IsNullOrWhiteSpace(s))
-                                .ToArray();
-
-                            string name = string.Join(Environment.NewLine, nameLines);
-
-                            // If there's a separator line as the last line in the name, this line
-                            // doesn't indicate a section. Underlined handler will detect it later.
-                            if (nameLines.Any(IsSeparatorLine))
-                            {
-                                if (nameLines.Take(nameLines.Length - 1).Any(IsSeparatorLine))
-                                {
-                                    throw new ArgumentException(
-                                        $"Separator line detected inside name '{name}'");
-                                }
-                            }
-                            else
-                            {
-                                yield return new SectionHeader
-                                {
-                                    Name = name,
-
-                                    SeparatorLine = line,
-                                    Format = SectionHeaderFormat.Separated,
-
-                                    StartLine = i,
-                                    LineLength = 2 + nameLines.Length
-                                };
-                            }
-                        }
-                        else
-                        {
-                            string[] nameLines = lines
-                                .Take(i)
-                                .Reverse()
-                                .TakeWhile(s => !string.IsNullOrWhiteSpace(s))
-                                .Reverse()
-                                .ToArray();
-
-                            int nameStartLine = i - nameLines.Length;
-
-                            yield return new SectionHeader
-                            {
-                                Name = string.Join(Environment.NewLine, nameLines),
-
-                                SeparatorLine = line,
-                                Format = SectionHeaderFormat.Underlined,
-
-                                StartLine = nameStartLine,
-                                LineLength = nameLines.Length + 1
-                            };
-                        }
-                    }
-
-                    Match numberListMatch;
-
-                    if (string.IsNullOrWhiteSpace(lineAbove) &&
-                        string.IsNullOrWhiteSpace(lines[i + 1]) &&
-                        (numberListMatch = NumberListPrefix.Match(line)).Success)
-                    {
-                        yield return new SectionHeader
-                        {
-                            Name = numberListMatch.Groups["name"].Value,
-
-                            SeparatorLine = line,
-                            Format = SectionHeaderFormat.Numbered,
-
-                            StartLine = i,
-                            LineLength = 1
-                        };
-                    }
-                }
-            }
-
-            private static bool IsSeparatorLine(string line)
-            {
-                return line.All(c => SectionSeparatorChars.Contains(c));
-            }
-
-            public string Name { get; set; }
-            public string SeparatorLine { get; set; }
-
-            public SectionHeaderFormat Format { get; set; }
-
-            public int StartLine { get; set; }
-            public int LineLength { get; set; }
-
-            public override string ToString()
-            {
-                switch (Format)
-                {
-                    case SectionHeaderFormat.Separated:
-                        return
-                            SeparatorLine + Environment.NewLine +
-                            Environment.NewLine +
-                            Name;
-
-                    case SectionHeaderFormat.Underlined:
-                        return
-                            Name + Environment.NewLine +
-                            SeparatorLine;
-
-                    case SectionHeaderFormat.Numbered:
-                        return SeparatorLine;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
-
-        private class Section
-        {
-            public class ByHeaderNameComparer : EqualityComparer<Section>
-            {
-                public override bool Equals(Section x, Section y) =>
-                    string.Equals(x.Header.Name, y.Header.Name, StringComparison.OrdinalIgnoreCase);
-
-                public override int GetHashCode(Section obj) => obj.Header.Name.GetHashCode();
-            }
-
-            public SectionHeader Header { get; set; }
-            public string Content { get; set; }
-
-            public override string ToString() =>
-                Header + Environment.NewLine + Environment.NewLine + Content;
         }
     }
 }

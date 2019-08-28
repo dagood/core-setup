@@ -33,6 +33,8 @@ namespace Microsoft.DotNet.Build.Tasks
                             lines
                                 .Skip(headerEndLine)
                                 .Take(linesUntilNext)
+                                // Skip lines in the content that could be confused for separators.
+                                .Where(line => !TpnSectionHeader.IsSeparatorLine(line))
                                 // Trim empty line at the end of the section.
                                 .Reverse()
                                 .SkipWhile(line => string.IsNullOrWhiteSpace(line))
@@ -62,6 +64,7 @@ namespace Microsoft.DotNet.Build.Tasks
 
         public override string ToString() =>
             Preamble + Environment.NewLine +
-            string.Join(Environment.NewLine + Environment.NewLine, Sections);
+            string.Join(Environment.NewLine + Environment.NewLine, Sections) +
+            Environment.NewLine;
     }
 }

@@ -14,10 +14,15 @@ namespace Microsoft.DotNet.Build.Tasks
         private static readonly char[] SectionSeparatorChars = { '-', '=' };
         private static readonly Regex NumberListPrefix = new Regex(@"^[0-9]+\.\t(?<name>.*)$");
 
+        public static bool IsSeparatorLine(string line)
+        {
+            return line.Length > 2 && line.All(c => SectionSeparatorChars.Contains(c));
+        }
+
         public static IEnumerable<TpnSectionHeader> ParseAll(string[] lines)
         {
-            // A separator line can't represent a section if it's on the first or last line.
-            for (int i = 1; i < lines.Length - 1; i++)
+            // A separator line can't represent a section if it's on the first or last few lines.
+            for (int i = 1; i < lines.Length - 2; i++)
             {
                 string lineAbove = lines[i - 1].Trim();
                 string line = lines[i].Trim();
@@ -52,11 +57,43 @@ namespace Microsoft.DotNet.Build.Tasks
             }
         }
 
+        public string Name { get; set; }
+        public string SeparatorLine { get; set; }
+
+        public TpnSectionHeaderFormat Format { get; set; }
+
+        public int StartLine { get; set; }
+        public int LineLength { get; set; }
+
+        public override string ToString()
+        {
+            switch (Format)
+            {
+                case TpnSectionHeaderFormat.Separated:
+                    return
+                        SeparatorLine + Environment.NewLine +
+                        Environment.NewLine +
+                        Name;
+
+                case TpnSectionHeaderFormat.Underlined:
+                    return
+                        Name + Environment.NewLine +
+                        SeparatorLine;
+
+                case TpnSectionHeaderFormat.Numbered:
+                    return SeparatorLine;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private static TpnSectionHeader ParseSeparatedOrNull(string[] lines, int i)
         {
             string[] nameLines = lines
                 .Skip(i + 2)
                 .TakeWhile(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => s.Trim())
                 .ToArray();
 
             string name = string.Join(Environment.NewLine, nameLines);
@@ -95,6 +132,7 @@ namespace Microsoft.DotNet.Build.Tasks
                 .Reverse()
                 .TakeWhile(s => !string.IsNullOrWhiteSpace(s))
                 .Reverse()
+                .Select(s => s.Trim())
                 .ToArray();
 
             int nameStartLine = i - nameLines.Length;
@@ -131,42 +169,6 @@ namespace Microsoft.DotNet.Build.Tasks
             }
 
             return null;
-        }
-
-        public string Name { get; set; }
-        public string SeparatorLine { get; set; }
-
-        public TpnSectionHeaderFormat Format { get; set; }
-
-        public int StartLine { get; set; }
-        public int LineLength { get; set; }
-
-        public override string ToString()
-        {
-            switch (Format)
-            {
-                case TpnSectionHeaderFormat.Separated:
-                    return
-                        SeparatorLine + Environment.NewLine +
-                        Environment.NewLine +
-                        Name;
-
-                case TpnSectionHeaderFormat.Underlined:
-                    return
-                        Name + Environment.NewLine +
-                        SeparatorLine;
-
-                case TpnSectionHeaderFormat.Numbered:
-                    return SeparatorLine;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private static bool IsSeparatorLine(string line)
-        {
-            return line.All(c => SectionSeparatorChars.Contains(c));
         }
     }
 }

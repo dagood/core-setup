@@ -29,4 +29,6 @@
       DestinationFolder="$(WixToolsDir)" />
   </Target>
 
+  <Import Project="..\installer.targets" />
+
 </Project>

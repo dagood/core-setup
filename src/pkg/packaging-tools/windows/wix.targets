@@ -10,6 +10,33 @@
   <UsingTask TaskName="StabilizeWixFileId" AssemblyFile="$(LocalBuildToolsTaskFile)" />
 
   <!--
+    Acquire WiX tools, if not present.
+  -->
+  <Target Name="AcquireWix"
+          DependsOnTargets="GetAcquireWixProperties">
+    <MSBuild Projects="$(AcquireWixProjectFile)" Targets="AcquireWixCore" />
+  </Target>
+
+  <Target Name="GetAcquireWixProperties">
+    <PropertyGroup>
+      <WixVersion>3.10.4</WixVersion>
+      <WixToolsDir>$(IntermediateOutputRootPath)WixTools.$(WixVersion)/</WixToolsDir>
+      <!-- Used in WiX targets to locate files. -->
+      <WixInstallPath>$(WixToolsDir)</WixInstallPath>
+      <WixTargetsPath>$(WixToolsDir)wix.targets</WixTargetsPath>
+      <WixObjRoot>$(IntermediateOutputRootPath)wix/</WixObjRoot>
+      <WixObjDir>$(WixObjRoot)$(MSBuildProjectName)/</WixObjDir>
+      <MsiArch>$(TargetArchitecture)</MsiArch>
+
+      <AcquireWixProjectFile>$(PackagingToolsDir)acquire-wix\acquire-wix.proj</AcquireWixProjectFile>
+      <WixDownloadFilename>wix.$(WixVersion).zip</WixDownloadFilename>
+      <WixDownloadUrl>https://dotnetcli.azureedge.net/build/wix/$(WixDownloadFilename)</WixDownloadUrl>
+      <WixDestinationPath>$(WixToolsDir)$(WixDownloadFilename)</WixDestinationPath>
+      <WixDownloadSentinel>$(WixToolsDir)WixDownload.$(WixVersion).sentinel</WixDownloadSentinel>
+    </PropertyGroup>
+  </Target>
+
+  <!--
     Generate bundle upgrade code. This code needs to be constant within a product band for upgrades.
   -->
   <Target Name="GetBundleUpgradeCode"
@@ -372,6 +399,7 @@
 
   <Target Name="GenerateVSInsertionNupkgCore"
           DependsOnTargets="
+            GetAcquireWixProperties;
             AcquireNuGetExe;
             GetInstallerProperties;
             GetWixBuildConfiguration">

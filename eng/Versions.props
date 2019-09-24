@@ -27,6 +27,7 @@
     <!-- arcade -->
     <MicrosoftDotNetBuildTasksFeedPackageVersion>5.0.0-beta.19469.8</MicrosoftDotNetBuildTasksFeedPackageVersion>
     <MicrosoftDotNetBuildTasksPackagingPackageVersion>5.0.0-beta.19469.8</MicrosoftDotNetBuildTasksPackagingPackageVersion>
+    <MicrosoftDotNetBuildTasksSharedFrameworkPackageVersion>5.0.0-dev</MicrosoftDotNetBuildTasksSharedFrameworkPackageVersion>
     <MicrosoftDotNetVersionToolsTasksPackageVersion>5.0.0-beta.19469.8</MicrosoftDotNetVersionToolsTasksPackageVersion>
     <!-- sourcelink -->
     <MicrosoftSourceLinkVersion>1.0.0-beta2-19367-01</MicrosoftSourceLinkVersion>

@@ -47,6 +47,11 @@
     <RestoreAllBuildRids Condition="'$(RestoreAllBuildRids)' == ''">true</RestoreAllBuildRids>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.Build.Tasks.Packaging" Version="$(MicrosoftDotNetBuildTasksPackagingPackageVersion)" />
+    <PackageReference Include="Microsoft.DotNet.Build.Tasks.SharedFramework" Version="$(MicrosoftDotNetBuildTasksSharedFrameworkPackageVersion)" />
+  </ItemGroup>
+
   <PropertyGroup>
     <VSInsertionProductName>NetCore</VSInsertionProductName>
     <VSInsertionCommonPrefix>VS.Redist.Common</VSInsertionCommonPrefix>
@@ -70,8 +75,6 @@
     <SkipValidatePackage>true</SkipValidatePackage>
     <IncludeRuntimeJson>true</IncludeRuntimeJson>
   </PropertyGroup>
-
-  <Import Project="$(PackagingToolsDir)packaging-tools.props" />
 
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.depproj'">
     <!--

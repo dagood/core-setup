@@ -4,6 +4,7 @@
   <ItemGroup>
     <!-- arcade -->
     <PackageReference Include="Microsoft.DotNet.Build.Tasks.Packaging" Version="$(MicrosoftDotNetBuildTasksPackagingPackageVersion)" />
+    <PackageReference Include="Microsoft.DotNet.Build.Tasks.SharedFramework" Version="$(MicrosoftDotNetBuildTasksSharedFrameworkPackageVersion)" />
   </ItemGroup>
 
   <!-- excluded from source build -->

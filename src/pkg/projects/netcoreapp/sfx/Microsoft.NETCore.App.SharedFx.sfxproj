@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.DotNet.Build.Tasks.SharedFramework.Sdk">
 
   <PropertyGroup>
     <SfxIdentity>Microsoft.NETCore.App</SfxIdentity>

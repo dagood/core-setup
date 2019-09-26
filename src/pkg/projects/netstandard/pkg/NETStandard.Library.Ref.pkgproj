@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.DotNet.Build.Tasks.SharedFramework.Sdk">
 
   <PropertyGroup>
     <!-- .NET Standard has no shared framework, so there is no data for a platform manifest. -->

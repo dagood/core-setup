@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.DotNet.Build.Tasks.SharedFramework.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <FrameworkPackageName>Microsoft.NETCore.App</FrameworkPackageName>

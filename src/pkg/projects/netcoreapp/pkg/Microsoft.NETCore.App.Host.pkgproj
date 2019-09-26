@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.DotNet.Build.Tasks.SharedFramework.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Create AppHost Pack based on legacy DotNetAppHost package. This can be collapsed once the legacy

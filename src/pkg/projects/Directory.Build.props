@@ -12,8 +12,6 @@
 
     <PackageTargetRuntime Condition="'$(PackageTargetRuntime)' == '' AND '$(MSBuildProjectExtension)' == '.depproj'">$(RuntimeIdentifier)</PackageTargetRuntime>
 
-    <IsLineupPackage Condition="'$(PackageTargetRuntime)' == ''">true</IsLineupPackage>
-
     <BuildRuntimePackages>true</BuildRuntimePackages>
     <BuildLineupPackage>true</BuildLineupPackage>
 
@@ -70,7 +68,8 @@
 
   <PropertyGroup Condition="'$(PackageTargetRuntime)' == ''">
     <SkipValidatePackage>true</SkipValidatePackage>
-    <IncludeRuntimeJson>true</IncludeRuntimeJson>
+    <IncludeRuntimeJson Condition="'$(IncludeRuntimeJson)' == ''">true</IncludeRuntimeJson>
+    <IsLineupPackage Condition="'$(IsLineupPackage)' == ''">true</IsLineupPackage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.depproj'">

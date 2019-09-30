@@ -12,8 +12,8 @@
 
     <PackageTargetRuntime Condition="'$(PackageTargetRuntime)' == '' AND '$(MSBuildProjectExtension)' == '.depproj'">$(RuntimeIdentifier)</PackageTargetRuntime>
 
-    <BuildRuntimePackages>true</BuildRuntimePackages>
-    <BuildLineupPackage>true</BuildLineupPackage>
+    <BuildRuntimePackages Condition="'$(BuildRuntimePackages)' == ''">true</BuildRuntimePackages>
+    <BuildLineupPackage Condition="'$(BuildLineupPackage)' == ''">true</BuildLineupPackage>
 
     <PackProjectDependencies>true</PackProjectDependencies>
 

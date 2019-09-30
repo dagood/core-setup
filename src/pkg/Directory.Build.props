@@ -26,7 +26,7 @@
   <PropertyGroup>
     <PackagesIntermediateDir>$(IntermediateOutputRootPath)packages/</PackagesIntermediateDir>
 
-    <RpmTemplatesDir>$(PkgMicrosoft_DotNet_Build_Tasks_SharedFramework)build/content/linux/rpm/templates/</RpmTemplatesDir>
+    <RpmTemplatesDir>$(MSBuildThisFileDirectory)packaging/rpm/templates/</RpmTemplatesDir>
 
     <!--
       Intermediate dir the debtool project is copied to. Use DebtoolAssemblyFile for "dotnet

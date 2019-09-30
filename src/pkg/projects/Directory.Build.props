@@ -15,7 +15,7 @@
     <BuildRuntimePackages Condition="'$(BuildRuntimePackages)' == ''">true</BuildRuntimePackages>
     <BuildLineupPackage Condition="'$(BuildLineupPackage)' == ''">true</BuildLineupPackage>
 
-    <PackProjectDependencies>true</PackProjectDependencies>
+    <PackProjectDependencies Condition="'$(PackProjectDependencies)' == ''">true</PackProjectDependencies>
 
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
